@@ -1,0 +1,1109 @@
+[
+  {
+    "id": 1,
+    "root": "ABBREVIATE",
+    "noun": [
+      "abbreviation (n) /əˌbriːviˈeɪʃn/ [C] chữ viết tắt; [U] sự viết tắt"
+    ],
+    "verb": [
+      "abbreviate (v) /əˈbriːvieɪt/ [often PAS] viết tắt"
+    ],
+    "adj": [
+      "abbreviated (a) /əˈbriːvieɪtɪd/ viết tắt"
+    ],
+    "adv": [],
+    "meanings": [
+      "viết tắt",
+      "chữ viết tắt",
+      "sự viết tắt"
+    ]
+  },
+  {
+    "id": 2,
+    "root": "ABLE",
+    "noun": [
+      "ability (n) /əˈbɪləti/ [SIN] khả năng, năng lực; [C] trình độ, kỹ năng",
+      "inability (n) /ˌɪnəˈbɪləti/ [SIN] sự bất lực"
+    ],
+    "verb": [
+      "enable (v) /ɪˈneɪbl/ cho phép ai làm gì"
+    ],
+    "adj": [
+      "able (a) /ˈeɪbl/ + to Vo có thể, có năng lực",
+      "unable (a) /ʌnˈeɪbl/ + to Vo không thể"
+    ],
+    "adv": [],
+    "meanings": [
+      "có thể, có năng lực",
+      "không thể",
+      "khả năng",
+      "sự bất lực"
+    ]
+  },
+  {
+    "id": 3,
+    "root": "ABRUPT",
+    "noun": [
+      "abruptness (n) /əˈbrʌptnəs/ [U] sự đột ngột; ăn nói cộc lốc"
+    ],
+    "verb": [],
+    "adj": [
+      "abrupt (a) /əˈbrʌpt/ đột ngột; cộc lốc"
+    ],
+    "adv": [
+      "abruptly (adv) /əˈbrʌptli/ một cách đột ngột, cộc lốc"
+    ],
+    "meanings": [
+      "đột ngột",
+      "cộc lốc",
+      "sự đột ngột"
+    ]
+  },
+  {
+    "id": 4,
+    "root": "ABSENT",
+    "noun": [
+      "absence (n) /ˈæbsəns/ [U] sự vắng mặt; [C] số lần vắng mặt"
+    ],
+    "verb": [
+      "absent (v) /æbˈsent/ + oneself vắng mặt"
+    ],
+    "adj": [
+      "absent (a) /ˈæbsənt/ vắng mặt; lơ đễnh"
+    ],
+    "adv": [],
+    "meanings": [
+      "vắng mặt",
+      "thiếu sót",
+      "sự vắng mặt"
+    ]
+  },
+  {
+    "id": 5,
+    "root": "ABSORB",
+    "noun": [
+      "absorption (n) /əbˈzɔːrpʃn/ [U] sự hấp thụ; say mê"
+    ],
+    "verb": [
+      "absorb (v) /əbˈzɔːrb/ hấp thụ; lôi cuốn"
+    ],
+    "adj": [
+      "absorbing (a) /əbˈzɔːrbɪŋ/ lôi cuốn"
+    ],
+    "adv": [],
+    "meanings": [
+      "hấp thụ",
+      "lôi cuốn",
+      "sự hấp thụ"
+    ]
+  },
+  {
+    "id": 6,
+    "root": "ACADEMY",
+    "noun": [
+      "academy (n) /əˈkædəmi/ [C] học viện; viện hàn lâm",
+      "academic (n) /ˌækəˈdemɪk/ [C] giảng viên đại học"
+    ],
+    "verb": [],
+    "adj": [
+      "academic (a) /ˌækəˈdemɪk/ học thuật; liên quan trường lớp"
+    ],
+    "adv": [],
+    "meanings": [
+      "học viện",
+      "viện hàn lâm",
+      "giảng viên",
+      "học thuật"
+    ]
+  },
+  {
+    "id": 7,
+    "root": "ACCELERATE",
+    "noun": [
+      "acceleration (n) /əkˌseləˈreɪʃn/ [U] sự tăng tốc",
+      "deceleration (n) /diːˌseləˈreɪʃn/ [U] sự giảm tốc"
+    ],
+    "verb": [
+      "accelerate (v) /əkˈseləreɪt/ tăng tốc",
+      "decelerate (v) /diːˈseləreɪt/ giảm tốc"
+    ],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "tăng tốc",
+      "giảm tốc",
+      "sự tăng tốc"
+    ]
+  },
+  {
+    "id": 8,
+    "root": "ACCEPT",
+    "noun": [
+      "acceptance (n) /əkˈseptəns/ [U] sự chấp nhận"
+    ],
+    "verb": [
+      "accept (v) /əkˈsept/ chấp nhận"
+    ],
+    "adj": [
+      "acceptable (a) /əkˈseptəbl/ có thể chấp nhận",
+      "unacceptable (a) /ˌʌnəkˈseptəbl/ không thể chấp nhận",
+      "accepted (a) /əkˈseptɪd/ được chấp nhận"
+    ],
+    "adv": [],
+    "meanings": [
+      "chấp nhận",
+      "sự chấp nhận",
+      "có thể chấp nhận",
+      "không thể chấp nhận"
+    ]
+  },
+  {
+    "id": 9,
+    "root": "ACCESS",
+    "noun": [
+      "access (n) /ˈækses/ [U] quyền truy cập, lối vào",
+      "accessibility (n) /əkˌsesəˈbɪləti/ [U] tính dễ tiếp cận",
+      "inaccessibility (n) /ˌɪnækˌsesəˈbɪləti/ [U] tính không thể tiếp cận"
+    ],
+    "verb": [
+      "access (v) /ˈækses/ truy cập, tiếp cận"
+    ],
+    "adj": [
+      "accessible (a) /əkˈsesəbl/ có thể truy cập",
+      "inaccessible (a) /ˌɪnækˈsesəbl/ không thể truy cập"
+    ],
+    "adv": [],
+    "meanings": [
+      "truy cập",
+      "tiếp cận",
+      "dễ tiếp cận",
+      "không thể truy cập"
+    ]
+  },
+  {
+    "id": 10,
+    "root": "ACCIDENT",
+    "noun": [
+      "accident (n) /ˈæksɪdənt/ [C] tai nạn; sự kiện không mong muốn"
+    ],
+    "verb": [],
+    "adj": [
+      "accidental (a) /ˌæksɪˈdentl/ tình cờ, ngẫu nhiên"
+    ],
+    "adv": [
+      "accidentally (adv) /ˌæksɪˈdentəli/ một cách tình cờ"
+    ],
+    "meanings": [
+      "tai nạn",
+      "tình cờ"
+    ]
+  },
+  {
+    "id": 11,
+    "root": "ACCOMMODATE",
+    "noun": [
+      "accommodation (n) /əˌkɒməˈdeɪʃn/ [U] nơi ở, chỗ ở"
+    ],
+    "verb": [
+      "accommodate (v) /əˈkɒmədeɪt/ cung cấp chỗ ở"
+    ],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "chỗ ở",
+      "cung cấp chỗ ở"
+    ]
+  },
+  {
+    "id": 12,
+    "root": "ACCOMPLISH",
+    "noun": [
+      "accomplishment (n) /əˈkɒmplɪʃmənt/ [C] thành tựu; kỹ năng đặc biệt"
+    ],
+    "verb": [
+      "accomplish (v) /əˈkɒmplɪʃ/ đạt được, thành công"
+    ],
+    "adj": [
+      "accomplished (a) /əˈkɒmplɪʃt/ rất thành công, có nhiều kỹ năng"
+    ],
+    "adv": [],
+    "meanings": [
+      "đạt được",
+      "thành tựu",
+      "thành công"
+    ]
+  },
+  {
+    "id": 13,
+    "root": "ACCOUNT",
+    "noun": [
+      "account (n) /əˈkaʊnt/ [C] tài khoản; lời kể",
+      "accountant (n) /əˈkaʊntənt/ [C] kế toán",
+      "accountability (n) /əˌkaʊntəˈbɪləti/ [U] trách nhiệm giải trình"
+    ],
+    "verb": [
+      "account (v) /əˈkaʊnt/ xem là; chiếm; giải thích"
+    ],
+    "adj": [
+      "accountable (a) /əˈkaʊntəbl/ chịu trách nhiệm"
+    ],
+    "adv": [],
+    "meanings": [
+      "tài khoản",
+      "kế toán",
+      "trách nhiệm",
+      "giải thích"
+    ]
+  },
+  {
+    "id": 14,
+    "root": "ACCURATE",
+    "noun": [
+      "accuracy (n) /ˈækjərəsi/ [U] sự chính xác",
+      "inaccuracy (n) /ɪnˈækjərəsi/ [C] lỗi sai; [U] sự không chính xác"
+    ],
+    "verb": [],
+    "adj": [
+      "accurate (a) /ˈækjərət/ chính xác",
+      "inaccurate (a) /ɪnˈækjərət/ không chính xác"
+    ],
+    "adv": [],
+    "meanings": [
+      "chính xác",
+      "không chính xác",
+      "sự chính xác"
+    ]
+  },
+  {
+    "id": 15,
+    "root": "ACCUSTOM",
+    "noun": [],
+    "verb": [
+      "accustom (v) /əˈkʌstəm/ tập cho quen"
+    ],
+    "adj": [
+      "accustomed (a) /əˈkʌstəmd/ quen với",
+      "unaccustomed (a) /ˌʌnəˈkʌstəmd/ không quen; khác thường"
+    ],
+    "adv": [],
+    "meanings": [
+      "quen với",
+      "tập quen"
+    ]
+  },
+  {
+    "id": 16,
+    "root": "ACHIEVE",
+    "noun": [
+      "achievement (n) /əˈtʃiːvmənt/ [C] thành tựu",
+      "achiever (n) /əˈtʃiːvər/ [C] người thành công",
+      "underachiever (n) /ˌʌndərəˈtʃiːvər/ [C] người kém thành tích"
+    ],
+    "verb": [
+      "achieve (v) /əˈtʃiːv/ đạt được"
+    ],
+    "adj": [
+      "achievable (a) /əˈtʃiːvəbl/ có thể đạt được",
+      "unachievable (a) /ˌʌnəˈtʃiːvəbl/ không thể đạt được"
+    ],
+    "adv": [],
+    "meanings": [
+      "đạt được",
+      "thành tựu",
+      "có thể đạt được"
+    ]
+  },
+  {
+    "id": 17,
+    "root": "ACQUAINT",
+    "noun": [
+      "acquaintance (n) /əˈkweɪntəns/ [C] người quen"
+    ],
+    "verb": [
+      "acquaint (v) /əˈkweɪnt/ làm quen; báo cho biết"
+    ],
+    "adj": [
+      "acquainted (a) /əˈkweɪntɪd/ quen với"
+    ],
+    "adv": [],
+    "meanings": [
+      "làm quen",
+      "người quen"
+    ]
+  },
+  {
+    "id": 18,
+    "root": "ACT",
+    "noun": [
+      "act (n) /ækt/ [C] hành động",
+      "action (n) /ˈækʃn/ [U] quá trình hành động; [C] hành động cụ thể",
+      "actor (n) /ˈæktər/ [C] diễn viên nam",
+      "actress (n) /ˈæktrəs/ [C] diễn viên nữ"
+    ],
+    "verb": [
+      "act (v) /ækt/ hành động; diễn xuất"
+    ],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "hành động",
+      "diễn xuất",
+      "diễn viên"
+    ]
+  },
+  {
+    "id": 19,
+    "root": "ACTIVATE",
+    "noun": [
+      "activation (n) /ˌæktɪˈveɪʃn/ [U] sự kích hoạt",
+      "deactivation (n) /ˌdiːæktɪˈveɪʃn/ [U] sự vô hiệu hóa"
+    ],
+    "verb": [
+      "activate (v) /ˈæktɪveɪt/ kích hoạt",
+      "deactivate (v) /diːˈæktɪveɪt/ vô hiệu hóa",
+      "inactivate (v) /ɪnˈæktɪveɪt/ vô hiệu hóa (khoa học)"
+    ],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "kích hoạt",
+      "vô hiệu hóa"
+    ]
+  },
+  {
+    "id": 20,
+    "root": "ACTIVE",
+    "noun": [
+      "activist (n) /ˈæktɪvɪst/ [C] nhà hoạt động",
+      "activity (n) /ækˈtɪvəti/ [C] hoạt động; [U] tình huống sôi động",
+      "inactivity (n) /ˌɪnækˈtɪvəti/ [U] sự thụ động"
+    ],
+    "verb": [],
+    "adj": [
+      "active (a) /ˈæktɪv/ năng động, chủ động",
+      "inactive (a) /ɪnˈæktɪv/ thụ động"
+    ],
+    "adv": [
+      "actively (adv) /ˈæktɪvli/ một cách chủ động"
+    ],
+    "meanings": [
+      "năng động",
+      "thụ động",
+      "hoạt động"
+    ]
+  },
+  {
+    "id": 21,
+    "root": "ADAPT",
+    "noun": [
+      "adaptation (n) /ˌædæpˈteɪʃn/ [U] quá trình thích nghi; [C] phim chuyển thể",
+      "adapter (n) /əˈdæptər/ [C] bộ chuyển đổi"
+    ],
+    "verb": [
+      "adapt (v) /əˈdæpt/ thích nghi"
+    ],
+    "adj": [
+      "adaptable (a) /əˈdæptəbl/ có khả năng thích nghi",
+      "adaptive (a) /əˈdæptɪv/ thích nghi liên tục"
+    ],
+    "adv": [],
+    "meanings": [
+      "thích nghi",
+      "bộ chuyển đổi"
+    ]
+  },
+  {
+    "id": 22,
+    "root": "ADD",
+    "noun": [
+      "addition (n) /əˈdɪʃn/ [U] việc thêm vào; [C] người/vật thêm vào",
+      "additive (n) /ˈædətɪv/ [C] chất phụ gia"
+    ],
+    "verb": [
+      "add (v) /æd/ thêm vào, cộng vào"
+    ],
+    "adj": [
+      "additional (a) /əˈdɪʃənl/ thêm, bổ sung"
+    ],
+    "adv": [
+      "additionally (adv) /əˈdɪʃənəli/ thêm vào đó"
+    ],
+    "meanings": [
+      "thêm vào",
+      "bổ sung",
+      "chất phụ gia"
+    ]
+  },
+  {
+    "id": 23,
+    "root": "ADDICT",
+    "noun": [
+      "addict (n) /ˈædɪkt/ [C] người nghiện",
+      "addiction (n) /əˈdɪkʃn/ [U] tình trạng nghiện"
+    ],
+    "verb": [],
+    "adj": [
+      "addictive (a) /əˈdɪktɪv/ gây nghiện",
+      "addicted (a) /əˈdɪktɪd/ bị nghiện",
+      "non-addictive (a) /ˌnɒn.əˈdɪk.tɪv/ không gây nghiện"
+    ],
+    "adv": [],
+    "meanings": [
+      "nghiện",
+      "gây nghiện"
+    ]
+  },
+  {
+    "id": 24,
+    "root": "ADEQUATE",
+    "noun": [
+      "adequacy (n) /ˈædɪkwəsi/ [U] sự đầy đủ",
+      "inadequacy (n) /ɪnˈædɪkwəsi/ [U] sự thiếu hụt; [C] nhược điểm"
+    ],
+    "verb": [],
+    "adj": [
+      "adequate (a) /ˈædɪkwət/ đủ, thỏa đáng",
+      "inadequate (a) /ɪnˈædɪkwət/ thiếu, không đủ"
+    ],
+    "adv": [
+      "adequately (adv) /ˈædɪkwətli/ một cách đầy đủ",
+      "inadequately (adv) /ɪnˈædɪkwətli/ một cách thiếu thốn"
+    ],
+    "meanings": [
+      "đủ",
+      "thiếu",
+      "sự đầy đủ"
+    ]
+  },
+  {
+    "id": 25,
+    "root": "ADJUST",
+    "noun": [
+      "adjustment (n) /əˈdʒʌstmənt/ [C] sự điều chỉnh",
+      "readjustment (n) /ˌriːəˈdʒʌstmənt/ [C] sự điều chỉnh lại"
+    ],
+    "verb": [
+      "adjust (v) /əˈdʒʌst/ điều chỉnh, thích nghi",
+      "readjust (v) /ˌriːəˈdʒʌst/ điều chỉnh lại"
+    ],
+    "adj": [
+      "adjustable (a) /əˈdʒʌstəbl/ có thể điều chỉnh"
+    ],
+    "adv": [],
+    "meanings": [
+      "điều chỉnh",
+      "thích nghi"
+    ]
+  },
+  {
+    "id": 26,
+    "root": "ADMINISTER",
+    "noun": [
+      "administration (n) /ədˌmɪnɪˈstreɪʃn/ [U] việc quản lý; [C] ban quản lý",
+      "administrator (n) /ədˈmɪnɪstreɪtər/ [C] quản trị viên"
+    ],
+    "verb": [
+      "administer (v) /ədˈmɪnɪstər/ quản lý"
+    ],
+    "adj": [
+      "administrative (a) /ədˈmɪnɪstrətɪv/ thuộc quản lý"
+    ],
+    "adv": [
+      "administratively (adv) /ədˈmɪnɪstrətɪvli/ về mặt quản lý"
+    ],
+    "meanings": [
+      "quản lý",
+      "ban quản lý"
+    ]
+  },
+  {
+    "id": 27,
+    "root": "ADMIRE",
+    "noun": [
+      "admiration (n) /ˌædməˈreɪʃn/ [U] lòng ngưỡng mộ",
+      "admirer (n) /ədˈmaɪərər/ [C] người ngưỡng mộ"
+    ],
+    "verb": [
+      "admire (v) /ədˈmaɪər/ ngưỡng mộ"
+    ],
+    "adj": [
+      "admirable (a) /ˈædmərəbl/ đáng ngưỡng mộ",
+      "admiring (a) /ədˈmaɪərɪŋ/ thể hiện sự ngưỡng mộ"
+    ],
+    "adv": [
+      "admirably (adv) /ˈædmərəbli/ một cách đáng ngưỡng mộ",
+      "admiringly (adv) /ədˈmaɪərɪŋli/ một cách ngưỡng mộ"
+    ],
+    "meanings": [
+      "ngưỡng mộ",
+      "đáng ngưỡng mộ"
+    ]
+  },
+  {
+    "id": 28,
+    "root": "ADMIT",
+    "noun": [
+      "admission (n) /ədˈmɪʃn/ [U] sự nhận vào; phí vào cửa; [C] sự thừa nhận"
+    ],
+    "verb": [
+      "admit (v) /ədˈmɪt/ thừa nhận; kết nạp; cho nhập viện"
+    ],
+    "adj": [
+      "unadmitted (a) /ˌʌnədˈmɪtɪd/ không được công khai thừa nhận"
+    ],
+    "adv": [
+      "admittedly (adv) /ədˈmɪtɪdli/ phải thừa nhận rằng"
+    ],
+    "meanings": [
+      "thừa nhận",
+      "nhận vào",
+      "phí vào cửa"
+    ]
+  },
+  {
+    "id": 29,
+    "root": "ADOPT",
+    "noun": [
+      "adoption (n) /əˈdɒpʃn/ [C] việc nhận nuôi; [U] sự bắt đầu sử dụng",
+      "adopter (n) /əˈdɒptər/ [C] người nhận nuôi",
+      "adoptee (n) /əˌdɒpˈtiː/ [C] người được nhận nuôi"
+    ],
+    "verb": [
+      "adopt (v) /əˈdɒpt/ nhận nuôi; áp dụng"
+    ],
+    "adj": [
+      "adoptive (a) /əˈdɒptɪv/ (cha mẹ/con) nuôi"
+    ],
+    "adv": [],
+    "meanings": [
+      "nhận nuôi",
+      "áp dụng"
+    ]
+  },
+  {
+    "id": 30,
+    "root": "ADORE",
+    "noun": [
+      "adoration (n) /ˌædəˈreɪʃn/ [U] sự tôn thờ, yêu mến"
+    ],
+    "verb": [
+      "adore (v) /əˈdɔːr/ mê thích, yêu quý"
+    ],
+    "adj": [
+      "adoring (a) /əˈdɔːrɪŋ/ thể hiện yêu thương",
+      "adorable (a) /əˈdɔːrəbl/ đáng yêu"
+    ],
+    "adv": [
+      "adoringly (adv) /əˈdɔːrɪŋli/ một cách yêu thương",
+      "adorably (adv) /əˈdɔːrəbli/ một cách đáng yêu"
+    ],
+    "meanings": [
+      "yêu thích",
+      "đáng yêu"
+    ]
+  },
+  {
+    "id": 31,
+    "root": "ADULT",
+    "noun": [
+      "adult (n) /əˈdʌlt/ [C] người lớn",
+      "adulthood (n) /əˈdʌlthʊd/ [U] tuổi trưởng thành"
+    ],
+    "verb": [],
+    "adj": [
+      "adult (a) /əˈdʌlt/ trưởng thành"
+    ],
+    "adv": [],
+    "meanings": [
+      "người lớn",
+      "trưởng thành"
+    ]
+  },
+  {
+    "id": 32,
+    "root": "ADVANCE",
+    "noun": [
+      "advance (n) /ədˈvæns/ [U] sự tiến bộ; [C] bước tiến",
+      "advancement (n) /ədˈvænsmənt/ [U] quá trình tiến triển"
+    ],
+    "verb": [
+      "advance (v) /ədˈvæns/ tiến bộ; tiến lên"
+    ],
+    "adj": [
+      "advanced (a) /ədˈvænst/ tiên tiến, cao cấp"
+    ],
+    "adv": [],
+    "meanings": [
+      "tiến bộ",
+      "tiên tiến"
+    ]
+  },
+  {
+    "id": 33,
+    "root": "ADVANTAGE",
+    "noun": [
+      "advantage (n) /ədˈvæntɪdʒ/ [C] lợi thế",
+      "disadvantage (n) /ˌdɪsədˈvæntɪdʒ/ [C] bất lợi"
+    ],
+    "verb": [],
+    "adj": [
+      "advantageous (a) /ˌædvənˈteɪdʒəs/ có lợi",
+      "disadvantageous (a) /ˌdɪsædvənˈteɪdʒəs/ bất lợi",
+      "advantaged (a) /ədˈvæntɪdʒd/ có lợi thế",
+      "disadvantaged (a) /ˌdɪsədˈvæntɪdʒd/ thiệt thòi"
+    ],
+    "adv": [
+      "advantageously (adv) /ˌædvənˈteɪdʒəsli/ một cách có lợi",
+      "disadvantageously (adv) /ˌdɪsædvənˈteɪdʒəsli/ một cách bất lợi"
+    ],
+    "meanings": [
+      "lợi thế",
+      "bất lợi"
+    ]
+  },
+  {
+    "id": 34,
+    "root": "ADVENTURE",
+    "noun": [
+      "adventure (n) /ədˈventʃər/ [C] cuộc phiêu lưu",
+      "adventurer (n) /ədˈventʃərər/ [C] người thích mạo hiểm",
+      "misadventure (n) /ˌmɪsədˈventʃər/ [C] tai nạn nhỏ; [U] vận xui"
+    ],
+    "verb": [],
+    "adj": [
+      "adventurous (a) /ədˈventʃərəs/ thích phiêu lưu"
+    ],
+    "adv": [],
+    "meanings": [
+      "phiêu lưu",
+      "mạo hiểm"
+    ]
+  },
+  {
+    "id": 35,
+    "root": "ADVERT",
+    "noun": [
+      "advertisement (n) /ədˈvɜːtɪsmənt/ [C] quảng cáo",
+      "advert (n) /ˈædvɜːt/ [C] quảng cáo",
+      "advertiser (n) /ˈædvətaɪzər/ [C] nhà quảng cáo",
+      "advertising (n) /ˈædvətaɪzɪŋ/ [U] ngành quảng cáo"
+    ],
+    "verb": [
+      "advertise (v) /ˈædvətaɪz/ quảng cáo"
+    ],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "quảng cáo"
+    ]
+  },
+  {
+    "id": 36,
+    "root": "ADVISE",
+    "noun": [
+      "advice (n) /ədˈvaɪs/ [U] lời khuyên",
+      "adviser (n) /ədˈvaɪzər/ [C] cố vấn"
+    ],
+    "verb": [
+      "advise (v) /ədˈvaɪz/ khuyên"
+    ],
+    "adj": [
+      "advisable (a) /ədˈvaɪzəbl/ hợp lý, nên làm",
+      "inadvisable (a) /ˌɪnədˈvaɪzəbl/ không nên làm"
+    ],
+    "adv": [],
+    "meanings": [
+      "khuyên",
+      "lời khuyên"
+    ]
+  },
+  {
+    "id": 37,
+    "root": "AFFECT",
+    "noun": [
+      "affection (n) /əˈfekʃn/ [U] sự yêu thương; [PLU] cảm tình"
+    ],
+    "verb": [
+      "affect (v) /əˈfekt/ ảnh hưởng; giả vờ"
+    ],
+    "adj": [
+      "affected (a) /əˈfektɪd/ bị ảnh hưởng; giả tạo",
+      "unaffected (a) /ˌʌnəˈfektɪd/ không bị ảnh hưởng",
+      "affectionate (a) /əˈfekʃənət/ âu yếm, trìu mến"
+    ],
+    "adv": [
+      "affectionately (adv) /əˈfekʃənətli/ một cách trìu mến"
+    ],
+    "meanings": [
+      "ảnh hưởng",
+      "yêu thương"
+    ]
+  },
+  {
+    "id": 38,
+    "root": "AFFIRM",
+    "noun": [
+      "affirmation (n) /ˌæfərˈmeɪʃn/ [C] lời khẳng định; [U] sự khẳng định",
+      "reaffirmation (n) /ˌriːæfərˈmeɪʃn/ [U] sự tái khẳng định"
+    ],
+    "verb": [
+      "affirm (v) /əˈfɜːrm/ khẳng định",
+      "reaffirm (v) /ˌriːəˈfɜːrm/ tái khẳng định"
+    ],
+    "adj": [
+      "affirmative (a) /əˈfɜːrmətɪv/ khẳng định, đồng tình"
+    ],
+    "adv": [],
+    "meanings": [
+      "khẳng định",
+      "tái khẳng định"
+    ]
+  },
+  {
+    "id": 39,
+    "root": "AFFORD",
+    "noun": [
+      "affordability (n) /əˌfɔːrdəˈbɪləti/ [U] khả năng chi trả"
+    ],
+    "verb": [
+      "afford (v) /əˈfɔːrd/ có khả năng chi trả"
+    ],
+    "adj": [
+      "affordable (a) /əˈfɔːrdəbl/ vừa túi tiền",
+      "unaffordable (a) /ˌʌnəˈfɔːrdəbl/ quá đắt"
+    ],
+    "adv": [
+      "affordably (adv) /əˈfɔːrdəbli/ với giá phải chăng"
+    ],
+    "meanings": [
+      "có khả năng chi trả",
+      "vừa túi tiền"
+    ]
+  },
+  {
+    "id": 40,
+    "root": "AFRAID",
+    "noun": [],
+    "verb": [],
+    "adj": [
+      "afraid (a) /əˈfreɪd/ sợ hãi",
+      "unafraid (a) /ˌʌnəˈfreɪd/ không sợ hãi"
+    ],
+    "adv": [],
+    "meanings": [
+      "sợ hãi"
+    ]
+  },
+  {
+    "id": 41,
+    "root": "AGENT",
+    "noun": [
+      "agent (n) /ˈeɪdʒənt/ [C] đại lý, đặc vụ",
+      "agency (n) /ˈeɪdʒənsi/ [C] công ty dịch vụ, cơ quan"
+    ],
+    "verb": [],
+    "adj": [],
+    "adv": [],
+    "meanings": [
+      "đại lý",
+      "cơ quan"
+    ]
+  },
+  {
+    "id": 42,
+    "root": "AGGRESSIVE",
+    "noun": [
+      "aggression (n) /əˈɡreʃn/ [U] sự hung hăng; [C] cuộc tấn công",
+      "aggressiveness (n) /əˈɡresɪvnəs/ [U] tính hung hăng",
+      "non-aggression (n) /ˌnɒn.əˈɡreʃ.ən/ [U] không xâm lược"
+    ],
+    "verb": [],
+    "adj": [
+      "aggressive (a) /əˈɡresɪv/ hung hăng",
+      "non-aggressive (a) /ˌnɒn.əˈɡres.ɪv/ không hung hăng"
+    ],
+    "adv": [
+      "aggressively (adv) /əˈɡresɪvli/ một cách hung hăng"
+    ],
+    "meanings": [
+      "hung hăng",
+      "tấn công"
+    ]
+  },
+  {
+    "id": 43,
+    "root": "AGREE",
+    "noun": [
+      "agreement (n) /əˈɡriːmənt/ [C] thỏa thuận; [U] sự đồng ý",
+      "disagreement (n) /ˌdɪsəˈɡriːmənt/ [U] sự bất đồng; [C] điểm bất đồng"
+    ],
+    "verb": [
+      "agree (v) /əˈɡriː/ đồng ý",
+      "disagree (v) /ˌdɪsəˈɡriː/ không đồng ý"
+    ],
+    "adj": [
+      "agreeable (a) /əˈɡriːəbl/ dễ chịu, sẵn lòng",
+      "disagreeable (a) /ˌdɪsəˈɡriːəbl/ khó chịu"
+    ],
+    "adv": [
+      "agreeably (adv) /əˈɡriːəbli/ một cách dễ chịu",
+      "disagreeably (adv) /ˌdɪsəˈɡriːəbli/ một cách khó chịu"
+    ],
+    "meanings": [
+      "đồng ý",
+      "thỏa thuận"
+    ]
+  },
+  {
+    "id": 44,
+    "root": "AGRICULTURE",
+    "noun": [
+      "agriculture (n) /ˈæɡrɪkʌltʃər/ [U] nông nghiệp"
+    ],
+    "verb": [],
+    "adj": [
+      "agricultural (a) /ˌæɡrɪˈkʌltʃərəl/ thuộc nông nghiệp",
+      "nonagricultural (a) /ˌnɒn.æɡrɪˈkʌltʃərəl/ phi nông nghiệp"
+    ],
+    "adv": [],
+    "meanings": [
+      "nông nghiệp"
+    ]
+  },
+  {
+    "id": 45,
+    "root": "AIM",
+    "noun": [
+      "aim (n) /eɪm/ [C] mục tiêu",
+      "aimlessness (n) /ˈeɪmləsnəs/ [U] sự không mục đích"
+    ],
+    "verb": [
+      "aim (v) /eɪm/ nhắm đến"
+    ],
+    "adj": [
+      "aimless (a) /ˈeɪmləs/ không mục đích"
+    ],
+    "adv": [
+      "aimlessly (adv) /ˈeɪmləsli/ một cách không mục đích"
+    ],
+    "meanings": [
+      "mục tiêu",
+      "nhắm đến"
+    ]
+  },
+  {
+    "id": 46,
+    "root": "AIR",
+    "noun": [
+      "air (n) /er/ [U] không khí; [SIN] khí chất",
+      "aircraft (n) /ˈerkræft/ [C] máy bay",
+      "airplane (n) /ˈerpleɪn/ [C] máy bay"
+    ],
+    "verb": [
+      "air (v) /er/ phơi; phát sóng"
+    ],
+    "adj": [
+      "airy (a) /ˈeri/ thoáng mát",
+      "openair (a) /ˌoʊpənˈer/ ngoài trời"
+    ],
+    "adv": [],
+    "meanings": [
+      "không khí",
+      "máy bay",
+      "phát sóng"
+    ]
+  },
+  {
+    "id": 47,
+    "root": "ALLERGY",
+    "noun": [
+      "allergy (n) /ˈælərdʒi/ [C] dị ứng",
+      "allergen (n) /ˈælərdʒən/ [C] chất gây dị ứng"
+    ],
+    "verb": [],
+    "adj": [
+      "allergic (a) /əˈlɜːrdʒɪk/ dị ứng",
+      "allergenic (a) /ˌælərˈdʒenɪk/ gây dị ứng"
+    ],
+    "adv": [],
+    "meanings": [
+      "dị ứng"
+    ]
+  },
+  {
+    "id": 48,
+    "root": "ALLOW",
+    "noun": [
+      "allowance (n) /əˈlaʊəns/ [C] khoản trợ cấp; tiền tiêu vặt"
+    ],
+    "verb": [
+      "allow (v) /əˈlaʊ/ cho phép",
+      "disallow (v) /ˌdɪsəˈlaʊ/ không cho phép"
+    ],
+    "adj": [
+      "allowable (a) /əˈlaʊəbl/ được phép"
+    ],
+    "adv": [],
+    "meanings": [
+      "cho phép",
+      "trợ cấp"
+    ]
+  },
+  {
+    "id": 49,
+    "root": "ALTER",
+    "noun": [
+      "alternative (n) /ɔːlˈtɜːrnətɪv/ [C] sự thay thế",
+      "alternation (n) /ˌɔːltərˈneɪʃn/ [U] tính luân phiên",
+      "alternate (n) /ˈɔːltərnət/ [C] người thay thế"
+    ],
+    "verb": [
+      "alter (v) /ˈɔːltər/ thay đổi",
+      "alternate (v) /ˈɔːltərneɪt/ xen kẽ"
+    ],
+    "adj": [
+      "alternative (a) /ɔːlˈtɜːrnətɪv/ thay thế",
+      "alternate (a) /ˈɔːltərnət/ xen kẽ"
+    ],
+    "adv": [
+      "alternatively (adv) /ɔːlˈtɜːrnətɪvli/ như một lựa chọn khác"
+    ],
+    "meanings": [
+      "thay đổi",
+      "thay thế"
+    ]
+  },
+  {
+    "id": 50,
+    "root": "AMAZE",
+    "noun": [
+      "amazement (n) /əˈmeɪzmənt/ [U] sự kinh ngạc"
+    ],
+    "verb": [
+      "amaze (v) /əˈmeɪz/ làm kinh ngạc"
+    ],
+    "adj": [
+      "amazing (a) /əˈmeɪzɪŋ/ đáng kinh ngạc",
+      "amazed (a) /əˈmeɪzd/ kinh ngạc"
+    ],
+    "adv": [
+      "amazingly (adv) /əˈmeɪzɪŋli/ một cách đáng kinh ngạc"
+    ],
+    "meanings": [
+      "kinh ngạc"
+    ]
+  },
+  {
+    "id": 51,
+    "root": "AMBITION",
+    "noun": [
+      "ambition (n) /æmˈbɪʃn/ [C] hoài bão; [U] tham vọng"
+    ],
+    "verb": [],
+    "adj": [
+      "ambitious (a) /æmˈbɪʃəs/ đầy tham vọng",
+      "unambitious (a) /ˌʌnæmˈbɪʃəs/ không tham vọng"
+    ],
+    "adv": [
+      "ambitiously (adv) /æmˈbɪʃəsli/ một cách tham vọng"
+    ],
+    "meanings": [
+      "tham vọng",
+      "hoài bão"
+    ]
+  },
+  {
+    "id": 52,
+    "root": "AMUSE",
+    "noun": [
+      "amusement (n) /əˈmjuːzmənt/ [U] sự giải trí; [C] hoạt động giải trí"
+    ],
+    "verb": [
+      "amuse (v) /əˈmjuːz/ làm vui"
+    ],
+    "adj": [
+      "amusing (a) /əˈmjuːzɪŋ/ vui nhộn",
+      "amused (a) /əˈmjuːzd/ cảm thấy vui"
+    ],
+    "adv": [
+      "amusingly (adv) /əˈmjuːzɪŋli/ một cách vui nhộn"
+    ],
+    "meanings": [
+      "giải trí",
+      "vui nhộn"
+    ]
+  },
+  {
+    "id": 53,
+    "root": "ANCESTOR",
+    "noun": [
+      "ancestor (n) /ˈænsestər/ [C] tổ tiên",
+      "ancestry (n) /ˈænsestri/ [C] dòng họ, nguồn gốc"
+    ],
+    "verb": [],
+    "adj": [
+      "ancestral (a) /ænˈsestrəl/ thuộc tổ tiên"
+    ],
+    "adv": [],
+    "meanings": [
+      "tổ tiên"
+    ]
+  },
+  {
+    "id": 54,
+    "root": "ANECDOTE",
+    "noun": [
+      "anecdote (n) /ˈænɪkdoʊt/ [C] giai thoại"
+    ],
+    "verb": [],
+    "adj": [
+      "anecdotal (a) /ˌænɪkˈdoʊtl/ dựa trên lời kể cá nhân"
+    ],
+    "adv": [
+      "anecdotally (adv) /ˌænɪkˈdoʊtəli/ theo lời kể"
+    ],
+    "meanings": [
+      "giai thoại"
+    ]
+  },
+  {
+    "id": 55,
+    "root": "ANGER",
+    "noun": [
+      "anger (n) /ˈæŋɡər/ [U] sự tức giận"
+    ],
+    "verb": [
+      "anger (v) /ˈæŋɡər/ làm tức giận"
+    ],
+    "adj": [
+      "angry (a) /ˈæŋɡri/ tức giận"
+    ],
+    "adv": [
+      "angrily (adv) /ˈæŋɡrəli/ một cách giận dữ"
+    ],
+    "meanings": [
+      "tức giận"
+    ]
+  },
+  {
+    "id": 56,
+    "root": "ANIMATE",
+    "noun": [
+      "animation (n) /ˌænɪˈmeɪʃn/ [U] quá trình làm phim hoạt hình; [C] phim hoạt hình",
+      "animator (n) /ˈænɪmeɪtər/ [C] nhà làm phim hoạt hình"
+    ],
+    "verb": [
+      "animate (v) /ˈænɪmeɪt/ làm sống động"
+    ],
+    "adj": [
+      "animate (a) /ˈænɪmət/ sống động",
+      "animated (a) /ˈænɪmeɪtɪd/ sinh động",
+      "inanimate (a) /ɪnˈænɪmət/ vô tri vô giác"
+    ],
+    "adv": [],
+    "meanings": [
+      "sống động",
+      "phim hoạt hình"
+    ]
+  }
+]
