@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocab Hub — by Gia Quân</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0e0f13;
+    --surface: #16181f;
+    --surface2:#1e2029;
+    --border:  #2a2d3a;
+    --accent:  #7c6af7;
+    --accent2: #f7c26a;
+    --accent3: #6af7b8;
+    --text:    #e8e9f0;
+    --muted:   #6b6e82;
+    --danger:  #f76a6a;
+    --success: #6af7b8;
+    --radius:  14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture — identical to WordFamily */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 200px;
+    opacity: 0.4;
+  }
+
+  /* Accent glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -180px; left: 50%;
+    transform: translateX(-50%);
+    width: 720px; height: 520px;
+    background: radial-gradient(ellipse at center, rgba(124,106,247,.11) 0%, transparent 68%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 60px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 80px;
+  }
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    letter-spacing: -0.4px;
+  }
+  .logo span { color: var(--accent); }
+  .beta-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: .8px;
+    color: var(--accent); text-transform: uppercase;
+    background: rgba(124,106,247,.12);
+    border: 1px solid rgba(124,106,247,.3);
+    border-radius: 999px; padding: 2px 8px;
+    margin-left: 8px; vertical-align: middle;
+  }
+  .header-by {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 68px;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(40px, 7.5vw, 64px);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    color: var(--text);
+    margin-bottom: 22px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  /* ── Cards ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+  @media (max-width: 520px) {
+    .tools-grid { grid-template-columns: 1fr; }
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s, transform .22s, box-shadow .22s;
+  }
+  .tool-card .card-glow {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(124,106,247,.05) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity .22s;
+  }
+  .tool-card:not(.soon):hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 44px rgba(124,106,247,.13);
+  }
+  .tool-card:not(.soon):hover .card-glow { opacity: 1; }
+
+  .tool-card.soon {
+    cursor: default;
+    opacity: .6;
+  }
+
+  .card-icon { font-size: 30px; margin-bottom: 16px; line-height: 1; position: relative; }
+  .card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 6px; position: relative;
+  }
+  .card-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px; letter-spacing: -0.3px;
+    margin-bottom: 10px; color: var(--text);
+    position: relative;
+  }
+  .card-desc {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.65; flex: 1;
+    position: relative;
+  }
+  .card-footer {
+    margin-top: 22px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative;
+  }
+  .card-cta {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    display: flex; align-items: center; gap: 5px;
+    margin-left: auto;
+    transition: gap .2s;
+  }
+  .tool-card:not(.soon):hover .card-cta { gap: 9px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .badge-live { background: rgba(106,247,184,.10); color: var(--success); border: 1px solid rgba(106,247,184,.22); }
+  .badge-soon { background: rgba(247,194,106,.09); color: var(--accent2); border: 1px solid rgba(247,194,106,.22); }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 30%, var(--border) 70%, transparent 100%);
+    margin-bottom: 32px;
+  }
+
+  /* ── Note ── */
+  .note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── Footer ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 24px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .credit {
+    font-family: 'Instrument Serif', serif;
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .credit span { color: var(--accent); }
+  .credit-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .4px;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  header      { animation: fadeUp .45s ease both; }
+  .hero       { animation: fadeUp .45s ease .08s both; }
+  .tools-grid { animation: fadeUp .45s ease .16s both; }
+  .note       { animation: fadeUp .45s ease .22s both; }
+  footer      { animation: fadeUp .4s  ease .26s both; }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .page { padding: 36px 18px 48px; }
+    header { margin-bottom: 52px; }
+    .hero-title { letter-spacing: -.8px; }
+    .hero-sub { font-size: 14px; }
+    .tool-card { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <header>
+    <div>
+      <span class="logo">Vocab<span>Hub</span></span>
+      <span class="beta-tag">Beta</span>
+    </div>
+    <span class="header-by">by Gia Quân</span>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">English Learning Tools</div>
+    <h1 class="hero-title">Learn smarter,<br><em>not harder</em></h1>
+    <p class="hero-sub">A growing set of focused tools to sharpen your English — one concept at a time.</p>
+  </div>
+
+  <!-- Cards -->
+  <div class="tools-grid">
+
+    <!-- Word Family -->
+    <a class="tool-card" href="word family.html">
+      <div class="card-glow"></div>
+      <div class="card-icon">📝</div>
+      <div class="card-label">Vocabulary</div>
+      <div class="card-title">Word Family</div>
+      <div class="card-desc">Master noun, verb, adjective and adverb forms. Quiz yourself from meanings or fill in the full word family from a root.</div>
+      <div class="card-footer">
+        <span class="badge badge-live">● Live</span>
+        <span class="card-cta">Open →</span>
+      </div>
+    </a>
+
+    <!-- Word Stress -->
+    <div class="tool-card soon">
+      <div class="card-icon">🔊</div>
+      <div class="card-label">Pronunciation</div>
+      <div class="card-title">Word Stress</div>
+      <div class="card-desc">Train your ear for syllable stress patterns. Identify the stressed syllable across word families and different word classes.</div>
+      <div class="card-footer">
+        <span class="badge badge-soon">Coming soon</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="note">More tools are on the way. Each one is designed to be<br>focused, distraction-free, and genuinely useful.</p>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="credit">Made with care by <span>Gia Quân</span></div>
+  <div class="credit-sub">vocabhub · 2025</div>
+</footer>
+
+</body>
+</html>
