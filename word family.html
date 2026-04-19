@@ -7,306 +7,193 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0f13;
-    --surface: #16181f;
-    --surface2: #1e2029;
-    --border: #2a2d3a;
-    --accent: #7c6af7;
-    --accent2: #f7c26a;
-    --accent3: #6af7b8;
-    --text: #e8e9f0;
-    --muted: #6b6e82;
-    --danger: #f76a6a;
-    --success: #6af7b8;
-    --radius: 14px;
+    --bg: #0e0f13; --surface: #16181f; --surface2: #1e2029; --border: #2a2d3a;
+    --accent: #7c6af7; --accent2: #f7c26a; --accent3: #6af7b8;
+    --text: #e8e9f0; --muted: #6b6e82; --danger: #f76a6a; --success: #6af7b8; --radius: 14px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Manrope', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; overflow-x: hidden; }
   body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    background-size: 200px;
-    opacity: 0.4;
+    background-size: 200px; opacity: 0.4;
   }
-
-  .app { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 24px 20px 80px; }
-
+  .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
   header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
   .logo { font-family: 'Instrument Serif', serif; font-size: 26px; color: var(--text); letter-spacing: -0.5px; }
   .logo span { color: var(--accent); }
-  .stats-pill {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 999px; padding: 6px 16px; font-size: 13px; color: var(--muted);
-    display: flex; gap: 16px;
-  }
+  .stats-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; font-size: 13px; color: var(--muted); display: flex; gap: 16px; }
   .stats-pill b { color: var(--accent2); }
-
   nav { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
-  .nav-btn {
-    padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600;
-    cursor: pointer; border: 1.5px solid var(--border); background: transparent;
-    color: var(--muted); transition: all .2s; font-family: 'Manrope', sans-serif;
-  }
+  .nav-btn { padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); transition: all .2s; font-family: 'Manrope', sans-serif; }
   .nav-btn:hover { border-color: var(--accent); color: var(--text); }
   .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .nav-btn.active:hover { background: var(--accent); }
-
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 28px;
-    animation: fadeUp .3s ease;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; animation: fadeUp .3s ease; }
   @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-
-  .section-title {
-    font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 6px;
-    letter-spacing: -0.3px;
-  }
+  .section-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 6px; letter-spacing: -0.3px; }
   .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-
   .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   @media(max-width:520px) { .mode-grid { grid-template-columns: 1fr; } }
-  .mode-card {
-    border: 1.5px solid var(--border); border-radius: var(--radius);
-    padding: 22px 20px; cursor: pointer; transition: all .2s;
-    background: var(--surface2);
-  }
+  .mode-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 22px 20px; cursor: pointer; transition: all .2s; background: var(--surface2); }
   .mode-card:hover { border-color: var(--accent); transform: translateY(-2px); }
   .mode-card .icon { font-size: 28px; margin-bottom: 10px; }
   .mode-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
   .mode-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .badge {
-    display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px;
-    border-radius: 999px; margin-top: 10px; text-transform: uppercase; letter-spacing: .5px;
-  }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-top: 10px; text-transform: uppercase; letter-spacing: .5px; }
   .badge-purple { background: #3d3470; color: var(--accent); }
   .badge-gold { background: #3d3020; color: var(--accent2); }
 
-  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .progress-wrap { flex: 1; margin: 0 16px; }
+  /* Quiz header */
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
+  .progress-wrap { flex: 1; margin: 0 12px; }
   .progress-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; transition: width .4s ease; }
   .progress-label { font-size: 12px; color: var(--muted); margin-top: 4px; text-align: right; }
 
-  .question-box {
+  /* Timer */
+  .timer-pill {
+    display: flex; align-items: center; gap: 5px;
     background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px 28px; margin-bottom: 20px; text-align: center;
+    border-radius: 999px; padding: 5px 12px;
+    font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text);
+    flex-shrink: 0;
   }
-  .question-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-  .question-text { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.4; }
-  .question-hint { font-size: 13px; color: var(--muted); margin-top: 10px; font-style: italic; }
+  .timer-pill.warning { border-color: var(--accent2); color: var(--accent2); }
+  .timer-pill.danger  { border-color: var(--danger);  color: var(--danger); animation: pulse .6s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-  .answer-input {
-    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
-    border-radius: var(--radius); padding: 16px 20px; font-size: 18px; color: var(--text);
-    font-family: 'DM Mono', monospace; outline: none; transition: border-color .2s;
-    margin-bottom: 14px; text-align: center;
-  }
+  .question-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 20px; text-align: center; }
+  .question-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .question-text { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.4; }
+  .question-type-tag { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: rgba(124,106,247,.15); color: var(--accent); border: 1px solid rgba(124,106,247,.3); letter-spacing: .5px; }
+  .question-phonetic { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .question-hint-btn { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; transition: all .2s; }
+  .question-hint-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .question-hint { font-size: 13px; color: var(--muted); margin-top: 8px; font-style: italic; display: none; }
+
+  .answer-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 18px; color: var(--text); font-family: 'DM Mono', monospace; outline: none; transition: border-color .2s; margin-bottom: 14px; text-align: center; }
   .answer-input:focus { border-color: var(--accent); }
   .answer-input.correct { border-color: var(--success); background: #0d2e22; }
-  .answer-input.wrong { border-color: var(--danger); background: #2e0d0d; }
+  .answer-input.wrong   { border-color: var(--danger);  background: #2e0d0d; }
 
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 13px 28px; border-radius: 999px; font-size: 15px; font-weight: 700;
-    cursor: pointer; border: none; transition: all .2s; font-family: 'Manrope', sans-serif;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 999px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; font-family: 'Manrope', sans-serif; }
+  .btn-primary   { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: #6b59e8; transform: translateY(-1px); }
   .btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
   .btn-secondary:hover { border-color: var(--accent); }
-  .btn-danger { background: #3a1010; color: var(--danger); border: 1.5px solid #5a1010; }
+  .btn-danger    { background: #3a1010; color: var(--danger); border: 1.5px solid #5a1010; }
   .btn-danger:hover { background: #4a1010; }
-  .btn-sm { padding: 8px 16px; font-size: 13px; }
-  .btn-full { width: 100%; justify-content: center; }
+  .btn-sm  { padding: 8px 16px; font-size: 13px; }
+  .btn-full{ width: 100%; justify-content: center; }
 
-  .feedback-box {
-    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px;
-    font-size: 15px; display: none; animation: fadeUp .2s;
-  }
+  .feedback-box { border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px; font-size: 14px; display: none; animation: fadeUp .2s; line-height: 1.6; }
   .feedback-box.correct { background: #0d2e22; border: 1px solid #1a5c3e; color: var(--success); }
-  .feedback-box.wrong { background: #2e0d0d; border: 1px solid #5c1a1a; color: var(--danger); }
-
+  .feedback-box.wrong   { background: #2e0d0d; border: 1px solid #5c1a1a; color: var(--danger); }
   .action-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-  .family-target {
-    font-family: 'Times New Roman', serif; font-size: 40px; text-align: center;
-    margin-bottom: 6px; letter-spacing: -1px;
-  }
-  .family-target small { font-size: 18px; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .family-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 20px 0; }
-  .family-slot {
-    background: var(--surface2); border: 1.5px dashed var(--border);
-    border-radius: 10px; padding: 14px 16px;
-  }
-  .family-slot label { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); display: block; margin-bottom: 6px; }
-  .family-slot input {
-    width: 100%; background: transparent; border: none; color: var(--text);
-    font-family: 'DM Mono', monospace; font-size: 15px; outline: none;
-  }
+  /* Mode 2 */
+  .family-target { font-family: 'Instrument Serif', serif; font-size: 40px; text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
+  .family-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin: 20px 0; }
+  .family-slot { background: var(--surface2); border: 1.5px dashed var(--border); border-radius: 10px; padding: 12px 14px; }
+  .family-slot label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .family-slot .slot-phonetic { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .family-slot input { width: 100%; background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 15px; outline: none; }
   .family-slot.correct { border-color: var(--success); background: #0d2e22; }
-  .family-slot.wrong { border-color: var(--danger); background: #2e0d0d; }
+  .family-slot.wrong   { border-color: var(--danger);  background: #2e0d0d; }
   .family-slot.skipped { border-color: var(--accent2); background: #2e2710; }
 
-  .score-card { text-align: center; padding: 40px 28px; }
+  /* Score */
+  .score-card { text-align: center; padding: 36px 28px; }
   .score-big { font-family: 'Instrument Serif', serif; font-size: 72px; line-height: 1; margin-bottom: 8px; }
   .score-big span { color: var(--accent); }
   .score-label { color: var(--muted); font-size: 16px; margin-bottom: 28px; }
-  .score-stats { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
-  .score-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 24px; }
-  .score-stat .val { font-size: 24px; font-weight: 700; }
-  .score-stat .key { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .score-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .score-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; }
+  .score-stat .val { font-size: 22px; font-weight: 700; }
+  .score-stat .key { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  .db-toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-  .search-input {
-    flex: 1; min-width: 180px; background: var(--surface2); border: 1.5px solid var(--border);
-    border-radius: 999px; padding: 10px 18px; font-size: 14px; color: var(--text);
-    outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s;
-  }
+  /* Database — redesigned as table */
+  .db-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-input { flex: 1; min-width: 180px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 999px; padding: 10px 18px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s; }
   .search-input:focus { border-color: var(--accent); }
 
-  .word-list { display: flex; flex-direction: column; gap: 10px; }
-  .word-item {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 18px; cursor: pointer;
-    transition: border-color .2s; display: flex; justify-content: space-between; align-items: center;
+  .db-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  .db-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .db-table thead th {
+    background: var(--surface2); color: var(--muted); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px; padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap;
   }
-  .word-item:hover { border-color: var(--accent); }
-  .word-item-left h4 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
-  .word-item-left p { font-size: 13px; color: var(--muted); }
-  .word-item-right { display: flex; gap: 8px; }
-  .chip { font-size: 11px; background: var(--border); color: var(--muted); padding: 3px 8px; border-radius: 999px; }
+  .db-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
+  .db-table tbody tr:last-child { border-bottom: none; }
+  .db-table tbody tr:hover { background: rgba(124,106,247,.06); }
+  .db-table td { padding: 10px 14px; vertical-align: middle; }
+  .db-table .col-root { font-family: 'Instrument Serif', serif; font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .db-table .col-word { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+  .db-table .col-phon { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .db-table .col-type { }
+  .db-table .col-mean { font-size: 12px; color: var(--muted); }
+  .db-table .col-err  { font-size: 11px; color: var(--danger); font-weight: 700; white-space: nowrap; }
+  .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; text-transform: lowercase; }
+  .type-n   { background: rgba(124,106,247,.15); color: var(--accent); }
+  .type-v   { background: rgba(106,247,184,.12); color: var(--success); }
+  .type-adj { background: rgba(247,194,106,.12); color: var(--accent2); }
+  .type-adv { background: rgba(247,106,106,.12); color: var(--danger); }
+  .type-other { background: var(--border); color: var(--muted); }
 
-  .overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-    animation: fadeIn .2s;
-  }
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s; }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh;
-    overflow-y: auto; padding: 28px; animation: fadeUp .25s ease;
-  }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; padding: 28px; animation: fadeUp .25s ease; }
   .modal-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 20px; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-  .form-input {
-    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
-    border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text);
-    outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s;
-  }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+  .form-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s; }
   .form-input:focus { border-color: var(--accent); }
-  textarea.form-input { resize: vertical; min-height: 80px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  textarea.form-input { resize: vertical; min-height: 72px; font-family: 'DM Mono', monospace; font-size: 13px; }
+  .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row3 { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr; gap: 12px; }
+  @media(max-width:520px){ .form-row,.form-row3{ grid-template-columns:1fr; } }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
 
-  .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-  .page-btn {
-    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
-    background: transparent; color: var(--muted); cursor: pointer; font-size: 13px;
-    font-family: 'Manrope', sans-serif; transition: all .15s;
-  }
+  /* Entry list in modal (word entries) */
+  .entry-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .entry-row { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .entry-row input, .entry-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; }
+  .entry-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
+  .entry-row .del-entry { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
+  .entry-row .del-entry:hover { color: var(--danger); }
+  .entry-row-header { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 8px; padding: 0 10px; }
+  .entry-row-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+
+  .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .page-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'Manrope', sans-serif; transition: all .15s; }
   .page-btn:hover { border-color: var(--accent); color: var(--text); }
   .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .empty .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty { text-align: center; padding: 50px 20px; color: var(--muted); }
+  .empty .icon { font-size: 36px; margin-bottom: 12px; }
 
-  #toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 999px;
-    padding: 12px 24px; font-size: 14px; color: var(--text);
-    opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap;
-  }
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 12px 24px; font-size: 14px; color: var(--text); opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .hidden { display: none !important; }
   .mt-16 { margin-top: 16px; }
-  .mt-8 { margin-top: 8px; }
   .text-center { text-align: center; }
   .color-success { color: var(--success); }
-  .color-danger { color: var(--danger); }
+  .color-danger  { color: var(--danger); }
 
-    /* ── MOBILE OPTIMIZATIONS ── */
-    @media (max-width: 480px) {
-    .question-text {
-      font-size: 22px;
-    }
-    .family-target {
-      font-size: 32px;
-    }
-    .answer-input {
-      font-size: 16px;
-      padding: 12px 14px;
-    }
-    .btn {
-      padding: 10px 18px;
-      font-size: 14px;
-    }
-    .stats-pill {
-      font-size: 11px;
-      gap: 8px;
-    }
-    .db-toolbar .btn-sm {
-      font-size: 11px;
-      padding: 6px 10px;
-    }
-    .modal {
-      padding: 18px;
-    }
-    .word-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-    }
-    #abbrev-modal .modal > div:first-of-type {
-      grid-template-columns: 1fr !important;
-    }
-    .logo {
-      font-size: 22px;
-    }
-    header {
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-  }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-7px)} 40%,80%{transform:translateX(7px)} }
 
-  @keyframes shake {
-    0%,100%{transform:translateX(0)}
-    20%,60%{transform:translateX(-7px)}
-    40%,80%{transform:translateX(7px)}
+
+
+  @media(max-width:480px){
+    .question-text{font-size:22px} .family-target{font-size:30px}
+    .answer-input{font-size:16px;padding:12px 14px} .btn{padding:10px 18px;font-size:14px}
+    .stats-pill{font-size:11px;gap:8px} .modal{padding:18px} .logo{font-size:22px}
+    header{flex-wrap:wrap;gap:8px} .db-table .col-phon,.db-table .col-mean{display:none}
+    .entry-row,.form-row3{grid-template-columns:1fr 1fr auto}
   }
-  .log-entry {
-    background:var(--surface2); border:1px solid var(--border);
-    border-radius:10px; padding:13px 16px; margin-bottom:8px;
-    display:flex; align-items:flex-start; gap:12px; transition:border-color .15s;
-  }
-  .log-entry:hover { border-color:var(--accent); }
-  .log-entry.success { border-left:3px solid var(--success); }
-  .log-entry.failed  { border-left:3px solid var(--danger); }
-  .log-entry input[type=checkbox] { accent-color:var(--accent); width:15px; height:15px; flex-shrink:0; cursor:pointer; margin-top:3px; }
-  .log-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
-  .log-body { flex:1; min-width:0; }
-  .log-user { font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px; }
-  .log-meta { font-size:12px; color:var(--muted); line-height:1.6; }
-  .log-time { font-size:11px; color:var(--muted); white-space:nowrap; font-family:'DM Mono',monospace; text-align:right; flex-shrink:0; line-height:1.7; }
-  .log-tag { font-size:11px; font-weight:700; padding:1px 8px; border-radius:999px; background:var(--border); color:var(--muted); }
-  .log-tag.admin   { background:#3d3470; color:var(--accent); }
-  .log-tag.watcher { background:#1a2e2a; color:var(--success); }
-  .log-tag.purpose { background:#2a2d1a; color:var(--accent2); }
-  .log-del-btn { background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; padding:2px 6px; flex-shrink:0; border-radius:6px; transition:color .15s; line-height:1; margin-top:1px; }
-  .log-del-btn:hover { color:var(--danger); }
 </style>
 </head>
 <body>
@@ -314,11 +201,11 @@
 
   <!-- HEADER -->
   <header>
-    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;">
       <div class="logo">Word<span>Family</span></div>
-      <span style="font-size: 11px; color: var(--accent); margin-top: 2px; letter-spacing: 0.5px; font-weight: 600;">BETA</span>
+      <span style="font-size:11px;color:var(--accent);margin-top:2px;letter-spacing:.5px;font-weight:600;">BETA</span>
     </div>
-    <div style="display: flex; gap: 10px; align-items: center;">
+    <div style="display:flex;gap:10px;align-items:center;">
       <div class="stats-pill">
         <span>Words: <b id="total-count">0</b></span>
         <span>Score: <b id="session-score">0%</b></span>
@@ -342,20 +229,17 @@
     <p class="section-sub">Each session draws random words from your database.</p>
     <div class="mode-grid">
       <div class="mode-card" onclick="startMode1()">
-        <div class="icon">📝</div>
-        <h3>Meaning → Word</h3>
-        <p>You'll see a Vietnamese meaning. Type the correct English word.</p>
+        <div class="icon">📝</div><h3>Meaning → Word</h3>
+        <p>See a Vietnamese meaning + word type. Type the correct English word.</p>
         <span class="badge badge-purple">Mode 1</span>
       </div>
       <div class="mode-card" onclick="startMode2()">
-        <div class="icon">🧩</div>
-        <h3>Word Family</h3>
+        <div class="icon">🧩</div><h3>Word Family</h3>
         <p>Given a root word, fill in all its forms: noun, verb, adjective, adverb.</p>
         <span class="badge badge-gold">Mode 2</span>
       </div>
       <div class="mode-card" onclick="startWeakWordsMode()">
-        <div class="icon">📚</div>
-        <h3>Weak Words</h3>
+        <div class="icon">📚</div><h3>Weak Words</h3>
         <p>Practice only the words you've gotten wrong before.</p>
         <span class="badge badge-gold">Focus</span>
       </div>
@@ -371,7 +255,7 @@
     <div id="m1-setup" class="card">
       <p class="section-sub" style="margin-bottom:6px">Mode 1</p>
       <h2 class="section-title">Meaning → Word</h2>
-      <p class="section-sub">You'll be shown a Vietnamese meaning. Type the matching English word.</p>
+      <p class="section-sub">You'll see a Vietnamese meaning and word type. Type the matching English word.</p>
       <div class="form-group">
         <label>Number of questions</label>
         <select id="m1-count" class="form-input" style="max-width:160px">
@@ -386,19 +270,22 @@
 
     <div id="m1-quiz" class="card hidden">
       <div class="quiz-header">
-        <button class="btn btn-secondary btn-sm" onclick="showTab('home')">← Exit</button>
+        <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m1')">← Exit</button>
         <div class="progress-wrap">
           <div class="progress-bar"><div class="progress-fill" id="m1-progress" style="width:0%"></div></div>
           <div class="progress-label" id="m1-prog-label">0 / 0</div>
         </div>
-        <div style="font-size:13px;color:var(--muted)">⚡ <span id="m1-streak">0</span></div>
+        <div class="timer-pill" id="m1-timer">⏱ 0:00</div>
+        <div style="font-size:13px;color:var(--muted);flex-shrink:0">⚡ <span id="m1-streak">0</span></div>
       </div>
       <div class="question-box">
         <div class="question-label">Vietnamese Meaning</div>
         <div class="question-text" id="m1-meaning">—</div>
+        <div id="m1-type-tag" class="question-type-tag" style="display:none"></div>
+        <button class="question-hint-btn" id="m1-hint-btn" onclick="showM1Hint()">💡 Show hint</button>
         <div class="question-hint" id="m1-hint"></div>
       </div>
-      <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
+      <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
       <div class="feedback-box" id="m1-feedback"></div>
       <div class="action-row">
         <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
@@ -415,6 +302,7 @@
         <div class="score-stat"><div class="val color-success" id="m1-correct">0</div><div class="key">Correct</div></div>
         <div class="score-stat"><div class="val color-danger" id="m1-wrong-count">0</div><div class="key">Wrong</div></div>
         <div class="score-stat"><div class="val" id="m1-total-q">0</div><div class="key">Total</div></div>
+        <div class="score-stat"><div class="val" id="m1-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
       </div>
       <div class="action-row">
         <button class="btn btn-primary" onclick="beginMode1()">Try Again</button>
@@ -443,11 +331,12 @@
 
     <div id="m2-quiz" class="card hidden">
       <div class="quiz-header">
-        <button class="btn btn-secondary btn-sm" onclick="showTab('home')">← Exit</button>
+        <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m2')">← Exit</button>
         <div class="progress-wrap">
           <div class="progress-bar"><div class="progress-fill" id="m2-progress" style="width:0%"></div></div>
           <div class="progress-label" id="m2-prog-label">0 / 0</div>
         </div>
+        <div class="timer-pill" id="m2-timer">⏱ 0:00</div>
       </div>
       <div class="text-center" style="margin-bottom:20px">
         <div class="family-target" id="m2-root">—</div>
@@ -469,6 +358,7 @@
         <div class="score-stat"><div class="val color-success" id="m2-correct">0</div><div class="key">Correct</div></div>
         <div class="score-stat"><div class="val color-danger" id="m2-wrong-count">0</div><div class="key">Wrong</div></div>
         <div class="score-stat"><div class="val" id="m2-total-q">0</div><div class="key">Fields</div></div>
+        <div class="score-stat"><div class="val" id="m2-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
       </div>
       <div class="action-row">
         <button class="btn btn-primary" onclick="beginMode2()">Try Again</button>
@@ -478,127 +368,97 @@
   </div>
 
   <!-- DATABASE -->
-
   <div id="tab-database" class="hidden">
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
         <div>
           <h2 class="section-title" style="margin-bottom:4px">Database</h2>
-          <p style="color:var(--muted);font-size:14px"><span id="db-count">0</span> root words</p>
+          <p style="color:var(--muted);font-size:14px"><span id="db-count">0</span> entries · <span id="db-root-count">0</span> root words</p>
         </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-secondary btn-sm" onclick="exportDB()">⬇ Export</button>
-          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFiles').click()">⬆ Import</button>
-          <input type="file" id="importFiles" accept=".json" multiple class="hidden" onchange="importMultipleFiles(event)">
-                    <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display: none;">＋ Add Word</button>
-          <button class="btn btn-secondary btn-sm" onclick="showAbbrevModal()">📖 Abbreviations</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="exportCSV()" id="export-btn">⬇ Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFiles').click()" id="import-btn">⬆ Import CSV</button>
+          <input type="file" id="importFiles" accept=".csv" multiple class="hidden" onchange="importCSVFiles(event)">
+          <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>
         </div>
       </div>
       <div class="db-toolbar">
-        <input type="text" class="search-input" id="db-search" placeholder="🔍  Search word or meaning…" oninput="renderDB()">
+        <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…" oninput="renderDB()">
+        <select class="form-input btn-sm" id="db-filter-type" onchange="renderDB()" style="max-width:130px;padding:9px 12px;">
+          <option value="">All types</option>
+          <option value="n">Noun (n)</option>
+          <option value="v">Verb (v)</option>
+          <option value="adj">Adjective (adj)</option>
+          <option value="adv">Adverb (adv)</option>
+        </select>
         <button class="btn btn-secondary btn-sm" onclick="startWeakWordsMode()">📚 Weak Words</button>
+        <button id="reset-all-btn" class="btn btn-secondary btn-sm" onclick="resetAllMistakes()" style="display:none">🔄 Reset All</button>
+        <button id="delete-all-btn" class="btn btn-danger btn-sm" onclick="deleteAllWords()" style="display:none">🗑 Delete All</button>
       </div>
-      <div class="word-list" id="word-list"></div>
+      <div class="db-table-wrap">
+        <table class="db-table">
+          <thead>
+            <tr>
+              <th>Root Word</th>
+              <th>Word</th>
+              <th>Phonetic</th>
+              <th>Type</th>
+              <th>Vietnamese Meaning</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="word-list"></tbody>
+        </table>
+      </div>
       <div class="pagination" id="db-pagination"></div>
     </div>
   </div>
 
 </div>
 
-<!-- MODAL (Add/Edit) -->
+<!-- MODAL Add/Edit Word -->
 <div class="overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
+  <div class="modal" style="max-width:680px;">
     <div class="modal-title" id="modal-title">Add Word</div>
-    <input type="hidden" id="edit-id">
+    <input type="hidden" id="edit-root-key">
     <div class="form-group">
-      <label>Root Word (e.g. ABBREVIATE)</label>
-      <input type="text" class="form-input" id="f-root" placeholder="e.g. ABBREVIATE">
+      <label>Root Word</label>
+      <input type="text" class="form-input" id="f-root" placeholder="e.g. ABBREVIATE" style="text-transform:uppercase;">
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Noun forms</label>
-        <textarea class="form-input" id="f-noun" placeholder="abbreviation (n)&#10;one per line"></textarea>
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Entries</span>
+        <button class="btn btn-secondary btn-sm" onclick="addEntryRow()" id="add-entry-row-btn">＋ Add Row</button>
       </div>
-      <div class="form-group">
-        <label>Verb forms</label>
-        <textarea class="form-input" id="f-verb" placeholder="abbreviate (v)&#10;one per line"></textarea>
+      <div class="entry-row-header">
+        <span>Word</span><span>Phonetic</span><span>Type</span><span></span>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Adjective forms</label>
-        <textarea class="form-input" id="f-adj" placeholder="abbreviated (a)&#10;one per line"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Adverb forms</label>
-        <textarea class="form-input" id="f-adv" placeholder="e.g. briefly (adv)&#10;one per line"></textarea>
-      </div>
+      <div class="entry-list" id="entry-list"></div>
     </div>
     <div class="form-group">
-      <label>Vietnamese Meanings (for Mode 1)</label>
-      <textarea class="form-input" id="f-meanings" placeholder="viết tắt&#10;chữ viết tắt&#10;one per line – each is a quiz question"></textarea>
+      <label>Vietnamese Meanings (one per line — each becomes a Mode 1 question)</label>
+      <textarea class="form-input" id="f-meanings" placeholder="viết tắt&#10;chữ viết tắt"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
       <button class="btn btn-danger btn-sm" id="delete-btn" onclick="deleteWord()" style="margin-right:auto;display:none">Delete</button>
-      <button class="btn btn-primary" onclick="saveWord()">Save</button>
+      <button class="btn btn-secondary btn-sm" id="reset-mistakes-btn" onclick="resetMistakeCount()" style="display:none">🔄 Reset Mistakes</button>
+      <button class="btn btn-primary" id="save-btn" onclick="saveWord()">Save</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL (Abbrev Key) -->
-<div class="overlay hidden" id="abbrev-modal" onclick="if(event.target===this)closeAbbrevModal()">
-  <div class="modal" style="max-width:700px">
-    <div class="modal-title">📖 Abbreviation Key (Ký hiệu viết tắt)</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:14px">
-      <div><span style="color:var(--accent)">A, (a), [a]</span> – adjective (tính từ)</div>
-      <div><span style="color:var(--accent)">ADV, (adv), [adv]</span> – adverb (trạng từ)</div>
-      <div><span style="color:var(--accent)">[C]</span> – countable (đếm được)</div>
-      <div><span style="color:var(--accent)">(conj)</span> – conjunction (liên từ)</div>
-      <div><span style="color:var(--accent)">N, (n), [n]</span> – noun (danh từ)</div>
-      <div><span style="color:var(--accent)">P, (p), [p]</span> – preposition (giới từ)</div>
-      <div><span style="color:var(--accent)">V, (v), [v]</span> – verb (động từ)</div>
-      <div><span style="color:var(--accent)">V-ing</span> – -ing verb</div>
-      <div><span style="color:var(--accent)">[U]</span> – uncountable (không đếm được)</div>
-      <div><span style="color:var(--accent)">SIN</span> – singular (số ít)</div>
-      <div><span style="color:var(--accent)">PLU</span> – plural (số nhiều)</div>
-      <div><span style="color:var(--accent)">PAS</span> – passive (bị động)</div>
-      <div><span style="color:var(--accent)">S.O</span> – someone</div>
-      <div><span style="color:var(--accent)">S.T</span> – something</div>
-      <div><span style="color:var(--accent)">Vo</span> – verb infinitive</div>
-      <div><span style="color:var(--accent)">V1, V2, V3</span> – verb forms</div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" onclick="closeAbbrevModal()">Got it</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGIN -->
+<!-- MODAL Login -->
 <div class="overlay hidden" id="login-modal" onclick="if(event.target===this)closeLoginModal()">
   <div class="modal" style="max-width:400px;">
     <div class="modal-title">🔐 Login</div>
     <div class="form-group">
       <label>Username</label>
-      <input type="text" class="form-input" id="login-username"
-        autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <input type="text" class="form-input" id="login-username" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" class="form-input" id="login-password"
-        autocomplete="new-password">
-    </div>
-    <div class="form-group">
-      <label>Purpose</label>
-      <select class="form-input" id="login-purpose">
-        <option value="">— Select a purpose —</option>
-        <option value="Study session">📚 Study session</option>
-        <option value="Adding new words">✏️ Adding new words</option>
-        <option value="Reviewing database">🗂 Reviewing database</option>
-        <option value="Fixing mistakes">🔧 Fixing mistakes</option>
-        <option value="Monitoring logs">👁 Monitoring logs</option>
-        <option value="Other">💬 Other</option>
-      </select>
+      <input type="password" class="form-input" id="login-password" autocomplete="new-password">
     </div>
     <div id="login-error" style="color:var(--danger);font-size:13px;margin-bottom:10px;display:none;padding:8px 12px;background:#2e0d0d;border-radius:8px;border:1px solid #5c1a1a;"></div>
     <div class="modal-footer">
@@ -608,512 +468,291 @@
   </div>
 </div>
 
-<!-- WATCHER DASHBOARD -->
-<div id="watcher-dashboard" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;overflow:hidden;">
-  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <span style="font-family:'Instrument Serif',serif;font-size:22px;">👁 Watcher Dashboard</span>
-      <span style="font-size:11px;background:#1a1a2e;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 10px;font-weight:700;letter-spacing:.5px;">RESTRICTED</span>
-    </div>
-    <button class="btn btn-secondary btn-sm" onclick="logoutWatcher()">🚪 Logout</button>
-  </div>
-  <div style="padding:14px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface);">
-    <input type="text" id="log-search" class="search-input" placeholder="🔍 Search…" oninput="renderLogs()" style="max-width:220px;" autocomplete="off">
-    <select id="log-sort" class="form-input" style="max-width:185px;padding:9px 14px;font-size:13px;" onchange="renderLogs()">
-      <option value="newest">⬇ Newest first</option>
-      <option value="oldest">⬆ Oldest first</option>
-      <option value="user-az">👤 User A→Z</option>
-      <option value="user-za">👤 User Z→A</option>
-      <option value="success">✅ Success only</option>
-      <option value="failed">❌ Failed only</option>
-    </select>
-    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-      <span id="log-count-badge" style="font-size:13px;color:var(--muted);"></span>
-      <button class="btn btn-secondary btn-sm" id="clear-selected-btn" onclick="clearSelectedLogs()" style="display:none">🗑 Delete Selected</button>
-      <button class="btn btn-danger btn-sm" onclick="clearAllLogs()">🗑 Clear All</button>
-    </div>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding:20px 24px;">
-    <div id="log-list"></div>
-  </div>
-</div>
-
 <div id="toast"></div>
 
 <script>
 // ══════════════════════════════════════════
-// DATABASE MANAGEMENT (now with external JSON)
+// DATA MODEL
+// Each entry in db: { id, root, entries: [{word, phonetic, type}], meanings: [str], mistakeCount }
+// types: 'n' | 'v' | 'adj' | 'adv'
 // ══════════════════════════════════════════
-const STORAGE_KEY = 'wf_db_v1';
-const DEFAULT_DATA_URL = '1.json'; // external file
+const STORAGE_KEY = 'wf_db_v2';
 
-// ══════════════════════════════════════════
-// AUTHENTICATION  (SHA-256 username + password)
-// ══════════════════════════════════════════
-// Hashes below = SHA-256 of the literal string shown in the comment.
-// admin   : username "admin"   → 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-// watcher : username "watcher" → 0e7f3c5c909ce8afb978a208d639e85af2171df2ec0003a07f13ad97878ef053
-
+// ── ACCOUNTS (SHA-256 of username → {role, passwordHash: SHA-256 of password}) ──
+// admin   username="admin"   SHA256 → 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
 const ACCOUNTS = {
-  '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918': {
-    role: 'admin',
-    displayName: 'Admin',
-    // password = "admin"
-    passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
-  },
-  '0e7f3c5c909ce8afb978a208d639e85af2171df2ec0003a07f13ad97878ef053': {
-    role: 'watcher',
-    displayName: 'Watcher',
-    // password = "watcher"
-    passwordHash: '0e7f3c5c909ce8afb978a208d639e85af2171df2ec0003a07f13ad97878ef053'
-  }
+  '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918': { role:'admin', displayName:'Admin', passwordHash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }
 };
 
-const LOG_KEY = 'wf_login_log_v1';
-let isAdmin   = false;
-let isWatcher = false;
-let currentRole = null;
+let isAdmin = false, currentRole = null;
+let db = [], nextId = 1;
 
-// ── SHA-256 helper ──
+// ── SHA-256 ──
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── OS + Browser parser (clean strings only) ──
-function parseOSBrowser() {
-  const ua = navigator.userAgent;
-  let os = 'Unknown OS';
-  if      (/Windows NT 10/.test(ua))       os = 'Windows 10/11';
-  else if (/Windows NT 6\.3/.test(ua))     os = 'Windows 8.1';
-  else if (/Windows NT 6\.1/.test(ua))     os = 'Windows 7';
-  else if (/Windows/.test(ua))             os = 'Windows';
-  else if (/iPhone/.test(ua))              os = 'iOS (iPhone)';
-  else if (/iPad/.test(ua))               os = 'iOS (iPad)';
-  else if (/Android/.test(ua))             os = 'Android';
-  else if (/CrOS/.test(ua))               os = 'ChromeOS';
-  else if (/Mac OS X/.test(ua))            os = 'macOS';
-  else if (/Linux/.test(ua))              os = 'Linux';
 
-  let browser = 'Unknown Browser';
-  if      (/Edg\//.test(ua))              browser = 'Microsoft Edge';
-  else if (/OPR\/|Opera/.test(ua))        browser = 'Opera';
-  else if (/SamsungBrowser/.test(ua))     browser = 'Samsung Browser';
-  else if (/Firefox\//.test(ua))          browser = 'Firefox';
-  else if (/Chrome\//.test(ua))           browser = 'Chrome';
-  else if (/Safari\//.test(ua))           browser = 'Safari';
-
-  return { os, browser };
+// ── DB helpers ──
+function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
+function updateStats() {
+  const totalEntries = db.reduce((s,w)=>s+w.entries.length, 0);
+  document.getElementById('total-count').textContent = db.length;
+  const dbCount = document.getElementById('db-count');
+  const dbRoot  = document.getElementById('db-root-count');
+  if (dbCount) dbCount.textContent = totalEntries;
+  if (dbRoot)  dbRoot.textContent  = db.length;
 }
 
-// ── Log helpers ──
-function loadLogs() {
-  try { return JSON.parse(localStorage.getItem(LOG_KEY)) || []; }
-  catch { return []; }
-}
-function saveLogs(logs) {
-  localStorage.setItem(LOG_KEY, JSON.stringify(logs));
-}
-function writeLog(username, role, success, purpose, note) {
-  const { os, browser } = parseOSBrowser();
-  const logs = loadLogs();
-  logs.push({
-    id: Date.now() + '_' + Math.random().toString(36).slice(2,7),
-    timestamp: new Date().toISOString(),
-    username: username || '—',
-    role:     role    || '—',
-    success,
-    purpose:  purpose || '—',
-    note:     note    || '',
-    os,
-    browser
-  });
-  saveLogs(logs);
-}
-
-// ── Admin UI ──
-function updateAdminUI() {
-  const loginBtn    = document.getElementById('admin-login-btn');
-  const homeAddBtn  = document.getElementById('home-add-btn');
-  const dbAddBtn    = document.getElementById('add-word-btn');
-  const resetAllBtn = document.getElementById('reset-all-btn');
-
-  if (isAdmin) {
-    loginBtn.innerHTML = '👑 Admin';
-    loginBtn.classList.remove('btn-secondary');
-    loginBtn.classList.add('btn-primary');
-    if (homeAddBtn)  homeAddBtn.style.display  = 'inline-flex';
-    if (dbAddBtn)    dbAddBtn.style.display    = 'inline-flex';
-    if (resetAllBtn) resetAllBtn.style.display = 'inline-flex';
-  } else {
-    loginBtn.innerHTML = '🔓 Login';
-    loginBtn.classList.remove('btn-primary');
-    loginBtn.classList.add('btn-secondary');
-    if (homeAddBtn)  homeAddBtn.style.display  = 'none';
-    if (dbAddBtn)    dbAddBtn.style.display    = 'none';
-    if (resetAllBtn) resetAllBtn.style.display = 'none';
-  }
-  if (!document.getElementById('tab-database').classList.contains('hidden')) renderDB();
-}
-
-// ── Login modal ──
-function showLoginModal() {
-  if (isAdmin) {
-    if (confirm('Bạn muốn đăng xuất khỏi chế độ Admin?')) {
-      writeLog('admin', 'admin', true, '—', 'Logout');
-      isAdmin = false; currentRole = null;
-      updateAdminUI();
-      showToast('Đã đăng xuất');
-    }
-    return;
-  }
-  // Reset fields
-  document.getElementById('login-username').value = '';
-  document.getElementById('login-password').value = '';
-  document.getElementById('login-purpose').value  = '';
-  document.getElementById('login-error').style.display = 'none';
-  document.getElementById('login-modal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('login-username').focus(), 60);
-}
-
-function closeLoginModal() {
-  document.getElementById('login-modal').classList.add('hidden');
-}
-
-function shakeLoginModal() {
-  const m = document.querySelector('#login-modal .modal');
-  m.style.animation = 'none';
-  requestAnimationFrame(() => { m.style.animation = 'shake .3s ease'; });
-}
-
-function showLoginError(msg) {
-  const el = document.getElementById('login-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-  shakeLoginModal();
-}
-
-async function attemptLogin() {
-  const usernameRaw = document.getElementById('login-username').value.trim();
-  const passwordRaw = document.getElementById('login-password').value;
-  const purpose     = document.getElementById('login-purpose').value;
-
-  document.getElementById('login-error').style.display = 'none';
-
-  if (!usernameRaw)  { showLoginError('⚠️ Username is required.');  return; }
-  if (!passwordRaw)  { showLoginError('⚠️ Password is required.');  return; }
-  if (!purpose)      { showLoginError('⚠️ Please select a purpose.'); return; }
-
-  const usernameHash = await sha256(usernameRaw);
-  const passwordHash = await sha256(passwordRaw);
-  const account      = ACCOUNTS[usernameHash];
-
-  if (account && account.passwordHash === passwordHash) {
-    writeLog(usernameRaw, account.role, true, purpose, 'Login success');
-    closeLoginModal();
-
-    if (account.role === 'admin') {
-      isAdmin = true; isWatcher = false; currentRole = 'admin';
-      updateAdminUI();
-      showToast('✅ Welcome, ' + account.displayName + '!');
-    } else if (account.role === 'watcher') {
-      isWatcher = true; isAdmin = false; currentRole = 'watcher';
-      openWatcherDashboard();
-    }
-  } else {
-    // Log failed attempt (even if username doesn't exist)
-    writeLog(usernameRaw, account ? account.role : '—', false, purpose, 'Wrong credentials');
-    showLoginError('❌ Incorrect username or password.');
-    document.getElementById('login-password').value = '';
-  }
-}
-
-// ══════════════════════════════════════════
-// WATCHER DASHBOARD
-// ══════════════════════════════════════════
-function openWatcherDashboard() {
-  document.getElementById('watcher-dashboard').style.display = 'flex';
-  renderLogs();
-}
-
-function logoutWatcher() {
-  writeLog('watcher', 'watcher', true, '—', 'Logout');
-  isWatcher = false; currentRole = null;
-  document.getElementById('watcher-dashboard').style.display = 'none';
-  showToast('👁 Watcher logged out');
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
-
-function renderLogs() {
-  let logs = loadLogs();
-  const search = (document.getElementById('log-search').value || '').toLowerCase().trim();
-  const sort   = document.getElementById('log-sort').value;
-
-  // Filter by search term
-  if (search) {
-    logs = logs.filter(l =>
-      (l.username || '').toLowerCase().includes(search) ||
-      (l.role     || '').toLowerCase().includes(search) ||
-      (l.purpose  || '').toLowerCase().includes(search) ||
-      (l.os       || '').toLowerCase().includes(search) ||
-      (l.browser  || '').toLowerCase().includes(search) ||
-      (l.note     || '').toLowerCase().includes(search)
-    );
-  }
-
-  // Filter by result type
-  if (sort === 'success') logs = logs.filter(l =>  l.success);
-  if (sort === 'failed')  logs = logs.filter(l => !l.success);
-
-  // Sort
-  if (sort === 'newest' || sort === 'success' || sort === 'failed') {
-    logs.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-  } else if (sort === 'oldest') {
-    logs.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
-  } else if (sort === 'user-az') {
-    logs.sort((a,b) => (a.username||'').localeCompare(b.username||''));
-  } else if (sort === 'user-za') {
-    logs.sort((a,b) => (b.username||'').localeCompare(a.username||''));
-  }
-
-  // Update count badge
-  document.getElementById('log-count-badge').textContent =
-    logs.length + ' entr' + (logs.length !== 1 ? 'ies' : 'y');
-
-  const list = document.getElementById('log-list');
-
-  if (logs.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="icon">📋</div><p>No log entries found</p></div>';
-    return;
-  }
-
-  list.innerHTML = logs.map(function(l) {
-    const dt      = new Date(l.timestamp);
-    const dateStr = dt.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-    const timeStr = dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    const icon    = l.success ? '✅' : '❌';
-    const cls     = l.success ? 'success' : 'failed';
-    const roleVal = l.role || '—';
-    const safeid  = escapeHtml(String(l.id));
-
-    var html = '<div class="log-entry ' + cls + '" data-log-id="' + safeid + '">';
-    html += '<input type="checkbox" onchange="toggleLogSelect()">';
-    html += '<div class="log-icon">' + icon + '</div>';
-    html += '<div class="log-body">';
-    html += '<div class="log-user">';
-    html += escapeHtml(l.username);
-    html += ' <span class="log-tag ' + escapeHtml(roleVal) + '">' + escapeHtml(roleVal) + '</span>';
-    if (l.purpose && l.purpose !== '—') {
-      html += ' <span class="log-tag purpose">' + escapeHtml(l.purpose) + '</span>';
-    }
-    html += '</div>';
-    html += '<div class="log-meta">';
-    html += escapeHtml(l.os || '—') + ' &nbsp;·&nbsp; ' + escapeHtml(l.browser || '—');
-    if (l.note && l.note !== 'Login success' && l.note !== 'Logout') {
-      html += ' &nbsp;·&nbsp; ' + escapeHtml(l.note);
-    }
-    html += '</div>';
-    html += '</div>';
-    html += '<div class="log-time">' + dateStr + '<br>' + timeStr + '</div>';
-    html += '<button class="log-del-btn" onclick="deleteSingleLog(\'' + safeid + '\')" title="Delete">🗑</button>';
-    html += '</div>';
-    return html;
-  }).join('');
-}
-
-function toggleLogSelect() {
-  const any = document.querySelectorAll('#log-list input[type=checkbox]:checked').length > 0;
-  document.getElementById('clear-selected-btn').style.display = any ? 'inline-flex' : 'none';
-}
-
-function deleteSingleLog(id) {
-  saveLogs(loadLogs().filter(function(l){ return String(l.id) !== String(id); }));
-  renderLogs();
-  showToast('🗑 Entry deleted');
-}
-
-function clearSelectedLogs() {
-  const checked = document.querySelectorAll('#log-list input[type=checkbox]:checked');
-  if (!checked.length) return;
-  const ids = new Set(Array.from(checked).map(function(cb){
-    return cb.closest('.log-entry').dataset.logId;
-  }));
-  saveLogs(loadLogs().filter(function(l){ return !ids.has(String(l.id)); }));
-  document.getElementById('clear-selected-btn').style.display = 'none';
-  renderLogs();
-  showToast('🗑 Deleted ' + ids.size + ' entr' + (ids.size !== 1 ? 'ies' : 'y'));
-}
-
-function clearAllLogs() {
-  if (!confirm('Delete ALL log entries? This cannot be undone.')) return;
-  saveLogs([]);
-  renderLogs();
-  showToast('🗑 All logs cleared');
-}
-
-let db = [];
-let nextId = 1;
-
-// Load from localStorage or fetch default JSON
 async function initializeDB() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       db = JSON.parse(stored);
     } else {
-      const response = await fetch(DEFAULT_DATA_URL);
-      if (response.ok) {
-        db = await response.json();
+      // Try legacy v1 key and migrate
+      const legacy = localStorage.getItem('wf_db_v1');
+      if (legacy) {
+        const old = JSON.parse(legacy);
+        db = migrateFromV1(old);
+        saveDB();
       } else {
-        console.warn('Default JSON not found, using empty DB');
         db = [];
       }
     }
-  } catch (e) {
-    console.error('DB init error:', e);
-    db = [];
-  }
-  
-  // MIGRATION: Đảm bảo mỗi từ có trường mistakeCount (mặc định 0)
-  db.forEach(word => {
-    if (word.mistakeCount === undefined) {
-      word.mistakeCount = 0;
-    }
+  } catch(e) { console.error('DB init error:', e); db = []; }
+  db.forEach(w => { if (w.mistakeCount === undefined) w.mistakeCount = 0; });
+  const ids = db.map(w=>w.id).filter(id=>typeof id==='number'&&!isNaN(id));
+  nextId = (ids.length ? Math.max(...ids) : 0) + 1;
+  updateStats();
+}
+
+// Migrate old format (noun/verb/adj/adv arrays, meanings) → new entries format
+function migrateFromV1(old) {
+  return old.map(w => {
+    const entries = [];
+    const typeMap = [{arr:w.noun||[],type:'n'},{arr:w.verb||[],type:'v'},{arr:w.adj||[],type:'adj'},{arr:w.adv||[],type:'adv'}];
+    typeMap.forEach(({arr,type}) => arr.forEach(word => entries.push({ word: word.trim(), phonetic: '', type })));
+    return { id: w.id, root: w.root, entries, meanings: w.meanings||[], mistakeCount: w.mistakeCount||0 };
   });
-  
-  const validIds = db.map(w => w.id).filter(id => typeof id === 'number' && !isNaN(id));
-  nextId = (validIds.length ? Math.max(...validIds) : 0) + 1;
-  updateStats();
-  if (document.getElementById('tab-database').classList.contains('hidden') === false) renderDB();
-}
-
-function saveDB() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-  updateStats();
-}
-
-function updateStats() {
-  document.getElementById('total-count').textContent = db.length;
 }
 
 // ══════════════════════════════════════════
-// TAB NAVIGATION
+// AUTH
+// ══════════════════════════════════════════
+function updateAdminUI() {
+  const loginBtn      = document.getElementById('admin-login-btn');
+  const homeAddBtn    = document.getElementById('home-add-btn');
+  const dbAddBtn      = document.getElementById('add-word-btn');
+  const resetAllBtn   = document.getElementById('reset-all-btn');
+  const deleteAllBtn  = document.getElementById('delete-all-btn');
+  const exportBtn     = document.getElementById('export-btn');
+  const importBtn     = document.getElementById('import-btn');
+  if (isAdmin) {
+    loginBtn.innerHTML = '👑 Admin'; loginBtn.classList.replace('btn-secondary','btn-primary');
+    if (homeAddBtn)   homeAddBtn.style.display   = 'inline-flex';
+    if (dbAddBtn)     dbAddBtn.style.display     = 'inline-flex';
+    if (resetAllBtn)  resetAllBtn.style.display  = 'inline-flex';
+    if (deleteAllBtn) deleteAllBtn.style.display = 'inline-flex';
+    if (exportBtn)    exportBtn.style.display    = 'inline-flex';
+    if (importBtn)    importBtn.style.display    = 'inline-flex';
+  } else {
+    loginBtn.innerHTML = '🔓 Login'; loginBtn.classList.replace('btn-primary','btn-secondary');
+    if (homeAddBtn)   homeAddBtn.style.display   = 'none';
+    if (dbAddBtn)     dbAddBtn.style.display     = 'none';
+    if (resetAllBtn)  resetAllBtn.style.display  = 'none';
+    if (deleteAllBtn) deleteAllBtn.style.display = 'none';
+    if (exportBtn)    exportBtn.style.display    = 'none';
+    if (importBtn)    importBtn.style.display    = 'none';
+  }
+  if (!document.getElementById('tab-database').classList.contains('hidden')) renderDB();
+}
+
+function showLoginModal() {
+  if (isAdmin) {
+    if (confirm('Bạn muốn đăng xuất khỏi chế độ Admin?')) {
+      isAdmin=false; currentRole=null; updateAdminUI(); showToast('Đã đăng xuất');
+    }
+    return;
+  }
+  ['login-username','login-password'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('login-username').focus(), 60);
+}
+function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+function shakeLoginModal() {
+  const m = document.querySelector('#login-modal .modal');
+  m.style.animation='none'; requestAnimationFrame(()=>{ m.style.animation='shake .3s ease'; });
+}
+function showLoginError(msg) {
+  const el = document.getElementById('login-error'); el.textContent=msg; el.style.display='block'; shakeLoginModal();
+}
+async function attemptLogin() {
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-password').value;
+  document.getElementById('login-error').style.display='none';
+  if (!u) { showLoginError('⚠️ Username is required.'); return; }
+  if (!p) { showLoginError('⚠️ Password is required.'); return; }
+  const uHash = await sha256(u);
+  const pHash = await sha256(p);
+  const acct  = ACCOUNTS[uHash];
+  if (acct && acct.passwordHash === pHash) {
+    closeLoginModal();
+    isAdmin=true; currentRole='admin'; updateAdminUI(); showToast('✅ Welcome, '+acct.displayName+'!');
+  } else {
+    showLoginError('❌ Incorrect username or password.'); document.getElementById('login-password').value='';
+  }
+}
+
+function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ══════════════════════════════════════════
+// TAB / PANEL NAVIGATION
 // ══════════════════════════════════════════
 const tabs = ['home','mode1','mode2','database'];
-function showTab(name) {
-  tabs.forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('hidden', t !== name);
-  });
-  document.querySelectorAll('.nav-btn').forEach((btn, i) => {
-    btn.classList.toggle('active', tabs[i] === name);
-  });
-  if (name === 'database') renderDB();
-  if (name === 'mode1') { showPanel('m1', 'setup'); }
-  if (name === 'mode2') { showPanel('m2', 'setup'); }
+let quizActive = false;
+
+function showTab(name, force) {
+  if (!force && quizActive) {
+    if (!confirm('You have a quiz in progress. Are you sure you want to leave?')) return;
+  }
+  quizActive = false;
+  stopTimer();
+  tabs.forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t!==name));
+  document.querySelectorAll('.nav-btn').forEach((btn,i)=>btn.classList.toggle('active',tabs[i]===name));
+  if (name==='database') renderDB();
+  if (name==='mode1') showPanel('m1','setup');
+  if (name==='mode2') showPanel('m2','setup');
 }
 function showPanel(mode, panel) {
-  ['setup','quiz','score'].forEach(p => {
-    document.getElementById(`${mode}-${p}`).classList.toggle('hidden', p !== panel);
-  });
+  ['setup','quiz','score'].forEach(p=>document.getElementById(mode+'-'+p).classList.toggle('hidden',p!==panel));
+}
+function exitQuiz(mode) { quizActive = false; stopTimer(); showTab('home', true); }
+
+// ══════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════
+let timerInterval = null, timerSeconds = 0, timerEl = null;
+
+function startTimer(elId) {
+  stopTimer();
+  timerSeconds = 0; timerEl = document.getElementById(elId);
+  updateTimerDisplay();
+  timerInterval = setInterval(function() {
+    timerSeconds++;
+    updateTimerDisplay();
+  }, 1000);
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+function updateTimerDisplay() {
+  if (!timerEl) return;
+  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+  timerEl.textContent = '⏱ '+m+':'+(s<10?'0':'')+s;
+  timerEl.className = 'timer-pill' + (timerSeconds>=120?' warning':'') + (timerSeconds>=300?' danger':'');
+}
+function formatTime(sec) {
+  const m=Math.floor(sec/60), s=sec%60;
+  return m>0 ? m+'m '+s+'s' : s+'s';
 }
 
+// ══════════════════════════════════════════
+// WEAK WORDS
+// ══════════════════════════════════════════
 function startWeakWordsMode() {
-  // Lọc các từ có mistakeCount > 0
-  const weakWords = db.filter(w => (w.mistakeCount || 0) > 0);
-  
-  if (weakWords.length === 0) {
-    showToast('🎉 Chưa có từ nào bị sai! Hãy làm quiz trước.');
-    return;
-  }
-  
-  // Sắp xếp giảm dần theo số lần sai
-  weakWords.sort((a, b) => (b.mistakeCount || 0) - (a.mistakeCount || 0));
-  
-  // Chuyển sang tab Mode 1 với danh sách từ này (có thể chọn Mode 2 nếu muốn)
-  // Để tái sử dụng code, ta sẽ gán m1Questions thủ công và nhảy vào quiz
-  // Xây dựng câu hỏi từ weakWords (mỗi nghĩa là một câu)
+  const weakWords = db.filter(w=>(w.mistakeCount||0)>0);
+  if (!weakWords.length) { showToast('🎉 No weak words yet — do a quiz first!'); return; }
+  weakWords.sort((a,b)=>(b.mistakeCount||0)-(a.mistakeCount||0));
   const pool = [];
   weakWords.forEach(word => {
-    word.meanings.forEach(meaning => {
-      if (meaning.trim()) pool.push({ word, meaning: meaning.trim() });
-    });
+    word.meanings.forEach(meaning => { if (meaning.trim()) pool.push({word, meaning:meaning.trim()}); });
   });
-  
-  if (pool.length === 0) {
-    showToast('⚠️ Không có câu hỏi nào.');
-    return;
-  }
-  
-  // Trộn nhẹ nhưng vẫn giữ ưu tiên từ sai nhiều ở trên
+  if (!pool.length) { showToast('⚠️ No meanings found on weak words.'); return; }
   shuffle(pool);
-  
-  m1Questions = pool;
-  m1Idx = 0; m1Correct = 0; m1Wrong = 0; m1Streak = 0; m1Revealed = false;
-  
-  showTab('mode1');
-  showPanel('m1', 'quiz');
-  renderMode1();
-  showToast(`🔥 Đang ôn ${weakWords.length} từ yếu (${pool.length} câu)`);
+  m1Questions = pool; m1Idx=0; m1Correct=0; m1Wrong=0; m1Streak=0; m1Revealed=false;
+  quizActive = true;
+  showTab('mode1', true); showPanel('m1','quiz'); renderMode1();
+  showToast('🔥 '+weakWords.length+' weak word(s) — '+pool.length+' questions');
 }
 
 // ══════════════════════════════════════════
-// MODE 1
+// MODE 1 — Meaning → Word  (with loại từ)
 // ══════════════════════════════════════════
-let m1Questions = [], m1Idx = 0, m1Correct = 0, m1Wrong = 0, m1Streak = 0, m1Revealed = false;
+let m1Questions=[], m1Idx=0, m1Correct=0, m1Wrong=0, m1Streak=0, m1Revealed=false;
+let m1StartTime=0;
 
 function startMode1() { showTab('mode1'); }
 
 function beginMode1() {
+  if (!db.length) { showToast('⚠️ Database is empty!'); return; }
   const n = parseInt(document.getElementById('m1-count').value);
+  // Build pool: one question per (word entry × meaning) — every entry/meaning combo
   const pool = [];
   db.forEach(word => {
     word.meanings.forEach(meaning => {
-      if (meaning.trim()) pool.push({ word, meaning: meaning.trim() });
+      if (!meaning.trim()) return;
+      // Attach all entries for this word as possible answers
+      pool.push({ word, meaning: meaning.trim() });
     });
   });
+  if (!pool.length) { showToast('⚠️ No meanings found in database!'); return; }
   shuffle(pool);
   m1Questions = pool.slice(0, Math.min(n, pool.length));
-  m1Idx = 0; m1Correct = 0; m1Wrong = 0; m1Streak = 0; m1Revealed = false;
-  showPanel('m1', 'quiz');
+  m1Idx=0; m1Correct=0; m1Wrong=0; m1Streak=0; m1Revealed=false;
+  quizActive = true;
+  showPanel('m1','quiz');
+  startTimer('m1-timer');
+  m1StartTime = timerSeconds;
   renderMode1();
 }
 
 function renderMode1() {
   if (m1Idx >= m1Questions.length) { finishMode1(); return; }
   const q = m1Questions[m1Idx];
-  const pct = (m1Idx / m1Questions.length) * 100;
-  document.getElementById('m1-progress').style.width = pct + '%';
-  document.getElementById('m1-prog-label').textContent = `${m1Idx + 1} / ${m1Questions.length}`;
+  const pct = ((m1Idx+1) / m1Questions.length) * 100;
+  document.getElementById('m1-progress').style.width = pct+'%';
+  document.getElementById('m1-prog-label').textContent = (m1Idx+1)+' / '+m1Questions.length;
   document.getElementById('m1-streak').textContent = m1Streak;
   document.getElementById('m1-meaning').textContent = q.meaning;
-  document.getElementById('m1-hint').textContent = `Root word: ${q.word.root}`;
+
+  // Show type tag — show all types present in the word's entries
+  const types = [...new Set(q.word.entries.map(e=>e.type))];
+  const typeLabels = { n:'Noun (n)', v:'Verb (v)', adj:'Adjective (adj)', adv:'Adverb (adv)' };
+  const typeTag = document.getElementById('m1-type-tag');
+  if (types.length) {
+    typeTag.textContent = types.map(t=>typeLabels[t]||t).join(' / ');
+    typeTag.style.display = 'inline-block';
+  } else {
+    typeTag.style.display = 'none';
+  }
+
+  // Show root word directly
+  document.getElementById('m1-hint').style.display = 'block';
+  document.getElementById('m1-hint').textContent = 'Root word: '+q.word.root;
+  document.getElementById('m1-hint-btn').style.display = 'none';
+
   const inp = document.getElementById('m1-input');
-  inp.value = '';
-  inp.className = 'answer-input';
-  inp.disabled = false;
-  inp.focus();
+  inp.value=''; inp.className='answer-input'; inp.disabled=false; inp.focus();
   const fb = document.getElementById('m1-feedback');
-  fb.style.display = 'none'; fb.className = 'feedback-box';
+  fb.style.display='none'; fb.className='feedback-box';
   document.getElementById('m1-submit-btn').classList.remove('hidden');
   document.getElementById('m1-next-btn').classList.add('hidden');
   m1Revealed = false;
 }
 
-function normalize(s) { 
-  return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' '); 
+function showM1Hint() {
+  document.getElementById('m1-hint').style.display = 'block';
+  document.getElementById('m1-hint-btn').style.display = 'none';
 }
 
-function getAllAnswers(word) {
-  return [...word.noun, ...word.verb, ...word.adj, ...word.adv].map(f => {
-    return f.split(/[/(\[]/)[0].replace(/[→=]/g,'').trim().toLowerCase();
-  }).filter(Boolean);
+function normalize(s) { return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' '); }
+
+function getWordAnswers(word) {
+  // Returns all normalized word forms from entries
+  return word.entries.map(e => normalize(e.word.split(/[/([\s]/)[0])).filter(Boolean);
 }
 
 function checkMode1() {
@@ -1123,27 +762,27 @@ function checkMode1() {
   const userVal = normalize(input.value);
   if (!userVal) return;
 
-  const allAnswers = getAllAnswers(q.word);
-  allAnswers.push(q.word.root.toLowerCase());
-  const isCorrect = allAnswers.some(a => normalize(a) === userVal);
+  const allAnswers = getWordAnswers(q.word);
+  allAnswers.push(normalize(q.word.root));
+  const isCorrect = allAnswers.some(a => a === userVal);
 
   const fb = document.getElementById('m1-feedback');
   m1Revealed = true;
 
   if (isCorrect) {
-    input.className = 'answer-input correct';
-    m1Correct++; m1Streak++;
-    fb.className = 'feedback-box correct';
-    fb.textContent = `✓ Correct! Well done.`;
+    input.className='answer-input correct'; m1Correct++; m1Streak++;
+    fb.className='feedback-box correct'; fb.textContent='✓ Correct! Well done.';
   } else {
-    input.className = 'answer-input wrong';
-    m1Wrong++; m1Streak = 0;
-    q.word.mistakeCount = (q.word.mistakeCount || 0) + 1;
-    fb.className = 'feedback-box wrong';
-    fb.textContent = `✗ The root word is: ${q.word.root}`;
+    input.className='answer-input wrong'; m1Wrong++; m1Streak=0;
+    q.word.mistakeCount=(q.word.mistakeCount||0)+1;
+    fb.className='feedback-box wrong';
+    const correctForms = q.word.entries.slice(0,6).map(e=>e.word+(e.phonetic?' '+e.phonetic:'')).join(' · ');
+    fb.textContent = '✗ Correct answers: '+(correctForms||q.word.root);
   }
-  fb.style.display = 'block';
-  input.disabled = true;
+  fb.style.display='block';
+  input.disabled=true;
+  document.getElementById('m1-hint-btn').style.display='none';
+  document.getElementById('m1-hint').style.display='block';
   document.getElementById('m1-submit-btn').classList.add('hidden');
   document.getElementById('m1-next-btn').classList.remove('hidden');
   updateSessionScore();
@@ -1152,13 +791,15 @@ function checkMode1() {
 function skipMode1() {
   if (m1Revealed) return;
   const q = m1Questions[m1Idx];
-  m1Wrong++; m1Streak = 0;
-  const fb = document.getElementById('m1-feedback');
-  fb.className = 'feedback-box wrong';
-  fb.textContent = `Skipped. Root word: ${q.word.root}`;
-  fb.style.display = 'block';
-  m1Revealed = true;
-  document.getElementById('m1-input').disabled = true;
+  m1Wrong++; m1Streak=0; q.word.mistakeCount=(q.word.mistakeCount||0)+1;
+  const fb=document.getElementById('m1-feedback');
+  const correctForms = q.word.entries.slice(0,6).map(e=>e.word).join(' · ');
+  fb.className='feedback-box wrong';
+  fb.textContent='Skipped. Correct answers: '+(correctForms||q.word.root);
+  fb.style.display='block'; m1Revealed=true;
+  document.getElementById('m1-input').disabled=true;
+  document.getElementById('m1-hint-btn').style.display='none';
+  document.getElementById('m1-hint').style.display='block';
   document.getElementById('m1-submit-btn').classList.add('hidden');
   document.getElementById('m1-next-btn').classList.remove('hidden');
   updateSessionScore();
@@ -1167,447 +808,451 @@ function skipMode1() {
 function nextMode1() { m1Idx++; renderMode1(); }
 
 function finishMode1() {
-  const total = m1Correct + m1Wrong;
-  const pct = total ? Math.round((m1Correct / total) * 100) : 0;
-  document.getElementById('m1-pct').textContent = pct;
-  document.getElementById('m1-correct').textContent = m1Correct;
-  document.getElementById('m1-wrong-count').textContent = m1Wrong;
-  document.getElementById('m1-total-q').textContent = total;
-  showPanel('m1', 'score');
-  saveDB(); // persist mistakeCount updates
-  updateSessionScore();
+  quizActive = false;
+  stopTimer();
+  const total=m1Correct+m1Wrong;
+  const pct=total?Math.round((m1Correct/total)*100):0;
+  document.getElementById('m1-pct').textContent=pct;
+  document.getElementById('m1-correct').textContent=m1Correct;
+  document.getElementById('m1-wrong-count').textContent=m1Wrong;
+  document.getElementById('m1-total-q').textContent=total;
+  document.getElementById('m1-time-stat').textContent=formatTime(timerSeconds);
+  showPanel('m1','score'); saveDB(); updateSessionScore();
 }
 
 // ══════════════════════════════════════════
-// MODE 2
+// MODE 2 — Word Family
 // ══════════════════════════════════════════
-let m2Queue = [], m2Idx = 0, m2TotalCorrect = 0, m2TotalWrong = 0, m2TotalFields = 0, m2CurrentWordChecked = false;
+let m2Queue=[], m2Idx=0, m2TotalCorrect=0, m2TotalWrong=0, m2TotalFields=0, m2CurrentWordChecked=false;
 
 function startMode2() { showTab('mode2'); }
 
 function beginMode2() {
+  if (!db.length) { showToast('⚠️ Database is empty!'); return; }
   const n = parseInt(document.getElementById('m2-count').value);
-  const pool = db.filter(w => (w.noun.length + w.verb.length + w.adj.length + w.adv.length) > 0);
+  const pool = db.filter(w=>w.entries.length>0);
+  if (!pool.length) { showToast('⚠️ No word entries found!'); return; }
   shuffle(pool);
-  m2Queue = pool.slice(0, Math.min(n, pool.length));
-  m2Idx = 0; m2TotalCorrect = 0; m2TotalWrong = 0; m2TotalFields = 0; m2CurrentWordChecked = false;
-  showPanel('m2', 'quiz');
-  renderMode2();
+  m2Queue=pool.slice(0,Math.min(n,pool.length));
+  m2Idx=0; m2TotalCorrect=0; m2TotalWrong=0; m2TotalFields=0; m2CurrentWordChecked=false;
+  quizActive = true;
+  showPanel('m2','quiz'); startTimer('m2-timer'); renderMode2();
 }
 
 function renderMode2() {
-  if (m2Idx >= m2Queue.length) { finishMode2(); return; }
-  const word = m2Queue[m2Idx];
-  const pct = (m2Idx / m2Queue.length) * 100;
-  document.getElementById('m2-progress').style.width = pct + '%';
-  document.getElementById('m2-prog-label').textContent = `${m2Idx + 1} / ${m2Queue.length}`;
-  document.getElementById('m2-root').innerHTML = `${word.root}`;
-  document.getElementById('m2-feedback').style.display = 'none';
+  if (m2Idx>=m2Queue.length) { finishMode2(); return; }
+  const word=m2Queue[m2Idx];
+  const pct=((m2Idx+1)/m2Queue.length)*100;
+  document.getElementById('m2-progress').style.width=pct+'%';
+  document.getElementById('m2-prog-label').textContent=(m2Idx+1)+' / '+m2Queue.length;
+  document.getElementById('m2-root').textContent=word.root;
+  document.getElementById('m2-feedback').style.display='none';
   document.getElementById('m2-submit-btn').classList.remove('hidden');
   document.getElementById('m2-next-btn').classList.add('hidden');
 
-  const grid = document.getElementById('m2-slots');
-  grid.innerHTML = '';
-  const types = [
-    { key: 'noun', label: 'Noun (n)', items: word.noun },
-    { key: 'verb', label: 'Verb (v)', items: word.verb },
-    { key: 'adj', label: 'Adjective (a)', items: word.adj },
-    { key: 'adv', label: 'Adverb (adv)', items: word.adv },
-  ].filter(t => t.items.length > 0);
-
-  types.forEach(type => {
-    type.items.forEach((item, i) => {
-      const slot = document.createElement('div');
-      slot.className = 'family-slot';
-      slot.dataset.type = type.key;
-      slot.dataset.idx = i;
-      slot.dataset.answer = item;
-      slot.innerHTML = `<label>${type.label} ${type.items.length > 1 ? i+1 : ''}</label>
-        <input type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="type here…"
-          onkeydown="if(event.key==='Enter')document.getElementById('m2-submit-btn').click()">`;
-      grid.appendChild(slot);
-    });
+  const typeLabels = { n:'Noun', v:'Verb', adj:'Adjective', adv:'Adverb' };
+  const grid=document.getElementById('m2-slots');
+  grid.innerHTML='';
+  word.entries.forEach((entry,i)=>{
+    const slot=document.createElement('div');
+    slot.className='family-slot';
+    slot.dataset.answer=entry.word; slot.dataset.idx=i;
+    const label=typeLabels[entry.type]||entry.type;
+    slot.innerHTML='<label>'+label+'</label>'+(entry.phonetic?'<div class="slot-phonetic">'+escapeHtml(entry.phonetic)+'</div>':'')+
+      '<input type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="type here…" onkeydown="if(event.key===\'Enter\')document.getElementById(\'m2-submit-btn\').click()">';
+    grid.appendChild(slot);
   });
+  m2CurrentWordChecked=false;
 }
 
 function checkMode2() {
-  const slots = document.querySelectorAll('.family-slot');
-  
-  // Gom nhóm các slot theo loại từ (noun, verb, adj, adv)
-  const groups = {};
-  slots.forEach(slot => {
-    const type = slot.dataset.type;
-    if (!groups[type]) groups[type] = { slots: [], answers: [] };
-    groups[type].slots.push(slot);
-    groups[type].answers.push(slot.dataset.answer);
+  const slots=document.querySelectorAll('.family-slot');
+  let totalCorrect=0, totalWrong=0;
+
+  slots.forEach(slot=>{
+    const input=slot.querySelector('input');
+    const userVal=normalize(input.value);
+    const correctRaw=slot.dataset.answer;
+    const correct=normalize(correctRaw.split(/[/([\s]/)[0]);
+    input.disabled=true;
+    if (!userVal) {
+      slot.classList.add('skipped'); input.value='→ '+correctRaw; totalWrong++;
+    } else if (userVal===correct) {
+      slot.classList.add('correct'); totalCorrect++;
+    } else {
+      slot.classList.add('wrong'); input.value=input.value+' → '+correctRaw; totalWrong++;
+    }
   });
 
-  let totalCorrect = 0, totalWrong = 0;
-
-  // Xử lý từng nhóm loại từ
-  Object.keys(groups).forEach(type => {
-    const group = groups[type];
-    const inputs = group.slots.map(slot => slot.querySelector('input'));
-    const userAnswers = inputs.map(inp => normalize(inp.value));
-    const correctAnswers = group.answers.map(ans => normalize(ans.split(/[/(\[]/)[0].replace(/[→=]/g,'').trim()));
-
-    // Tạo bản sao để đánh dấu đã dùng
-    const remainingCorrect = [...correctAnswers];
-    const slotStatus = group.slots.map(() => null); // true = correct, false = wrong, 'skipped' = empty
-
-    // Kiểm tra từng câu trả lời của người dùng
-    userAnswers.forEach((userVal, idx) => {
-      const slot = group.slots[idx];
-      const input = inputs[idx];
-      
-      if (!userVal) {
-        slotStatus[idx] = 'skipped';
-        input.value = '→ ' + group.answers[idx]; // clearly show correct answer for skipped
-        return;
-      }
-
-      // Tìm trong remainingCorrect một đáp án khớp chính xác
-      const matchIndex = remainingCorrect.findIndex(correct => userVal === correct);
-      if (matchIndex !== -1) {
-        // Đúng: xóa đáp án đó khỏi danh sách chờ
-        remainingCorrect.splice(matchIndex, 1);
-        slotStatus[idx] = true;
-      } else {
-        slotStatus[idx] = false;
-        // Gợi ý: thêm đáp án đúng tương ứng (nếu có)
-        const suggested = group.answers[idx];
-        input.value = userVal + ' → ' + suggested;
-      }
-    });
-
-    // Áp dụng style và đếm
-    group.slots.forEach((slot, idx) => {
-      const input = slot.querySelector('input');
-      input.disabled = true;
-      const status = slotStatus[idx];
-      if (status === true) {
-        slot.classList.add('correct');
-        totalCorrect++;
-      } else if (status === false) {
-        slot.classList.add('wrong');
-        totalWrong++;
-      } else { // skipped (empty)
-        slot.classList.add('skipped');
-        totalWrong++;
-      }
-    });
-  });
-
-  if (totalWrong > 0) {
-    const currentWord = m2Queue[m2Idx];
-    currentWord.mistakeCount = (currentWord.mistakeCount || 0) + 1;
-  }
+  if (totalWrong>0) { const cw=m2Queue[m2Idx]; cw.mistakeCount=(cw.mistakeCount||0)+1; }
 
   if (!m2CurrentWordChecked) {
-    m2TotalCorrect += totalCorrect;
-    m2TotalWrong += totalWrong;
-    m2TotalFields += slots.length;
-    m2CurrentWordChecked = true;
+    m2TotalCorrect+=totalCorrect; m2TotalWrong+=totalWrong; m2TotalFields+=slots.length; m2CurrentWordChecked=true;
   }
 
-  const fb = document.getElementById('m2-feedback');
-  fb.style.display = 'block';
-  if (totalWrong === 0) {
-    fb.className = 'feedback-box correct';
-    fb.textContent = `✓ Perfect! ${totalCorrect}/${slots.length} correct`;
-  } else {
-    fb.className = 'feedback-box wrong';
-    fb.textContent = `${totalCorrect}/${slots.length} correct. Review the highlighted fields.`;
-  }
+  const fb=document.getElementById('m2-feedback'); fb.style.display='block';
+  if (totalWrong===0) { fb.className='feedback-box correct'; fb.textContent='✓ Perfect! '+totalCorrect+'/'+slots.length+' correct'; }
+  else { fb.className='feedback-box wrong'; fb.textContent=totalCorrect+'/'+slots.length+' correct. Review highlighted fields.'; }
 
   document.getElementById('m2-submit-btn').classList.add('hidden');
   document.getElementById('m2-next-btn').classList.remove('hidden');
   updateSessionScore();
 }
 
-function nextMode2() { m2Idx++; m2CurrentWordChecked = false; renderMode2(); }
+function nextMode2() { m2Idx++; m2CurrentWordChecked=false; renderMode2(); }
 
 function finishMode2() {
-  const pct = m2TotalFields ? Math.round((m2TotalCorrect / m2TotalFields) * 100) : 0;
-  document.getElementById('m2-pct').textContent = pct;
-  document.getElementById('m2-correct').textContent = m2TotalCorrect;
-  document.getElementById('m2-wrong-count').textContent = m2TotalWrong;
-  document.getElementById('m2-total-q').textContent = m2TotalFields;
-  showPanel('m2', 'score');
-  saveDB(); // persist mistakeCount updates
-  updateSessionScore();
+  quizActive = false;
+  stopTimer();
+  const pct=m2TotalFields?Math.round((m2TotalCorrect/m2TotalFields)*100):0;
+  document.getElementById('m2-pct').textContent=pct;
+  document.getElementById('m2-correct').textContent=m2TotalCorrect;
+  document.getElementById('m2-wrong-count').textContent=m2TotalWrong;
+  document.getElementById('m2-total-q').textContent=m2TotalFields;
+  document.getElementById('m2-time-stat').textContent=formatTime(timerSeconds);
+  showPanel('m2','score'); saveDB(); updateSessionScore();
 }
 
 function updateSessionScore() {
-  const c = m1Correct + m2TotalCorrect;
-  const t = c + m1Wrong + m2TotalWrong;
-  const pct = t ? Math.round(c / t * 100) : 0;
-  document.getElementById('session-score').textContent = pct + '%';
+  const c=m1Correct+m2TotalCorrect, t=c+m1Wrong+m2TotalWrong;
+  document.getElementById('session-score').textContent=(t?Math.round(c/t*100):0)+'%';
 }
 
 // ══════════════════════════════════════════
 // DATABASE VIEW
 // ══════════════════════════════════════════
-let dbPage = 1;
-const PER_PAGE = 15;
+let dbPage=1;
+const PER_PAGE=20;
 
 function renderDB() {
-  const q = document.getElementById('db-search').value.toLowerCase();
-  const filtered = db.filter(w =>
-    w.root.toLowerCase().includes(q) ||
-    w.meanings.some(m => m.toLowerCase().includes(q)) ||
-    [...w.noun,...w.verb,...w.adj,...w.adv].some(f => f.toLowerCase().includes(q))
-  );
-  document.getElementById('db-count').textContent = db.length;
+  const q=(document.getElementById('db-search').value||'').toLowerCase();
+  const filterType=document.getElementById('db-filter-type').value;
 
-  const total = Math.ceil(filtered.length / PER_PAGE);
-  if (dbPage > total) dbPage = Math.max(1, total);
-  const page = filtered.slice((dbPage-1)*PER_PAGE, dbPage*PER_PAGE);
+  // Flatten to rows: one row per entry
+  let rows=[];
+  db.forEach(word=>{
+    word.entries.forEach(entry=>{
+      if (filterType && entry.type!==filterType) return;
+      if (q && !(
+        word.root.toLowerCase().includes(q) ||
+        entry.word.toLowerCase().includes(q) ||
+        (entry.phonetic||'').toLowerCase().includes(q) ||
+        word.meanings.some(m=>m.toLowerCase().includes(q))
+      )) return;
+      rows.push({ word, entry });
+    });
+    // If word has no entries but has meanings, still show it
+    if (word.entries.length===0 && !filterType) {
+      if (!q || word.root.toLowerCase().includes(q) || word.meanings.some(m=>m.toLowerCase().includes(q))) {
+        rows.push({ word, entry: null });
+      }
+    }
+  });
 
-  const list = document.getElementById('word-list');
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="icon">🔍</div>No words found</div>`;
+  updateStats();
+  const total=Math.ceil(rows.length/PER_PAGE);
+  if (dbPage>total) dbPage=Math.max(1,total);
+  const page=rows.slice((dbPage-1)*PER_PAGE, dbPage*PER_PAGE);
+
+  const typeClass = { n:'type-n', v:'type-v', adj:'type-adj', adv:'type-adv' };
+  const typeLabel = { n:'n', v:'v', adj:'adj', adv:'adv' };
+
+  const tbody=document.getElementById('word-list');
+  if (!rows.length) {
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="icon">🔍</div>No words found</div></td></tr>';
   } else {
-    list.innerHTML = page.map(w => `
-        <div class="word-item" onclick="openEditModal(${w.id})">
-          <div class="word-item-left">
-            <h4>${w.root}</h4>
-            <p>${w.meanings.slice(0,2).join(' · ')}</p>
-          </div>
-        
-        <div class="word-item-right">
-          ${w.mistakeCount ? `<span class="chip" style="background:#5c1a1a;color:var(--danger);">❌ ${w.mistakeCount}</span>` : ''}
-          ${w.noun.length ? `<span class="chip">n:${w.noun.length}</span>` : ''}
-          ${w.verb.length ? `<span class="chip">v:${w.verb.length}</span>` : ''}
-          ${w.adj.length ? `<span class="chip">a:${w.adj.length}</span>` : ''}
-          ${w.adv.length ? `<span class="chip">adv:${w.adv.length}</span>` : ''}
-        </div>
-      </div>
-    `).join('');
+    tbody.innerHTML=page.map(({word,entry})=>{
+      const errChip=word.mistakeCount?'<span style="color:var(--danger);font-size:11px;font-weight:700;">❌'+word.mistakeCount+'</span>':'';
+      const wordStr=entry?escapeHtml(entry.word):'<span style="color:var(--muted);font-style:italic;">—</span>';
+      const phonStr=entry&&entry.phonetic?escapeHtml(entry.phonetic):'';
+      const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
+      const meanStr=word.meanings.slice(0,2).map(m=>escapeHtml(m)).join(', ');
+      return '<tr onclick="openEditModal('+word.id+')" title="Click to edit">'
+        +'<td class="col-root">'+escapeHtml(word.root)+' '+errChip+'</td>'
+        +'<td class="col-word">'+wordStr+'</td>'
+        +'<td class="col-phon">'+phonStr+'</td>'
+        +'<td class="col-type">'+typeStr+'</td>'
+        +'<td class="col-mean">'+meanStr+'</td>'
+        +'<td style="text-align:right;padding-right:10px;"><span style="color:var(--muted);font-size:16px;">›</span></td>'
+        +'</tr>';
+    }).join('');
   }
 
-  const pg = document.getElementById('db-pagination');
-  pg.innerHTML = '';
-  for (let i = 1; i <= total; i++) {
-    const b = document.createElement('button');
-    b.className = 'page-btn' + (i === dbPage ? ' active' : '');
-    b.textContent = i;
-    b.onclick = () => { dbPage = i; renderDB(); };
-    pg.appendChild(b);
+  const pg=document.getElementById('db-pagination'); pg.innerHTML='';
+  for (let i=1;i<=total;i++) {
+    const b=document.createElement('button');
+    b.className='page-btn'+(i===dbPage?' active':''); b.textContent=i;
+    b.onclick=()=>{ dbPage=i; renderDB(); }; pg.appendChild(b);
   }
 }
 
 // ══════════════════════════════════════════
-// MODAL / FORM
+// MODAL — Add / Edit Word
 // ══════════════════════════════════════════
+let _editWordId = null;
+
+function addEntryRow(word='', phonetic='', type='n') {
+  const list=document.getElementById('entry-list');
+  const row=document.createElement('div'); row.className='entry-row';
+  row.innerHTML=
+    '<input type="text" placeholder="e.g. abbreviation" value="'+escapeHtml(word)+'">'
+    +'<input type="text" placeholder="/əˌbriːviˈeɪʃn/" value="'+escapeHtml(phonetic)+'">'
+    +'<select>'
+      +'<option value="n"'+(type==='n'?' selected':'')+'>n — noun</option>'
+      +'<option value="v"'+(type==='v'?' selected':'')+'>v — verb</option>'
+      +'<option value="adj"'+(type==='adj'?' selected':'')+'>adj — adjective</option>'
+      +'<option value="adv"'+(type==='adv'?' selected':'')+'>adv — adverb</option>'
+    +'</select>'
+    +'<button class="del-entry" onclick="this.closest(\'.entry-row\').remove()" title="Remove">✕</button>';
+  list.appendChild(row);
+}
+
 function openAddModal() {
-  if (!isAdmin) {
-    showToast('⚠️ Bạn cần đăng nhập Admin để thêm từ');
-    return;
-  }
-  // ... giữ nguyên phần còn lại
-  document.getElementById('modal-title').textContent = 'Add Word';
-  document.getElementById('edit-id').value = '';
-  document.getElementById('f-root').value = '';
-  document.getElementById('f-noun').value = '';
-  document.getElementById('f-verb').value = '';
-  document.getElementById('f-adj').value = '';
-  document.getElementById('f-adv').value = '';
-  document.getElementById('f-meanings').value = '';
-  document.getElementById('delete-btn').style.display = 'none';
+  if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
+  _editWordId=null;
+  document.getElementById('modal-title').textContent='Add Word';
+  document.getElementById('f-root').value=''; document.getElementById('f-meanings').value='';
+  document.getElementById('entry-list').innerHTML='';
+  addEntryRow();
+  document.getElementById('delete-btn').style.display='none';
+  document.getElementById('reset-mistakes-btn').style.display='none';
+  document.getElementById('save-btn').style.display='inline-flex';
+  document.getElementById('f-root').disabled=false;
   document.getElementById('modal-overlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('f-root').focus(),60);
 }
 
 function openEditModal(id) {
-  const word = db.find(w => w.id === id);
+  const word=db.find(w=>w.id===id);
   if (!word) return;
-  
-  if (!isAdmin) {
-    // Nếu không phải admin, hiển thị modal dạng xem (readonly)
-    document.getElementById('modal-title').textContent = `View: ${word.root}`;
-    document.getElementById('edit-id').value = id;
-    document.getElementById('f-root').value = word.root;
-    document.getElementById('f-noun').value = word.noun.join('\n');
-    document.getElementById('f-verb').value = word.verb.join('\n');
-    document.getElementById('f-adj').value = word.adj.join('\n');
-    document.getElementById('f-adv').value = word.adv.join('\n');
-    document.getElementById('f-meanings').value = word.meanings.join('\n');
-    
-    // Disable tất cả input
-    ['f-root','f-noun','f-verb','f-adj','f-adv','f-meanings'].forEach(fieldId => {
-      document.getElementById(fieldId).disabled = true;
-    });
-    document.getElementById('delete-btn').style.display = 'none';
-    // Ẩn nút Save, chỉ hiện Cancel
-    document.querySelector('#modal-overlay .btn-primary').style.display = 'none';
-    document.querySelector('#modal-overlay .btn-secondary').textContent = 'Close';
-    document.getElementById('modal-overlay').classList.remove('hidden');
-    return;
+  _editWordId=id;
+  const readonly=!isAdmin;
+  document.getElementById('modal-title').textContent=(readonly?'View: ':'Edit: ')+word.root;
+  document.getElementById('edit-root-key').value=id;
+  document.getElementById('f-root').value=word.root;
+  document.getElementById('f-meanings').value=word.meanings.join('\n');
+  document.getElementById('f-root').disabled=readonly;
+  document.getElementById('f-meanings').disabled=readonly;
+
+  const list=document.getElementById('entry-list'); list.innerHTML='';
+  word.entries.forEach(e=>addEntryRow(e.word, e.phonetic||'', e.type));
+  if (!word.entries.length) addEntryRow();
+
+  // Disable inputs if readonly
+  if (readonly) {
+    list.querySelectorAll('input,select,button.del-entry').forEach(el=>{ el.disabled=true; });
+    document.getElementById('add-entry-row-btn').disabled=true;
+    document.getElementById('delete-btn').style.display='none';
+    document.getElementById('reset-mistakes-btn').style.display='none';
+    document.getElementById('save-btn').style.display='none';
+    document.querySelector('#modal-overlay .btn-secondary').textContent='Close';
+  } else {
+    list.querySelectorAll('input,select,button.del-entry').forEach(el=>{ el.disabled=false; });
+    document.getElementById('add-entry-row-btn').disabled=false;
+    document.getElementById('delete-btn').style.display='inline-flex';
+    document.getElementById('reset-mistakes-btn').style.display=word.mistakeCount>0?'inline-flex':'none';
+    document.getElementById('save-btn').style.display='inline-flex';
+    document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';
   }
-  
-  // Admin: cho phép chỉnh sửa
-  document.getElementById('modal-title').textContent = `Edit: ${word.root}`;
-  document.getElementById('edit-id').value = id;
-  document.getElementById('f-root').value = word.root;
-  document.getElementById('f-noun').value = word.noun.join('\n');
-  document.getElementById('f-verb').value = word.verb.join('\n');
-  document.getElementById('f-adj').value = word.adj.join('\n');
-  document.getElementById('f-adv').value = word.adv.join('\n');
-  document.getElementById('f-meanings').value = word.meanings.join('\n');
-  
-  // Enable input
-  ['f-root','f-noun','f-verb','f-adj','f-adv','f-meanings'].forEach(fieldId => {
-    document.getElementById(fieldId).disabled = false;
-  });
-  document.getElementById('delete-btn').style.display = 'inline-flex';
-  document.querySelector('#modal-overlay .btn-primary').style.display = 'inline-flex';
-  document.querySelector('#modal-overlay .btn-secondary').textContent = 'Cancel';
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
-  // Reset disable và hiển thị nút Save
-  ['f-root','f-noun','f-verb','f-adj','f-adv','f-meanings'].forEach(fieldId => {
-    document.getElementById(fieldId).disabled = false;
-  });
-  document.querySelector('#modal-overlay .btn-primary').style.display = 'inline-flex';
+  document.getElementById('add-entry-row-btn').disabled=false;
+  document.getElementById('save-btn').style.display='inline-flex';
+  document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';
+  _editWordId=null;
 }
 
 function saveWord() {
-  if (!isAdmin) { showToast('⚠️ Không có quyền'); return; }
-  const root = document.getElementById('f-root').value.trim().toUpperCase();
+  if (!isAdmin) { showToast('⚠️ No permission'); return; }
+  const root=document.getElementById('f-root').value.trim().toUpperCase();
   if (!root) { showToast('Root word is required!'); return; }
-  const parseLines = id => document.getElementById(id).value.split('\n').map(s=>s.trim()).filter(Boolean);
-  const id = document.getElementById('edit-id').value;
-  const existing = id ? db.find(w => w.id == id) : null;
-  const entry = {
-    root,
-    noun: parseLines('f-noun'),
-    verb: parseLines('f-verb'),
-    adj: parseLines('f-adj'),
-    adv: parseLines('f-adv'),
-    meanings: parseLines('f-meanings'),
-    mistakeCount: existing ? (existing.mistakeCount || 0) : 0,
-  };
-  if (id) {
-    const idx = db.findIndex(w => w.id == id);
-    if (idx !== -1) { entry.id = parseInt(id); db[idx] = entry; }
+
+  // Check duplicate root
+  const duplicate=db.some(w=>w.root===root && w.id!==_editWordId);
+  if (duplicate) { showToast('⚠️ Root word already exists!'); return; }
+
+  // Collect entries from rows
+  const rows=document.querySelectorAll('#entry-list .entry-row');
+  const entries=[];
+  rows.forEach(row=>{
+    const inputs=row.querySelectorAll('input');
+    const sel=row.querySelector('select');
+    const word=inputs[0].value.trim();
+    if (!word) return;
+    entries.push({ word, phonetic: inputs[1].value.trim(), type: sel.value });
+  });
+
+  const meanings=document.getElementById('f-meanings').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const existing=_editWordId?db.find(w=>w.id===_editWordId):null;
+
+  const entry={ root, entries, meanings, mistakeCount: existing?(existing.mistakeCount||0):0 };
+
+  if (_editWordId) {
+    const idx=db.findIndex(w=>w.id===_editWordId);
+    if (idx!==-1) { entry.id=_editWordId; db[idx]=entry; }
   } else {
-    entry.id = nextId++;
-    db.push(entry);
+    entry.id=nextId++; db.push(entry);
   }
-  saveDB();
-  closeModal();
-  renderDB();
-  showToast(id ? '✓ Word updated!' : '✓ Word added!');
+  saveDB(); closeModal(); renderDB();
+  showToast(_editWordId?'✓ Word updated!':'✓ Word added!');
 }
 
 function deleteWord() {
-  if (!isAdmin) { showToast('⚠️ Không có quyền'); return; }
-  const id = document.getElementById('edit-id').value;
-  if (!id) return;
-  if (!confirm('Delete this word?')) return;
-  db = db.filter(w => w.id != id);
-  saveDB();
-  closeModal();
-  renderDB();
-  showToast('Word deleted.');
+  if (!isAdmin) { showToast('⚠️ No permission'); return; }
+  if (!_editWordId) return;
+  if (!confirm('Delete this word and all its entries?')) return;
+  db=db.filter(w=>w.id!==_editWordId);
+  saveDB(); closeModal(); renderDB(); showToast('Word deleted.');
 }
 
-function showAbbrevModal() { document.getElementById('abbrev-modal').classList.remove('hidden'); }
-function closeAbbrevModal() { document.getElementById('abbrev-modal').classList.add('hidden'); }
-
-// ══════════════════════════════════════════
-// IMPORT / EXPORT
-// ══════════════════════════════════════════
-function exportDB() {
-  const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'wordfamily_export.json';
-  a.click();
-  showToast('Database exported!');
+function resetMistakeCount() {
+  if (!isAdmin||!_editWordId) return;
+  const word=db.find(w=>w.id===_editWordId); if (!word) return;
+  word.mistakeCount=0; saveDB(); closeModal(); renderDB(); showToast('🔄 Mistake count reset!');
 }
 
-async function importMultipleFiles(event) {
-  const files = event.target.files;
-  if (!files.length) return;
+function resetAllMistakes() {
+  if (!isAdmin) return;
+  const count=db.filter(w=>w.mistakeCount>0).length;
+  if (!count) { showToast('No mistakes to reset.'); return; }
+  if (!confirm('Reset mistake counts for all '+count+' word(s)?')) return;
+  db.forEach(w=>w.mistakeCount=0); saveDB(); renderDB(); showToast('🔄 All mistake counts reset!');
+}
 
-  let importedCount = 0;
-  let skippedCount = 0;
+function deleteAllWords() {
+  if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
+  if (!db.length) { showToast('Database is already empty.'); return; }
+  if (!confirm('Delete ALL '+db.length+' word(s) from the database? This cannot be undone.')) return;
+  db=[]; saveDB(); renderDB(); showToast('🗑 All words deleted.');
+}
+
+// ══════════════════════════════════════════
+// CSV EXPORT
+// Format: root,word,phonetic,type,meaning
+// One row per (entry × meaning). If word has multiple meanings, repeat for each.
+// ══════════════════════════════════════════
+function csvEscape(s) {
+  s = String(s||'').replace(/"/g,'""');
+  return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"'+s+'"' : s;
+}
+
+function exportCSV() {
+  if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
+  const rows = ['root,word,phonetic,type,vietnamese_meaning'];
+  db.forEach(word => {
+    if (!word.entries.length && !word.meanings.length) {
+      rows.push([word.root,'','','',''].map(csvEscape).join(','));
+      return;
+    }
+    // For each entry × meaning combination
+    const meanings = word.meanings.length ? word.meanings : [''];
+    if (word.entries.length) {
+      word.entries.forEach(entry => {
+        meanings.forEach(meaning => {
+          rows.push([word.root, entry.word, entry.phonetic||'', entry.type, meaning].map(csvEscape).join(','));
+        });
+      });
+    } else {
+      meanings.forEach(meaning => {
+        rows.push([word.root, '', '', '', meaning].map(csvEscape).join(','));
+      });
+    }
+  });
+  const blob = new Blob([rows.join('\n')], { type:'text/csv;charset=utf-8;' });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='wordfamily_export.csv'; a.click();
+  showToast('✓ CSV exported ('+db.length+' words)');
+}
+
+// ══════════════════════════════════════════
+// CSV IMPORT
+// Expected columns: root, word, phonetic, type, vietnamese_meaning
+// Case-insensitive headers. Extra columns ignored.
+// ══════════════════════════════════════════
+function parseCSVLine(line) {
+  const result=[]; let cur='', inQ=false;
+  for (let i=0;i<line.length;i++) {
+    const ch=line[i];
+    if (ch==='"') {
+      if (inQ && line[i+1]==='"') { cur+='"'; i++; }
+      else inQ=!inQ;
+    } else if (ch===',' && !inQ) { result.push(cur.trim()); cur=''; }
+    else cur+=ch;
+  }
+  result.push(cur.trim()); return result;
+}
+
+async function importCSVFiles(event) {
+  if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
+  const files=event.target.files; if (!files.length) return;
+  let imported=0, skippedDup=0, skippedBad=0;
 
   for (const file of files) {
     try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      if (!Array.isArray(data)) {
-        console.warn('Skipping non-array JSON file:', file.name);
-        continue;
+      const text=await file.text();
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if (lines.length<2) { skippedBad++; continue; }
+
+      // Parse header
+      const header=parseCSVLine(lines[0]).map(h=>h.toLowerCase().replace(/\s+/g,'_'));
+      const ci={ root:header.indexOf('root'), word:header.indexOf('word'), phonetic:header.indexOf('phonetic'), type:header.indexOf('type'), meaning:header.findIndex(h=>h.includes('mean')||h.includes('viet')) };
+      if (ci.root===-1) { console.warn('No root column in',file.name); skippedBad++; continue; }
+
+      // Group rows by root
+      const groups={};
+      for (let i=1;i<lines.length;i++) {
+        const cols=parseCSVLine(lines[i]);
+        const root=(ci.root!==-1?cols[ci.root]:'').trim().toUpperCase();
+        if (!root) continue;
+        if (!groups[root]) groups[root]={ entries:[], meanings:new Set() };
+        const word=(ci.word!==-1?cols[ci.word]:'').trim();
+        const phonetic=(ci.phonetic!==-1?cols[ci.phonetic]:'').trim();
+        const type=(ci.type!==-1?(cols[ci.type]||'').trim().toLowerCase():'n');
+        const meaning=(ci.meaning!==-1?cols[ci.meaning]:'').trim();
+        if (word) groups[root].entries.push({ word, phonetic, type: ['n','v','adj','adv'].includes(type)?type:'n' });
+        if (meaning) groups[root].meanings.add(meaning);
       }
 
-      // Deduplicate within the imported file itself (keep first occurrence per root)
-      const seenRoots = new Set();
-      for (const item of data) {
-        if (!item.root) continue;
-
-        // Skip duplicates within this file
-        if (seenRoots.has(item.root)) continue;
-        seenRoots.add(item.root);
-
-        // Skip if root already exists in db
-        if (db.some(w => w.root === item.root)) {
-          skippedCount++;
-          continue;
+      // Merge into db
+      for (const [root, data] of Object.entries(groups)) {
+        const existing=db.find(w=>w.root===root);
+        if (existing) {
+          // Merge: add new entries and meanings
+          data.entries.forEach(e=>{ if (!existing.entries.some(ex=>ex.word===e.word&&ex.type===e.type)) { existing.entries.push(e); imported++; } else skippedDup++; });
+          data.meanings.forEach(m=>{ if (!existing.meanings.includes(m)) existing.meanings.push(m); });
+        } else {
+          const entries=[...new Map(data.entries.map(e=>[e.word+'|'+e.type,e])).values()];
+          db.push({ id:nextId++, root, entries, meanings:[...data.meanings], mistakeCount:0 });
+          imported++;
         }
-
-        // Sanitize: ensure all required array fields exist and have no duplicates
-        item.noun     = [...new Set(Array.isArray(item.noun)     ? item.noun     : [])];
-        item.verb     = [...new Set(Array.isArray(item.verb)     ? item.verb     : [])];
-        item.adj      = [...new Set(Array.isArray(item.adj)      ? item.adj      : [])];
-        item.adv      = [...new Set(Array.isArray(item.adv)      ? item.adv      : [])];
-        item.meanings = [...new Set(Array.isArray(item.meanings) ? item.meanings : [])];
-        item.mistakeCount = typeof item.mistakeCount === 'number' ? item.mistakeCount : 0;
-        item.id = nextId++;
-
-        db.push(item);
-        importedCount++;
       }
-
-    } catch (e) {
-      console.warn('Invalid or unreadable JSON file:', file.name, e);
-    }
+    } catch(e) { console.warn('Error parsing',file.name,e); skippedBad++; }
   }
 
-  saveDB();
-  renderDB();
-
-  if (importedCount > 0) {
-    showToast(`✓ Imported ${importedCount} new word(s) from ${files.length} file(s)${skippedCount > 0 ? ` · ${skippedCount} duplicate(s) skipped` : ''}`);
-  } else {
-    showToast(`⚠️ No new words imported — ${skippedCount} duplicate(s) skipped`);
-  }
-
-  event.target.value = ''; // reset file input
+  saveDB(); renderDB();
+  let msg='✓ Imported '+imported+' entries from '+files.length+' file(s)';
+  if (skippedDup) msg+=' · '+skippedDup+' duplicates skipped';
+  if (skippedBad) msg+=' · '+skippedBad+' invalid file(s)';
+  showToast(msg);
+  event.target.value='';
 }
 
 // ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
-function shuffle(arr) { for (let i = arr.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function shuffle(arr) { for (let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
 
 let toastTimer;
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // ── INIT ──
-initializeDB();
-updateAdminUI();
+initializeDB().then(()=>{ updateAdminUI(); });
 </script>
 </body>
 </html>
