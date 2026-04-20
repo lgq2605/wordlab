@@ -649,25 +649,27 @@ function updateStats() {
 
 async function initializeDB() {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      db = JSON.parse(stored);
-    } else {
-      const legacy = localStorage.getItem('wf_db_v1');
-      if (legacy) {
-        const old = JSON.parse(legacy);
-        db = migrateFromV1(old);
-        saveDB();
-      } else {
-        // Auto-load all 24 CSV files
-        db = await autoLoadAllCSVs();
-        if (db.length) saveDB();
-      }
+    // ALWAYS reload CSV
+    db = await autoLoadAllCSVs();
+
+    if (db.length) {
+      saveDB(); // overwrite old data
     }
-  } catch(e) { console.error('DB init error:', e); db = []; }
-  db.forEach(w => { if (w.mistakeCount === undefined) w.mistakeCount = 0; });
-  const ids = db.map(w=>w.id).filter(id=>typeof id==='number'&&!isNaN(id));
+
+  } catch (e) {
+    console.error('DB init error:', e);
+    db = [];
+  }
+
+  // Ensure mistakeCount exists
+  db.forEach(w => {
+    if (w.mistakeCount === undefined) w.mistakeCount = 0;
+  });
+
+  // Fix nextId
+  const ids = db.map(w => w.id).filter(id => typeof id === 'number' && !isNaN(id));
   nextId = (ids.length ? Math.max(...ids) : 0) + 1;
+
   updateStats();
 }
 
