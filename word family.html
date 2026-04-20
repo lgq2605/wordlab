@@ -822,6 +822,14 @@ function formatTime(sec) {
 }
 
 // ══════════════════════════════════════════
+// MODE 1 — Meaning → Word  (with loại từ)
+// ══════════════════════════════════════════
+let m1Questions=[], m1Idx=0, m1Correct=0, m1Wrong=0, m1Streak=0, m1Revealed=false;
+let m1StartTime=0;
+
+function startMode1() { showTab('mode1'); }
+
+// ══════════════════════════════════════════
 // WEAK WORDS
 // ══════════════════════════════════════════
 function startWeakWordsMode() {
@@ -846,17 +854,9 @@ function startWeakWordsMode() {
   shuffle(pool);
   m1Questions = pool; m1Idx=0; m1Correct=0; m1Wrong=0; m1Streak=0; m1Revealed=false;
   quizActive = true;
-  showTab('mode1', true); showPanel('m1','quiz'); renderMode1();
+  showTab('mode1', true); showPanel('m1','quiz'); startTimer('m1-timer'); renderMode1();
   showToast('🔥 '+weakWords.length+' weak word(s) — '+pool.length+' questions');
 }
-
-// ══════════════════════════════════════════
-// MODE 1 — Meaning → Word  (with loại từ)
-// ══════════════════════════════════════════
-let m1Questions=[], m1Idx=0, m1Correct=0, m1Wrong=0, m1Streak=0, m1Revealed=false;
-let m1StartTime=0;
-
-function startMode1() { showTab('mode1'); }
 
 // ══════════════════════════════════════════
 // LESSON / UNIT CSV LOADER
