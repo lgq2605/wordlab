@@ -1,13 +1,4 @@
 Root word,Word,Phonetic,Type,Vietnamese meaning
-VIRTUAL,Virtuality,/ˌvɜːrtʃuˈæləti/,n,Tính chất ảo; sự tồn tại ảo
-VIRTUAL,Virtual reality,/ˈvɜːrtʃuəl riˈæləti/,n,Thực tế ảo
-VIRTUAL,Virtual,/ˈvɜːrtʃuəl/,adj,Ảo; không thực
-VIRTUAL,Virtually,/ˈvɜːrtʃuəli/,adv,Hầu như; gần như
-EXPECT,Expect,/ɪkˈspekt/,v,Mong đợi; kì vọng
-EXPECT,Expectation,/ˌekspekˈteɪʃən/,n,Sự mong chờ; trông đợi
-EXPECT,Expectative,/ɪkˈspektətɪv/,adj,Mang tính mong đợi
-EXPECT,Expectant,/ɪkˈspektənt/,adj,Mong chờ; trông đợi
-EXPECT,Expectantly,/ɪkˈspektəntli/,adv,Một cách mong đợi
 FARAWAY,Faraway,/ˈfɑːrəweɪ/,adj,Xa xôi; xa vời
 HIGHLIGHT,Highlight,/ˈhaɪlaɪt/,v,Nhấn mạnh; làm nổi bật
 HIGHLIGHT,Highlight,/ˈhaɪlaɪt/,n,Điểm nổi bật
@@ -31,20 +22,3 @@ EXPERIMENT,Experiment,/ɪkˈsperɪmənt/,v,Làm thí nghiệm
 EXPERIMENT,Experiment,/ɪkˈsperɪmənt/,n,Thí nghiệm
 EXPERIMENT,Experimental,/ɪkˌsperɪˈmentəl/,adj,Thực nghiệm
 EXPERIMENT,Experimentally,/ɪkˌsperɪˈmentəli/,adv,Về mặt thực nghiệm
-BREAK DOWN,Break down,/breɪk daʊn/,phr.v,Hư hỏng; đưa nên tài tổ
-CRIMINALISE,Criminalise,/ˈkrɪmɪnəlaɪz/,v,Gây tội
-CRIMINALISE,Criminal,/ˈkrɪmɪnəl/,n,Tội phạm tội
-CRIMINALISE,Crime,/kraɪm/,n,Tội phạm; tội ác
-CRIMINALISE,Criminality,/ˌkrɪmɪˈnæləti/,n,Sự phạm tội
-CRIMINALISE,Criminal,/ˈkrɪmɪnəl/,adj,Thuộc về; liên quan đến tội phạm
-CRIMINALISE,Criminally,/ˈkrɪmɪnəli/,adv,Theo kiểu tội phạm
-IMPLEMENT,Implement,/ˈɪmplɪment/,v,Thi hành pháp luật
-IMPLEMENT,Implement,/ˈɪmplɪmənt/,n,Đồ dùng; dụng cụ; phương tiện
-IMPLEMENT,Kitchen implements,/ˈkɪtʃɪn ˈɪmplɪmənts/,n,Dụng cụ làm bếp
-MEDICATE,Medicate,/ˈmedɪkeɪt/,v,Treat someone with a medicine
-MEDICATE,Medical,/ˈmedɪkəl/,adj,Thuộc về y tế
-MEDICATE,Medically,/ˈmedɪkəli/,adv,Về mặt y tế
-MEDICATE,Medicine,/ˈmedɪsɪn/,n,Y khoa; thuốc uống
-POTENTIAL,Potential,/pəˈtenʃəl/,n,Khả năng; tiềm lực
-POTENTIAL,Potential,/pəˈtenʃəl/,adj,Tiềm năng
-POTENTIAL,Potentially,/pəˈtenʃəli/,adv,Có tiềm năng; có thể

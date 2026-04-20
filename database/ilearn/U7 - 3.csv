@@ -1,15 +1,18 @@
 Root word,Word,Phonetic,Type,Vietnamese meaning
-BORDER,Border,/ˈbɔːrdər/,n,Biên giới
-SUMMIT,Summit,/ˈsʌmɪt/,n,Đỉnh; điểm cao nhất
-SUMMIT,Summitless,/ˈsʌmɪtlɪs/,adj,Không có đỉnh; không cao điểm
-WONDER,Wonder,/ˈwʌndər/,n,Kỳ quan
-WONDER,Wonderful,/ˈwʌndərfəl/,adj,Tuyệt vời
-WONDER,Wonderfully,/ˈwʌndərfəli/,adv,Một cách tuyệt vời
-WONDER,Wondrous,/ˈwʌndrəs/,adj,Kỳ diệu; kỳ lạ
-LIMIT,Limit,/ˈlɪmɪt/,v,Giới hạn; hạn chế
-LIMIT,Limit,/ˈlɪmɪt/,n,Giới hạn; ranh giới
-LIMIT,Limitation,/ˌlɪmɪˈteɪʃən/,n,Sự/tình hạn chế; giới hạn
-LIMIT,Limitations,/ˌlɪmɪˈteɪʃənz/,n,Nhược điểm; mặt hạn chế
-LIMIT,Limited,/ˈlɪmɪtɪd/,adj,Bị hạn chế
-SEA LEVEL,Sea level,/siː ˈlevəl/,n,Mức nước biển
-VOLUME,Volume,/ˈvɒljuːm/,n,Thể tích; khối lượng
+BREAK DOWN,Break down,/breɪk daʊn/,phr.v,Hư hỏng; trở nên tồi tệ
+CRIMINALISE,Criminalise,/ˈkrɪmɪnəlaɪz/,v,Gây án
+CRIMINALISE,Criminal,/ˈkrɪmɪnəl/,n,Kẻ phạm tội
+CRIMINALISE,Crime,/kraɪm/,n,Tội phạm; tội ác
+CRIMINALISE,Criminality,/ˌkrɪmɪˈnæləti/,n,Sự phạm tội
+CRIMINALISE,Criminal,/ˈkrɪmɪnəl/,adj,Thuộc về; liên quan đến tội phạm
+CRIMINALISE,Criminally,/ˈkrɪmɪnəli/,adv,Theo kiểu tội phạm
+IMPLEMENT,Implement,/ˈɪmplɪment/,v,Thi hành pháp luật
+IMPLEMENT,Implement,/ˈɪmplɪmənt/,n,Đồ dùng; dụng cụ; phương tiện
+IMPLEMENT,Kitchen implements,/ˈkɪtʃɪn ˈɪmplɪmənts/,n,Dụng cụ làm bếp
+MEDICATE,Medicate,/ˈmedɪkeɪt/,v,Điều trị ai đó bằng thuốc
+MEDICATE,Medical,/ˈmedɪkəl/,adj,Thuộc về y tế
+MEDICATE,Medically,/ˈmedɪkəli/,adv,Về mặt y tế
+MEDICATE,Medicine,/ˈmedɪsɪn/,n,Y khoa; thuốc uống
+POTENTIAL,Potential,/pəˈtenʃəl/,n,Khả năng; tiềm lực
+POTENTIAL,Potential,/pəˈtenʃəl/,adj,Tiềm năng
+POTENTIAL,Potentially,/pəˈtenʃəli/,adv,Có tiềm năng; có thể

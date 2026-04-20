@@ -2,6 +2,7 @@ Root word,Word,Phonetic,Type,Vietnamese meaning
 ACCESS,Access,/ˈækses/,v,Truy cập
 ACCESS,Access,/ˈækses/,n,Sự truy cập
 ACCESS,Accessible,/əkˈsesɪbəl/,adj,Có thể tới được; dễ tiếp cận
+ACCESS,Inaccessible,/ɪnəkˈsesəbəl/,adj,Không thể tiếp cận
 ACCESS,Accessibly,/əkˈsesɪbli/,adv,Một cách dễ tiếp cận
 DEER,Deer,/dɪər/,n,Con nai
 EXPLORE,Explore,/ɪkˈsplɔːr/,v,Khám phá
@@ -19,12 +20,18 @@ MOUNT,Mount,/maʊnt/,n,Ngọn núi
 MOUNT,Mountain,/ˈmaʊntən/,n,Núi
 MOUNT,Mountaineer,/ˌmaʊntɪˈnɪər/,n,Người leo núi
 MOUNT,Mountainous,/ˈmaʊntɪnəs/,adj,Nhiều núi; thuộc về núi
-ONE CROP,One crop,/wʌn krɒp/,n,Phần đất loại; thảo lợi
+OUTCROP,Outcrop,/ˈaʊtkrɒp/,n,Phần đất (đá) trồi lên
 RAIN FOREST,Rain forest,/reɪn ˈfɒrɪst/,n,Rừng nhiệt đới
-SCENE,Scene,/siːn/,n,Ảnh
+SCENE,Scene,/siːn/,n,Cảnh vật; khung cảnh
 SCENE,Scenic,/ˈsiːnɪk/,adj,Có cảnh đẹp thiên nhiên
 SCENE,Scenario,/sɪˈnɑːriəʊ/,n,Tình huống; kịch bản
 SCENE,Scenically,/ˈsiːnɪkli/,adv,Thuộc cảnh vật
-SPECTACULAR,Spectacular,/spekˈtækjʊlər/,n,Cảnh tượng; sự hài đẹp
+SPECTACULAR,Spectacular,/spekˈtækjʊlər/,n,Cảnh tượng; sự kì diệu
 SPECTACULAR,Spectacular,/spekˈtækjʊlər/,adj,Đẹp mắt; ngoạn mục
 SPECTACULAR,Spectacularly,/spekˈtækjʊləli/,adv,Một cách ngoạn mục
+SUMMIT,Summit,/ˈsʌmɪt/,n,Đỉnh; điểm cao nhất
+SUMMIT,Summitless,/ˈsʌmɪtlɪs/,adj,Không có đỉnh; không có chóp
+WONDER,Wonder,/ˈwʌndər/,v,Tự hỏi; thắc mắc
+WONDER,Wonder,/ˈwʌndər/,n,Kỳ quan
+WONDER,Wonderful,/ˈwʌndərfəl/,adj,Tuyệt vời
+WONDER,Wonderfully,/ˈwʌndərfəli/,adv,Một cách tuyệt vời
