@@ -126,21 +126,42 @@
   }
   .db-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
   .db-table tbody tr:last-child { border-bottom: none; }
-  .db-table tbody tr:hover { background: rgba(124,106,247,.06); }
-  .db-table td { padding: 10px 14px; vertical-align: middle; }
-  .db-table .col-root { font-family: 'Instrument Serif', serif; font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; }
-  .db-table .col-word { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+  .db-table tbody tr:hover { background: rgba(124,106,247,.08); }
+  .db-table td { padding: 11px 14px; vertical-align: middle; }
+  .db-table .col-root { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #ffffff; white-space: nowrap; letter-spacing: 0.5px; }
+  .db-table .col-root-inner { display: inline-block; background: rgba(124,106,247,.18); border: 1px solid rgba(124,106,247,.35); border-radius: 6px; padding: 3px 10px; }
+  .db-table .col-word { font-family: 'DM Mono', monospace; font-size: 13px; color: #e0e2f0; font-weight: 500; }
   .db-table .col-phon { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
   .db-table .col-type { }
-  .db-table .col-mean { font-size: 12px; color: var(--muted); }
+  .db-table .col-mean { font-size: 12px; color: #a0a4be; }
   .db-table .col-err  { font-size: 11px; color: var(--danger); font-weight: 700; white-space: nowrap; }
-  .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; text-transform: lowercase; }
-  .type-n   { background: rgba(124,106,247,.15); color: var(--accent); }
-  .type-v   { background: rgba(106,247,184,.12); color: var(--success); }
-  .type-adj { background: rgba(247,194,106,.12); color: var(--accent2); }
-  .type-adv { background: rgba(247,106,106,.12); color: var(--danger); }
-  .type-phrv { background: rgba(106,200,247,.12); color: #6ac8f7; }
-  .type-other { background: var(--border); color: var(--muted); }
+  .type-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; text-transform: lowercase; letter-spacing: 0.2px; }
+  .type-n   { background: #3d2fff; color: #fff; }
+  .type-v   { background: #00904f; color: #fff; }
+  .type-adj { background: #b35e00; color: #fff; }
+  .type-adv { background: #b52020; color: #fff; }
+  .type-phrv { background: #0070b8; color: #fff; }
+  .type-other { background: #444860; color: #fff; }
+
+  /* Settings tab */
+  .settings-section { margin-bottom: 28px; }
+  .settings-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(42,45,58,.5); gap: 20px; }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-info { flex: 1; }
+  .settings-row-info strong { display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .settings-row-info span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Revamped combined entry+meaning rows in modal */
+  .combined-row { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .combined-row input, .combined-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; min-width: 0; }
+  .combined-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
+  .combined-row .meaning-input { color: #9dd49d; font-style: italic; }
+  .combined-row .meaning-input::placeholder { color: #4a6a4a; font-style: italic; }
+  .combined-row .del-entry { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
+  .combined-row .del-entry:hover { color: var(--danger); }
+  .combined-row-header { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; padding: 0 12px; margin-bottom: 4px; }
+  .combined-row-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
 
   /* Modal */
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s; }
@@ -221,6 +242,7 @@
     <button class="nav-btn" onclick="showTab('mode1')">📝 Mode 1</button>
     <button class="nav-btn" onclick="showTab('mode2')">🧩 Mode 2</button>
     <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
+    <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
   </nav>
 
   <!-- HOME -->
@@ -346,7 +368,7 @@
       <div class="action-row">
         <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
         <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
-        <button class="btn btn-secondary" onclick="skipMode1()">Skip</button>
+        <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip</button>
       </div>
     </div>
 
@@ -516,30 +538,48 @@
     </div>
   </div>
 
+  <!-- SETTINGS -->
+  <div id="tab-settings" class="hidden">
+    <div class="card">
+      <h2 class="section-title" style="margin-bottom:6px">Settings</h2>
+      <p class="section-sub">Manage your app preferences and data.</p>
+
+      <div class="settings-section">
+        <h3>Data</h3>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <strong>Clear Personal Data</strong>
+            <span>Removes all saved progress, mistake counts, and your database from this device. The app will reload fresh from the CSV files.</span>
+          </div>
+          <button class="btn btn-danger" onclick="clearAllData()">🗑 Clear Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- MODAL Add/Edit Word -->
 <div class="overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal" style="max-width:680px;">
+  <div class="modal" style="max-width:820px;">
     <div class="modal-title" id="modal-title">Add Word</div>
     <input type="hidden" id="edit-root-key">
     <div class="form-group">
       <label>Root Word</label>
-      <input type="text" class="form-input" id="f-root" placeholder="e.g. ABBREVIATE" style="text-transform:uppercase;">
+      <input type="text" class="form-input" id="f-root" placeholder="e.g. ABBREVIATE" style="text-transform:uppercase;font-family:'DM Mono',monospace;font-size:16px;font-weight:700;letter-spacing:1px;">
     </div>
     <div style="margin-bottom:8px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Entries</span>
+        <div>
+          <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Entries</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:10px;">Each row = one word form + its Vietnamese meaning</span>
+        </div>
         <button class="btn btn-secondary btn-sm" onclick="addEntryRow()" id="add-entry-row-btn">＋ Add Row</button>
       </div>
-      <div class="entry-row-header">
-        <span>Word</span><span>Phonetic</span><span>Type</span><span></span>
+      <div class="combined-row-header">
+        <span>Word</span><span>Phonetic</span><span>Type</span><span>Vietnamese Meaning</span><span></span>
       </div>
       <div class="entry-list" id="entry-list"></div>
-    </div>
-    <div class="form-group">
-      <label>Vietnamese Meanings (one per line — each becomes a Mode 1 question)</label>
-      <textarea class="form-input" id="f-meanings" placeholder="viết tắt&#10;chữ viết tắt"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -733,7 +773,7 @@ function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&l
 // ══════════════════════════════════════════
 // TAB / PANEL NAVIGATION
 // ══════════════════════════════════════════
-const tabs = ['home','mode1','mode2','database'];
+const tabs = ['home','mode1','mode2','database','settings'];
 let quizActive = false;
 
 function showTab(name, force) {
@@ -790,7 +830,17 @@ function startWeakWordsMode() {
   weakWords.sort((a,b)=>(b.mistakeCount||0)-(a.mistakeCount||0));
   const pool = [];
   weakWords.forEach(word => {
-    word.meanings.forEach(meaning => { if (meaning.trim()) pool.push({word, meaning:meaning.trim()}); });
+    const meanings = word.meanings.filter(m => m.trim());
+    if (!meanings.length) return;
+    if (word.entries.length > 0) {
+      word.entries.forEach(entry => {
+        const meaning = meanings[Math.floor(Math.random() * meanings.length)];
+        pool.push({ word, entry, meaning: meaning.trim() });
+      });
+    } else {
+      const meaning = meanings[Math.floor(Math.random() * meanings.length)];
+      pool.push({ word, entry: null, meaning: meaning.trim() });
+    }
   });
   if (!pool.length) { showToast('⚠️ No meanings found on weak words.'); return; }
   shuffle(pool);
@@ -865,7 +915,7 @@ function parseCSVToWords(text) {
 
 // Load one CSV file by unit/lesson, returns Promise<word[]>
 async function loadLessonCSV(unit, lesson) {
-  const filename = `U${unit}%20-%20${lesson}.csv`;
+  const filename = `database/ilearn/U${unit}%20-%20${lesson}.csv`;
   try {
     const res = await fetch(filename);
     if (!res.ok) return [];
@@ -944,9 +994,19 @@ async function _doBeginMode1() {
       words = db;
     }
     words.forEach(word => {
-      word.meanings.forEach(meaning => {
-        if (meaning.trim()) pool.push({ word, meaning: meaning.trim() });
-      });
+      const meanings = word.meanings.filter(m => m.trim());
+      if (!meanings.length) return;
+      // One question per entry (each entry has its own type + 1 random meaning)
+      if (word.entries.length > 0) {
+        word.entries.forEach(entry => {
+          const meaning = meanings[Math.floor(Math.random() * meanings.length)];
+          pool.push({ word, entry, meaning: meaning.trim() });
+        });
+      } else {
+        // Words with no entries but have meanings — use root word
+        const meaning = meanings[Math.floor(Math.random() * meanings.length)];
+        pool.push({ word, entry: null, meaning: meaning.trim() });
+      }
     });
     if (!pool.length) { showToast('⚠️ No meanings found in selected words!'); return; }
   } finally { showLoadingBtn('m1-start-btn', false); }
@@ -983,8 +1043,8 @@ async function _doBeginMode2() {
       if (!db.length) { showToast('⚠️ Database is empty!'); return; }
       words = db;
     }
-    const pool = words.filter(w => w.entries.length > 0);
-    if (!pool.length) { showToast('⚠️ No word entries found in selected words!'); return; }
+    const pool = words.filter(w => w.entries.length >= 2);
+    if (!pool.length) { showToast('⚠️ No words with 2+ entries found in selected words!'); return; }
     const n = parseInt(document.getElementById('m2-count').value);
     shuffle(pool);
     m2Queue = pool.slice(0, Math.min(n, pool.length));
@@ -1005,21 +1065,20 @@ function renderMode1() {
   document.getElementById('m1-streak').textContent = m1Streak;
   document.getElementById('m1-meaning').textContent = q.meaning;
 
-  // Show type tag — show all types present in the word's entries
-  const types = [...new Set(q.word.entries.map(e=>e.type))];
+  // Show type tag — show only the type of the specific entry being asked
   const typeLabels = { n:'Noun (n)', v:'Verb (v)', adj:'Adjective (adj)', adv:'Adverb (adv)', 'phr.v':'Phrasal Verb (phr.v)' };
   const typeTag = document.getElementById('m1-type-tag');
-  if (types.length) {
-    typeTag.textContent = types.map(t=>typeLabels[t]||t).join(' / ');
+  if (q.entry && q.entry.type) {
+    typeTag.textContent = typeLabels[q.entry.type] || q.entry.type;
     typeTag.style.display = 'inline-block';
   } else {
     typeTag.style.display = 'none';
   }
 
-  // Show root word directly
-  document.getElementById('m1-hint').style.display = 'block';
+  // Hide root word behind hint button — revealed on click
+  document.getElementById('m1-hint').style.display = 'none';
   document.getElementById('m1-hint').textContent = 'Root word: '+q.word.root;
-  document.getElementById('m1-hint-btn').style.display = 'none';
+  document.getElementById('m1-hint-btn').style.display = 'inline-flex';
 
   const inp = document.getElementById('m1-input');
   inp.value=''; inp.className='answer-input'; inp.disabled=false; inp.focus();
@@ -1027,6 +1086,7 @@ function renderMode1() {
   fb.style.display='none'; fb.className='feedback-box';
   document.getElementById('m1-submit-btn').classList.remove('hidden');
   document.getElementById('m1-next-btn').classList.add('hidden');
+  document.getElementById('m1-skip-btn').classList.remove('hidden');
   m1Revealed = false;
 }
 
@@ -1036,6 +1096,14 @@ function showM1Hint() {
 }
 
 function normalize(s) { return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' '); }
+
+// Increment mistakeCount on the real db entry (by root), so weak-words tracking
+// works even when the quiz word object came from a CSV loader (not a db reference).
+function recordMistake(quizWord) {
+  quizWord.mistakeCount = (quizWord.mistakeCount || 0) + 1;
+  const dbWord = db.find(w => w.root === quizWord.root);
+  if (dbWord) { dbWord.mistakeCount = (dbWord.mistakeCount || 0) + 1; saveDB(); }
+}
 
 function getWordAnswers(word) {
   // Returns all normalized word forms from entries
@@ -1049,8 +1117,13 @@ function checkMode1() {
   const userVal = normalize(input.value);
   if (!userVal) return;
 
-  const allAnswers = getWordAnswers(q.word);
-  allAnswers.push(normalize(q.word.root));
+  // Only accept the specific entry word being asked (or root if no entry)
+  let allAnswers = [];
+  if (q.entry) {
+    allAnswers = [normalize(q.entry.word.split(/[/([\s]/)[0])];
+  } else {
+    allAnswers = [normalize(q.word.root)];
+  }
   const isCorrect = allAnswers.some(a => a === userVal);
 
   const fb = document.getElementById('m1-feedback');
@@ -1061,10 +1134,10 @@ function checkMode1() {
     fb.className='feedback-box correct'; fb.textContent='✓ Correct! Well done.';
   } else {
     input.className='answer-input wrong'; m1Wrong++; m1Streak=0;
-    q.word.mistakeCount=(q.word.mistakeCount||0)+1;
+    recordMistake(q.word);
     fb.className='feedback-box wrong';
-    const correctForms = q.word.entries.slice(0,6).map(e=>e.word+(e.phonetic?' '+e.phonetic:'')).join(' · ');
-    fb.textContent = '✗ Correct answers: '+(correctForms||q.word.root);
+    const correctWord = q.entry ? (q.entry.word + (q.entry.phonetic ? ' ' + q.entry.phonetic : '')) : q.word.root;
+    fb.textContent = '✗ Correct answer: ' + correctWord;
   }
   fb.style.display='block';
   input.disabled=true;
@@ -1072,23 +1145,25 @@ function checkMode1() {
   document.getElementById('m1-hint').style.display='block';
   document.getElementById('m1-submit-btn').classList.add('hidden');
   document.getElementById('m1-next-btn').classList.remove('hidden');
+  document.getElementById('m1-skip-btn').classList.add('hidden');
   updateSessionScore();
 }
 
 function skipMode1() {
   if (m1Revealed) return;
   const q = m1Questions[m1Idx];
-  m1Wrong++; m1Streak=0; q.word.mistakeCount=(q.word.mistakeCount||0)+1;
+  m1Wrong++; m1Streak=0; recordMistake(q.word);
   const fb=document.getElementById('m1-feedback');
-  const correctForms = q.word.entries.slice(0,6).map(e=>e.word).join(' · ');
+  const correctWord = q.entry ? q.entry.word : q.word.root;
   fb.className='feedback-box wrong';
-  fb.textContent='Skipped. Correct answers: '+(correctForms||q.word.root);
+  fb.textContent='Skipped. Correct answer: ' + correctWord;
   fb.style.display='block'; m1Revealed=true;
   document.getElementById('m1-input').disabled=true;
   document.getElementById('m1-hint-btn').style.display='none';
   document.getElementById('m1-hint').style.display='block';
   document.getElementById('m1-submit-btn').classList.add('hidden');
   document.getElementById('m1-next-btn').classList.remove('hidden');
+  document.getElementById('m1-skip-btn').classList.add('hidden');
   updateSessionScore();
 }
 
@@ -1161,7 +1236,7 @@ function checkMode2() {
     }
   });
 
-  if (totalWrong>0) { const cw=m2Queue[m2Idx]; cw.mistakeCount=(cw.mistakeCount||0)+1; }
+  if (totalWrong>0) { recordMistake(m2Queue[m2Idx]); }
 
   if (!m2CurrentWordChecked) {
     m2TotalCorrect+=totalCorrect; m2TotalWrong+=totalWrong; m2TotalFields+=slots.length; m2CurrentWordChecked=true;
@@ -1245,7 +1320,7 @@ function renderDB() {
       const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
       const meanStr=word.meanings.slice(0,2).map(m=>escapeHtml(m)).join(', ');
       return '<tr onclick="openEditModal('+word.id+')" title="Click to edit">'
-        +'<td class="col-root">'+escapeHtml(word.root)+' '+errChip+'</td>'
+        +'<td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+'</td>'
         +'<td class="col-word">'+wordStr+'</td>'
         +'<td class="col-phon">'+phonStr+'</td>'
         +'<td class="col-type">'+typeStr+'</td>'
@@ -1268,20 +1343,21 @@ function renderDB() {
 // ══════════════════════════════════════════
 let _editWordId = null;
 
-function addEntryRow(word='', phonetic='', type='n') {
+function addEntryRow(word='', phonetic='', type='n', meaning='') {
   const list=document.getElementById('entry-list');
-  const row=document.createElement('div'); row.className='entry-row';
+  const row=document.createElement('div'); row.className='combined-row';
   row.innerHTML=
     '<input type="text" placeholder="e.g. abbreviation" value="'+escapeHtml(word)+'">'
-    +'<input type="text" placeholder="/əˌbriːviˈeɪʃn/" value="'+escapeHtml(phonetic)+'">'
+    +'<input type="text" placeholder="/əˌbriː…/" value="'+escapeHtml(phonetic)+'">'
     +'<select>'
-      +'<option value="n"'+(type==='n'?' selected':'')+'>n — noun</option>'
-      +'<option value="v"'+(type==='v'?' selected':'')+'>v — verb</option>'
-      +'<option value="adj"'+(type==='adj'?' selected':'')+'>adj — adjective</option>'
-      +'<option value="adv"'+(type==='adv'?' selected':'')+'>adv — adverb</option>'
-      +'<option value="phr.v"'+(type==='phr.v'?' selected':'')+'>phr.v — phrasal verb</option>'
+      +'<option value="n"'+(type==='n'?' selected':'')+'>n</option>'
+      +'<option value="v"'+(type==='v'?' selected':'')+'>v</option>'
+      +'<option value="adj"'+(type==='adj'?' selected':'')+'>adj</option>'
+      +'<option value="adv"'+(type==='adv'?' selected':'')+'>adv</option>'
+      +'<option value="phr.v"'+(type==='phr.v'?' selected':'')+'>phr.v</option>'
     +'</select>'
-    +'<button class="del-entry" onclick="this.closest(\'.entry-row\').remove()" title="Remove">✕</button>';
+    +'<input type="text" class="meaning-input" placeholder="Vietnamese meaning…" value="'+escapeHtml(meaning)+'">'
+    +'<button class="del-entry" onclick="this.closest(\'.combined-row\').remove()" title="Remove">✕</button>';
   list.appendChild(row);
 }
 
@@ -1289,7 +1365,7 @@ function openAddModal() {
   if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
   _editWordId=null;
   document.getElementById('modal-title').textContent='Add Word';
-  document.getElementById('f-root').value=''; document.getElementById('f-meanings').value='';
+  document.getElementById('f-root').value='';
   document.getElementById('entry-list').innerHTML='';
   addEntryRow();
   document.getElementById('delete-btn').style.display='none';
@@ -1308,13 +1384,25 @@ function openEditModal(id) {
   document.getElementById('modal-title').textContent=(readonly?'View: ':'Edit: ')+word.root;
   document.getElementById('edit-root-key').value=id;
   document.getElementById('f-root').value=word.root;
-  document.getElementById('f-meanings').value=word.meanings.join('\n');
   document.getElementById('f-root').disabled=readonly;
-  document.getElementById('f-meanings').disabled=readonly;
 
+  // Build combined rows: one per entry, cycling through meanings
   const list=document.getElementById('entry-list'); list.innerHTML='';
-  word.entries.forEach(e=>addEntryRow(e.word, e.phonetic||'', e.type));
-  if (!word.entries.length) addEntryRow();
+  const meanings=word.meanings.length?word.meanings:[''];
+  if (word.entries.length) {
+    word.entries.forEach((e,i)=>{
+      // Assign a meaning to each entry by cycling through meanings array
+      const m=meanings[i%meanings.length]||'';
+      addEntryRow(e.word, e.phonetic||'', e.type, m);
+    });
+    // If there are more meanings than entries, add extra rows for remaining meanings
+    for (let i=word.entries.length;i<meanings.length;i++) {
+      addEntryRow('','','n',meanings[i]);
+    }
+  } else {
+    meanings.forEach(m=>addEntryRow('','','n',m));
+    if (!meanings.length) addEntryRow();
+  }
 
   // Disable inputs if readonly
   if (readonly) {
@@ -1352,20 +1440,23 @@ function saveWord() {
   const duplicate=db.some(w=>w.root===root && w.id!==_editWordId);
   if (duplicate) { showToast('⚠️ Root word already exists!'); return; }
 
-  // Collect entries from rows
-  const rows=document.querySelectorAll('#entry-list .entry-row');
+  // Collect entries and meanings from combined rows
+  // Each row: input[0]=word, input[1]=phonetic, input[2]=meaning; select=type
+  const rows=document.querySelectorAll('#entry-list .combined-row');
   const entries=[];
+  const meaningsSet=new Set();
   rows.forEach(row=>{
     const inputs=row.querySelectorAll('input');
     const sel=row.querySelector('select');
-    const word=inputs[0].value.trim();
-    if (!word) return;
-    entries.push({ word, phonetic: inputs[1].value.trim(), type: sel.value });
+    const wordVal=inputs[0].value.trim();
+    const phonetic=inputs[1].value.trim();
+    const meaning=inputs[2]?inputs[2].value.trim():'';
+    if (wordVal) entries.push({ word: wordVal, phonetic, type: sel.value });
+    if (meaning) meaningsSet.add(meaning);
   });
+  const meanings=[...meaningsSet];
 
-  const meanings=document.getElementById('f-meanings').value.split('\n').map(s=>s.trim()).filter(Boolean);
   const existing=_editWordId?db.find(w=>w.id===_editWordId):null;
-
   const entry={ root, entries, meanings, mistakeCount: existing?(existing.mistakeCount||0):0 };
 
   if (_editWordId) {
@@ -1405,6 +1496,14 @@ function deleteAllWords() {
   if (!db.length) { showToast('Database is already empty.'); return; }
   if (!confirm('Delete ALL '+db.length+' word(s) from the database? This cannot be undone.')) return;
   db=[]; saveDB(); renderDB(); showToast('🗑 All words deleted.');
+}
+
+function clearAllData() {
+  if (!confirm('This will erase ALL saved data on this device — your database, progress, and mistake counts. The page will reload.\n\nContinue?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem('wf_db_v1');
+  showToast('✓ Data cleared — reloading…');
+  setTimeout(()=>location.reload(), 1200);
 }
 
 // ══════════════════════════════════════════
