@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vocab Hub — by Gia Quân</title>
+<title>Vocab Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -33,7 +33,6 @@
     overflow-x: hidden;
   }
 
-  /* Noise texture — identical to WordFamily */
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -42,7 +41,6 @@
     opacity: 0.4;
   }
 
-  /* Accent glow */
   body::after {
     content: '';
     position: fixed;
@@ -84,11 +82,291 @@
     border-radius: 999px; padding: 2px 8px;
     margin-left: 8px; vertical-align: middle;
   }
-  .header-by {
+
+  /* ── Tab Nav ── */
+  .header-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(124,106,247,.07);
+    border: 1px solid rgba(124,106,247,.28);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color .2s, background .2s, border-color .2s, box-shadow .2s;
+    white-space: nowrap;
+    box-shadow: 0 0 0 0 rgba(124,106,247,0);
+  }
+  .tab-btn:hover {
+    color: #fff;
+    background: rgba(124,106,247,.18);
+    border-color: rgba(124,106,247,.65);
+    box-shadow: 0 0 14px rgba(124,106,247,.22);
+  }
+  .tab-btn .tab-icon { font-size: 14px; display: flex; align-items: center; }
+
+  /* ── Modal Overlay ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(10,11,15,.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 580px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 36px 32px;
+    position: relative;
+    transform: translateY(16px) scale(.97);
+    transition: transform .24s cubic-bezier(.22,1,.36,1);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s, background .15s;
+  }
+  .modal-close:hover { color: var(--text); background: var(--border); }
+
+  .modal-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    letter-spacing: -.4px;
+    margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  /* ── Contributors ── */
+  .contrib-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .contrib-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .contrib-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    transition: border-color .18s;
+  }
+  .contrib-card:hover { border-color: rgba(124,106,247,.45); }
+
+  .contrib-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #a78bfa);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -.5px;
+    flex-shrink: 0;
+    /* Replace background with an img if you have one */
+  }
+  /* To use a photo: add style="background-image:url('photo.jpg'); background-size:cover;" to .contrib-avatar */
+
+  .contrib-info {}
+  .contrib-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .contrib-role {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  /* remove contrib-note style */
+
+  .contrib-links {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .contrib-link {
+    font-size: 11px;
     font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    text-decoration: none;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    transition: color .15s, border-color .15s;
+  }
+  .contrib-link:hover { color: var(--accent); border-color: rgba(124,106,247,.4); }
+
+  /* ── Crypto Donate ── */
+  .crypto-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .crypto-coin {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: border-color .18s;
+  }
+  .crypto-coin:hover { border-color: rgba(247,194,106,.35); }
+
+  .qr-placeholder {
+    width: 80px; height: 80px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1.5px dashed var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+    overflow: hidden;
+    position: relative;
+  }
+  /* To add your QR code image, replace the placeholder div with:
+     <img src="your-qr.png" style="width:80px;height:80px;border-radius:10px;object-fit:cover;">
+     OR add style="background-image:url('qr.png');background-size:cover;" to .qr-placeholder */
+  .qr-label {
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: .3px;
+  }
+
+  .crypto-details { flex: 1; min-width: 0; }
+  .crypto-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .crypto-icon { font-size: 20px; line-height: 1; }
+  .crypto-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .crypto-ticker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1px 7px;
+  }
+  .crypto-network {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .crypto-address-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,.25);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  .crypto-address {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* Replace the placeholder text below with your actual wallet address */
+  }
+  .copy-btn {
+    background: rgba(106,247,184,.08);
+    border: 1px solid rgba(106,247,184,.2);
+    border-radius: 6px;
+    color: var(--accent3);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
+    padding: 3px 9px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .copy-btn:hover { background: rgba(106,247,184,.16); }
+  .copy-btn.copied { color: var(--accent2); border-color: rgba(247,194,106,.3); background: rgba(247,194,106,.08); }
+
+  .donate-note {
+    margin-top: 22px;
+    padding: 14px 16px;
+    background: rgba(124,106,247,.06);
+    border: 1px solid rgba(124,106,247,.15);
+    border-radius: 10px;
     font-size: 12px;
     color: var(--muted);
+    line-height: 1.7;
+    text-align: center;
   }
+  .donate-note strong { color: var(--text); }
 
   /* ── Hero ── */
   .hero {
@@ -156,11 +434,7 @@
     box-shadow: 0 14px 44px rgba(124,106,247,.13);
   }
   .tool-card:not(.soon):hover .card-glow { opacity: 1; }
-
-  .tool-card.soon {
-    cursor: default;
-    opacity: .6;
-  }
+  .tool-card.soon { cursor: default; opacity: .6; }
 
   .card-icon { font-size: 30px; margin-bottom: 16px; line-height: 1; position: relative; }
   .card-label {
@@ -256,6 +530,11 @@
     .hero-title { letter-spacing: -.8px; }
     .hero-sub { font-size: 14px; }
     .tool-card { padding: 22px 18px; }
+    .header-tabs { gap: 4px; }
+    .tab-btn { padding: 5px 10px; font-size: 11px; }
+    .modal { padding: 28px 20px; }
+    .crypto-coin { flex-direction: column; }
+    .qr-placeholder { width: 100%; height: 160px; }
   }
 </style>
 </head>
@@ -269,7 +548,20 @@
       <span class="logo">Vocab<span>Hub</span></span>
       <span class="beta-tag">Beta</span>
     </div>
-    <span class="header-by">by Gia Quân</span>
+
+    <!-- Tab Buttons -->
+    <div class="header-tabs">
+      <button class="tab-btn" onclick="openModal('contributors')">
+        <span class="tab-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        </span> Contributors
+      </button>
+      <button class="tab-btn" onclick="openModal('coffee')">
+        <span class="tab-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
+        </span> Buy Me a Coffee
+      </button>
+    </div>
   </header>
 
   <!-- Hero -->
@@ -281,8 +573,6 @@
 
   <!-- Cards -->
   <div class="tools-grid">
-
-    <!-- Word Family -->
     <a class="tool-card" href="word family.html">
       <div class="card-glow"></div>
       <div class="card-icon">📝</div>
@@ -295,7 +585,6 @@
       </div>
     </a>
 
-    <!-- Word Stress -->
     <div class="tool-card soon">
       <div class="card-icon">🔊</div>
       <div class="card-label">Pronunciation</div>
@@ -305,11 +594,9 @@
         <span class="badge badge-soon">Coming soon</span>
       </div>
     </div>
-
   </div>
 
   <div class="divider"></div>
-
   <p class="note">More tools are on the way. Each one is designed to be<br>focused, distraction-free, and genuinely useful.</p>
 
 </div>
@@ -319,6 +606,207 @@
   <div class="credit">Made with care by <span>Gia Quân</span></div>
   <div class="credit-sub">vocabhub · 2025</div>
 </footer>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: Contributors
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-contributors" onclick="handleOverlayClick(event, 'contributors')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('contributors')">✕</button>
+    <div class="modal-title">Contributors</div>
+    <p class="modal-sub">The people who made VocabHub possible — designers, developers, and helpers.</p>
+
+    <div class="contrib-grid">
+
+      <!-- ── ROW 1 (Lead / Founder) ── -->
+      <div class="contrib-row">
+
+        <!--
+          ════════════════════════════════════════
+          HOW TO ADD A CONTRIBUTOR
+          ════════════════════════════════════════
+          1. Copy one <div class="contrib-card">…</div> block below.
+          2. Paste it inside a <div class="contrib-row"> — put 2–3 cards per row.
+          3. Change the initials in .contrib-avatar (or swap for an <img>).
+          4. Update name, role, note, and links.
+
+          To use a photo instead of initials:
+            Replace the text inside .contrib-avatar with:
+            <img src="photo.jpg" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+          ════════════════════════════════════════
+        -->
+
+        <!-- CONTRIBUTOR CARD — Gia Quân (you) -->
+        <div class="contrib-card">
+          <div class="contrib-avatar">GQ</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Lưu Gia Quân</div>
+            <div class="contrib-role">Developer & Founder</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">MA</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Trần Nguyễn Minh Anh</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">TA</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Trần Thị Thanh Ngân</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">MK</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Võ Phước Minh Khang</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">TH</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Nguyễn Trung Hiếu</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">TT</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Trương Ngọc Thanh Trúc</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+      </div><!-- /row 1 -->
+
+        
+
+      <!--
+        ════════════════════════════════════════
+        ADD MORE ROWS BELOW AS YOUR TEAM GROWS
+        Example of a 2-person row:
+
+        <div class="contrib-row">
+          <div class="contrib-card">
+            <div class="contrib-avatar">AB</div>
+            <div class="contrib-info">
+              <div class="contrib-name">Alice B.</div>
+              <div class="contrib-role">UI Designer</div>
+              <div class="contrib-links">
+                <a class="contrib-link" href="#" target="_blank">Dribbble</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contrib-card">
+            <div class="contrib-avatar">CK</div>
+            <div class="contrib-info">
+              <div class="contrib-name">Charlie K.</div>
+              <div class="contrib-role">Content Lead</div>
+              <div class="contrib-links">
+                <a class="contrib-link" href="#" target="_blank">Twitter</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        ════════════════════════════════════════
+      -->
+
+    </div><!-- /contrib-grid -->
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     MODAL: Buy Me a Coffee
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-coffee" onclick="handleOverlayClick(event, 'coffee')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('coffee')">✕</button>
+    <div class="modal-title">Buy Me a Coffee</div>
+    <p class="modal-sub">VocabHub is free and ad-free. If it's helped you learn, a small crypto donation keeps the lights on. Every bit is appreciated 🙏</p>
+
+    <div class="crypto-section">
+
+      <!-- Single wallet — accepts ETC, BTC, and VRSC -->
+      <div class="crypto-coin">
+
+        <!--
+          QR CODE — replace this placeholder div with your actual QR image:
+          <img src="your-qr.png" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
+        -->
+        <div class="qr-placeholder" style="width:100px;height:100px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3" rx=".5"/><rect x="18" y="18" width="3" height="3" rx=".5"/><rect x="14" y="18" width="1" height="1"/><rect x="18" y="14" width="1" height="1"/></svg>
+          <span class="qr-label">Your QR here</span>
+        </div>
+
+        <div class="crypto-details">
+          <div class="crypto-header" style="flex-wrap:wrap; gap: 6px;">
+            <span class="crypto-name">My Wallet</span>
+            <span class="crypto-ticker">ETC</span>
+            <span class="crypto-ticker">BTC</span>
+            <span class="crypto-ticker">VRSC</span>
+          </div>
+          <div class="crypto-network">One address — accepts all three coins</div>
+          <div class="crypto-address-wrap">
+            <!--
+              Replace the text below with your actual wallet address.
+            -->
+            <span class="crypto-address" id="addr-wallet">YOUR_WALLET_ADDRESS_HERE</span>
+            <button class="copy-btn" onclick="copyAddr('addr-wallet', this)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /crypto-section -->
+
+    <div class="donate-note">
+      <strong>Thank you for your support!</strong><br>
+      Double-check the network before sending. Donations go directly to maintaining and expanding VocabHub.
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById('modal-' + id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e, id) {
+    if (e.target === e.currentTarget) closeModal(id);
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['contributors','coffee'].forEach(closeModal);
+    }
+  });
+
+  function copyAddr(elemId, btn) {
+    const addr = document.getElementById(elemId).textContent.trim();
+    navigator.clipboard.writeText(addr).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
 
 </body>
 </html>
