@@ -7,153 +7,333 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0f13; --surface: #16181f; --surface2: #1e2029; --border: #2a2d3a;
-    --accent: #7c6af7; --accent2: #f7c26a; --accent3: #6af7b8;
-    --text: #e8e9f0; --muted: #6b6e82; --danger: #f76a6a; --success: #6af7b8; --radius: 14px;
+    --bg: #080910; --surface: #0f1117; --surface2: #161820; --surface3: #1c1f2a;
+    --border: #232636; --border2: #2e3247;
+    --accent: #7b68ee; --accent-glow: rgba(123,104,238,.25);
+    --accent2: #f0b429; --accent3: #34d399;
+    --text: #ecedf5; --muted: #5c6080; --muted2: #8890b0;
+    --danger: #f06464; --success: #34d399;
+    --radius: 16px; --radius-sm: 10px;
+    --glass: rgba(255,255,255,.03);
+    --glass-border: rgba(255,255,255,.07);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  /* Ambient background blobs */
   body::before {
     content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    background-size: 200px; opacity: 0.4;
+    background:
+      radial-gradient(ellipse 600px 400px at 10% 20%, rgba(123,104,238,.07) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 350px at 90% 80%, rgba(52,211,153,.05) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(240,180,41,.03) 0%, transparent 70%);
   }
-  .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
-  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
-  .logo { font-family: 'Instrument Serif', serif; font-size: 26px; color: var(--text); letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .stats-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; font-size: 13px; color: var(--muted); display: flex; gap: 16px; }
-  .stats-pill b { color: var(--accent2); }
-  nav { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
-  .nav-btn { padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--muted); transition: all .2s; font-family: 'Manrope', sans-serif; }
-  .nav-btn:hover { border-color: var(--accent); color: var(--text); }
-  .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; animation: fadeUp .3s ease; }
-  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-  .section-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 6px; letter-spacing: -0.3px; }
-  .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    background-size: 200px; opacity: 0.5;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 28px 20px 100px; }
+
+  /* ── HEADER ── */
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; gap: 12px; flex-wrap: wrap; }
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .logo { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
+  .logo span { background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-sub { font-size: 12px; color: var(--muted2); font-weight: 500; letter-spacing: .3px; }
+  .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* Stats pill — glassy */
+  .stats-pill {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 999px; padding: 7px 18px; font-size: 13px; color: var(--muted2);
+    display: flex; gap: 18px;
+  }
+  .stats-pill b { color: var(--accent2); font-weight: 700; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; gap: 4px; margin-bottom: 28px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 5px; width: fit-content; max-width: 100%;
+  }
+  .nav-btn {
+    padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; background: transparent; color: var(--muted2);
+    transition: all .2s cubic-bezier(.4,0,.2,1); font-family: 'Manrope', sans-serif;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--surface2); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--accent), #9d8df5);
+    color: #fff; box-shadow: 0 2px 16px var(--accent-glow);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    animation: fadeUp .35s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 4px 24px rgba(0,0,0,.3);
+  }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+  .section-title { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .section-sub { color: var(--muted2); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* ── HOME GREETING ── */
+  .home-greeting {
+    margin-bottom: 28px; padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(123,104,238,.1) 0%, rgba(52,211,153,.06) 100%);
+    border: 1px solid rgba(123,104,238,.2); border-radius: var(--radius);
+    position: relative; overflow: hidden;
+  }
+  .home-greeting::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,104,238,.15), transparent 70%);
+    pointer-events: none;
+  }
+  .home-greeting-time { font-size: 12px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .home-greeting-main { font-family: 'Instrument Serif', serif; font-size: 26px; line-height: 1.3; margin-bottom: 6px; }
+  .home-greeting-sub { font-size: 14px; color: var(--muted2); line-height: 1.6; }
+
+  /* ── MODE CARDS ── */
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
   @media(max-width:520px) { .mode-grid { grid-template-columns: 1fr; } }
-  .mode-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 22px 20px; cursor: pointer; transition: all .2s; background: var(--surface2); }
-  .mode-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .mode-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .mode-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px 20px; cursor: pointer;
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    background: var(--surface2); position: relative; overflow: hidden;
+  }
+  .mode-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0;
+    background: linear-gradient(135deg, var(--accent-glow), transparent);
+    transition: opacity .25s;
+  }
+  .mode-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(123,104,238,.15); }
+  .mode-card:hover::before { opacity: 1; }
+  .mode-card:active { transform: translateY(-1px); }
+  .mode-card .icon { font-size: 30px; margin-bottom: 12px; display: block; }
   .mode-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-  .mode-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-top: 10px; text-transform: uppercase; letter-spacing: .5px; }
-  .badge-purple { background: #3d3470; color: var(--accent); }
-  .badge-gold { background: #3d3020; color: var(--accent2); }
+  .mode-card p { font-size: 13px; color: var(--muted2); line-height: 1.55; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-top: 12px; text-transform: uppercase; letter-spacing: .6px; }
+  .badge-purple { background: rgba(123,104,238,.2); color: var(--accent); border: 1px solid rgba(123,104,238,.3); }
+  .badge-gold   { background: rgba(240,180,41,.15); color: var(--accent2); border: 1px solid rgba(240,180,41,.25); }
+  .badge-green  { background: rgba(52,211,153,.12); color: var(--accent3); border: 1px solid rgba(52,211,153,.2); }
 
-  /* Quiz header */
-  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
-  .progress-wrap { flex: 1; margin: 0 12px; }
-  .progress-bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; transition: width .4s ease; }
-  .progress-label { font-size: 12px; color: var(--muted); margin-top: 4px; text-align: right; }
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 11px 24px; border-radius: 12px; font-size: 14px; font-weight: 700;
+    cursor: pointer; border: none; transition: all .2s cubic-bezier(.4,0,.2,1);
+    font-family: 'Manrope', sans-serif; letter-spacing: .1px; position: relative;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(.97); }
 
-  /* Timer */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, #9370f5 100%);
+    color: #fff; box-shadow: 0 2px 16px var(--accent-glow);
+  }
+  .btn-primary:hover { box-shadow: 0 4px 24px rgba(123,104,238,.4); filter: brightness(1.1); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border2);
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: var(--surface3); transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent; color: var(--muted2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+
+  .btn-danger {
+    background: rgba(240,100,100,.12); color: var(--danger);
+    border: 1px solid rgba(240,100,100,.25);
+  }
+  .btn-danger:hover { background: rgba(240,100,100,.2); border-color: var(--danger); }
+
+  .btn-success {
+    background: rgba(52,211,153,.12); color: var(--success);
+    border: 1px solid rgba(52,211,153,.25);
+  }
+  .btn-success:hover { background: rgba(52,211,153,.2); }
+
+  .btn-sm   { padding: 7px 14px; font-size: 12px; border-radius: 9px; }
+  .btn-full { width: 100%; }
+
+  /* ── QUIZ HEADER ── */
+  .quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 10px; }
+  .progress-wrap { flex: 1; margin: 0 10px; }
+  .progress-bar { height: 5px; background: var(--surface3); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+  .progress-label { font-size: 11px; color: var(--muted); margin-top: 5px; text-align: right; font-weight: 600; }
+
+  /* ── TIMER ── */
   .timer-pill {
-    display: flex; align-items: center; gap: 5px;
+    display: inline-flex; align-items: center; gap: 5px;
     background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 999px; padding: 5px 12px;
-    font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text);
-    flex-shrink: 0;
+    border-radius: 10px; padding: 6px 12px;
+    font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); flex-shrink: 0;
   }
   .timer-pill.warning { border-color: var(--accent2); color: var(--accent2); }
-  .timer-pill.danger  { border-color: var(--danger);  color: var(--danger); animation: pulse .6s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .timer-pill.danger  { border-color: var(--danger); color: var(--danger); animation: pulse .6s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-  .question-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 20px; text-align: center; }
-  .question-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .question-text { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.4; }
-  .question-type-tag { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: rgba(124,106,247,.15); color: var(--accent); border: 1px solid rgba(124,106,247,.3); letter-spacing: .5px; }
-  .question-phonetic { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .question-hint-btn { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; cursor: pointer; transition: all .2s; }
+  /* ── QUESTION BOX ── */
+  .question-box {
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+    border: 1px solid var(--border2); border-radius: var(--radius);
+    padding: 32px 24px; margin-bottom: 18px; text-align: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .question-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; font-weight: 700; }
+  .question-text { font-family: 'Instrument Serif', serif; font-size: 30px; line-height: 1.4; }
+  .question-type-tag {
+    display: inline-flex; align-items: center; margin-top: 12px; font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 8px;
+    background: rgba(123,104,238,.15); color: var(--accent); border: 1px solid rgba(123,104,238,.25);
+    letter-spacing: .5px;
+  }
+  .question-hint-btn {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 12px;
+    font-size: 12px; color: var(--muted2); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px; padding: 5px 14px;
+    cursor: pointer; transition: all .2s; font-family: 'Manrope', sans-serif; font-weight: 600;
+  }
   .question-hint-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .question-hint { font-size: 13px; color: var(--muted); margin-top: 8px; font-style: italic; display: none; }
+  .question-hint { font-size: 13px; color: var(--muted2); margin-top: 10px; font-style: italic; display: none; }
 
-  .answer-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 18px; color: var(--text); font-family: 'DM Mono', monospace; outline: none; transition: border-color .2s; margin-bottom: 14px; text-align: center; }
-  .answer-input:focus { border-color: var(--accent); }
-  .answer-input.correct { border-color: var(--success); background: #0d2e22; }
-  .answer-input.wrong   { border-color: var(--danger);  background: #2e0d0d; }
+  /* ── ANSWER INPUT ── */
+  .answer-input {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 16px 20px; font-size: 18px; color: var(--text);
+    font-family: 'DM Mono', monospace; outline: none;
+    transition: border-color .2s, box-shadow .2s; margin-bottom: 14px; text-align: center;
+  }
+  .answer-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .answer-input.correct { border-color: var(--success); background: rgba(52,211,153,.06); box-shadow: 0 0 0 3px rgba(52,211,153,.1); }
+  .answer-input.wrong   { border-color: var(--danger);  background: rgba(240,100,100,.06); box-shadow: 0 0 0 3px rgba(240,100,100,.1); }
 
-  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 999px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; font-family: 'Manrope', sans-serif; }
-  .btn-primary   { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #6b59e8; transform: translateY(-1px); }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); }
-  .btn-danger    { background: #3a1010; color: var(--danger); border: 1.5px solid #5a1010; }
-  .btn-danger:hover { background: #4a1010; }
-  .btn-sm  { padding: 8px 16px; font-size: 13px; }
-  .btn-full{ width: 100%; justify-content: center; }
-
-  .feedback-box { border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px; font-size: 14px; display: none; animation: fadeUp .2s; line-height: 1.6; }
-  .feedback-box.correct { background: #0d2e22; border: 1px solid #1a5c3e; color: var(--success); }
-  .feedback-box.wrong   { background: #2e0d0d; border: 1px solid #5c1a1a; color: var(--danger); }
+  /* ── FEEDBACK BOX ── */
+  .feedback-box {
+    border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 16px;
+    font-size: 14px; display: none; animation: fadeUp .2s; line-height: 1.6; font-weight: 500;
+  }
+  .feedback-box.correct { background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.25); color: var(--success); }
+  .feedback-box.wrong   { background: rgba(240,100,100,.08); border: 1px solid rgba(240,100,100,.2); color: var(--danger); }
   .action-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-  /* Mode 2 */
-  .family-target { font-family: 'Instrument Serif', serif; font-size: 40px; text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
+  /* ── MODE 2 ── */
+  .family-target { font-family: 'Instrument Serif', serif; font-size: 42px; text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
   .family-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin: 20px 0; }
-  .family-slot { background: var(--surface2); border: 1.5px dashed var(--border); border-radius: 10px; padding: 12px 14px; }
-  .family-slot label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); display: block; margin-bottom: 4px; }
-  .family-slot .slot-phonetic { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .family-slot {
+    background: var(--surface2); border: 1.5px dashed var(--border2);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    transition: border-color .2s;
+  }
+  .family-slot label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); display: block; margin-bottom: 5px; font-weight: 700; }
+  .family-slot .slot-phonetic { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
   .family-slot input { width: 100%; background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 15px; outline: none; }
-  .family-slot.correct { border-color: var(--success); background: #0d2e22; }
-  .family-slot.wrong   { border-color: var(--danger);  background: #2e0d0d; }
-  .family-slot.skipped { border-color: var(--accent2); background: #2e2710; }
+  .family-slot.correct { border-color: var(--success); background: rgba(52,211,153,.06); border-style: solid; }
+  .family-slot.wrong   { border-color: var(--danger);  background: rgba(240,100,100,.06); border-style: solid; }
+  .family-slot.skipped { border-color: var(--accent2); background: rgba(240,180,41,.06); border-style: solid; }
 
-  /* Score */
-  .score-card { text-align: center; padding: 36px 28px; }
-  .score-big { font-family: 'Instrument Serif', serif; font-size: 72px; line-height: 1; margin-bottom: 8px; }
-  .score-big span { color: var(--accent); }
-  .score-label { color: var(--muted); font-size: 16px; margin-bottom: 28px; }
-  .score-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
-  .score-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; }
-  .score-stat .val { font-size: 22px; font-weight: 700; }
-  .score-stat .key { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  /* ── SCORE ── */
+  .score-card { text-align: center; padding: 40px 28px; }
+  .score-big { font-family: 'Instrument Serif', serif; font-size: 80px; line-height: 1; margin-bottom: 8px; }
+  .score-big span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .score-label { color: var(--muted2); font-size: 16px; margin-bottom: 32px; }
+  .score-stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .score-stat {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 16px 22px; min-width: 90px;
+  }
+  .score-stat .val { font-size: 24px; font-weight: 700; }
+  .score-stat .key { font-size: 11px; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
 
-  /* Database — redesigned as table */
-  .db-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-  .search-input { flex: 1; min-width: 180px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 999px; padding: 10px 18px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s; }
-  .search-input:focus { border-color: var(--accent); }
+  /* ── DATABASE ── */
+  .db-toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-input {
+    flex: 1; min-width: 180px; background: var(--surface2);
+    border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px 16px; font-size: 14px; color: var(--text); outline: none;
+    font-family: 'Manrope', sans-serif; transition: border-color .2s, box-shadow .2s;
+  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
-  .db-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  .db-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
   .db-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .db-table thead th {
     background: var(--surface2); color: var(--muted); font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .8px; padding: 10px 14px;
+    text-transform: uppercase; letter-spacing: .8px; padding: 11px 14px;
     text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap;
   }
   .db-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
   .db-table tbody tr:last-child { border-bottom: none; }
-  .db-table tbody tr:hover { background: rgba(124,106,247,.08); }
-  .db-table td { padding: 11px 14px; vertical-align: middle; }
-  .db-table .col-root { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #ffffff; white-space: nowrap; letter-spacing: 0.5px; }
-  .db-table .col-root-inner { display: inline-block; background: rgba(124,106,247,.18); border: 1px solid rgba(124,106,247,.35); border-radius: 6px; padding: 3px 10px; }
+  .db-table tbody tr:hover { background: rgba(123,104,238,.06); }
+  .db-table td { padding: 12px 14px; vertical-align: middle; }
+  .db-table .col-root { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; }
+  .db-table .col-root-inner { display: inline-block; background: rgba(123,104,238,.18); border: 1px solid rgba(123,104,238,.3); border-radius: 7px; padding: 3px 10px; }
   .db-table .col-word { font-family: 'DM Mono', monospace; font-size: 13px; color: #e0e2f0; font-weight: 500; }
   .db-table .col-phon { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
-  .db-table .col-type { }
-  .db-table .col-mean { font-size: 12px; color: #a0a4be; }
-  .db-table .col-err  { font-size: 11px; color: var(--danger); font-weight: 700; white-space: nowrap; }
-  .type-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; text-transform: lowercase; letter-spacing: 0.2px; }
-  .type-n   { background: #3d2fff; color: #fff; }
-  .type-v   { background: #00904f; color: #fff; }
-  .type-adj { background: #b35e00; color: #fff; }
-  .type-adv { background: #b52020; color: #fff; }
-  .type-phrv { background: #0070b8; color: #fff; }
-  .type-other { background: #444860; color: #fff; }
+  .db-table .col-mean { font-size: 12px; color: #9095b8; }
+  .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 6px; text-transform: lowercase; letter-spacing: 0.2px; }
+  .type-n   { background: rgba(61,47,255,.6); color: #c8c0ff; }
+  .type-v   { background: rgba(0,144,79,.6); color: #7debb2; }
+  .type-adj { background: rgba(179,94,0,.6); color: #f5c57a; }
+  .type-adv { background: rgba(181,32,32,.6); color: #f5a0a0; }
+  .type-phrv { background: rgba(0,112,184,.6); color: #7ec8f5; }
+  .type-other { background: rgba(68,72,96,.6); color: #aab0cc; }
 
-  /* Settings tab */
+  /* ── SETTINGS ── */
   .settings-section { margin-bottom: 28px; }
-  .settings-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(42,45,58,.5); gap: 20px; }
+  .settings-section h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(42,45,58,.4); gap: 20px; }
   .settings-row:last-child { border-bottom: none; }
   .settings-row-info { flex: 1; }
   .settings-row-info strong { display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-  .settings-row-info span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .settings-row-info span { font-size: 12px; color: var(--muted2); line-height: 1.5; }
 
-  /* Revamped combined entry+meaning rows in modal */
-  .combined-row { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  /* ── MODAL ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 100; display: flex; align-items: center; justify-content: center;
+    padding: 20px; animation: fadeIn .2s;
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 20px; width: 100%; max-width: 660px; max-height: 90vh;
+    overflow-y: auto; padding: 28px; animation: scaleUp .25s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04);
+  }
+  @keyframes scaleUp { from { opacity:0; transform: scale(.96) translateY(8px); } to { opacity:1; transform: scale(1) translateY(0); } }
+  .modal-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 11px; color: var(--muted2); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+  .form-input {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border2);
+    border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text); outline: none;
+    font-family: 'Manrope', sans-serif; transition: border-color .2s, box-shadow .2s;
+  }
+  .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  textarea.form-input { resize: vertical; min-height: 72px; font-family: 'DM Mono', monospace; font-size: 13px; }
+  .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row3 { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr; gap: 12px; }
+  @media(max-width:520px){ .form-row,.form-row3{ grid-template-columns:1fr; } }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+
+  /* Entry rows in modal */
+  .combined-row { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
   .combined-row input, .combined-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; min-width: 0; }
   .combined-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
   .combined-row .meaning-input { color: #9dd49d; font-style: italic; }
@@ -162,25 +342,8 @@
   .combined-row .del-entry:hover { color: var(--danger); }
   .combined-row-header { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; padding: 0 12px; margin-bottom: 4px; }
   .combined-row-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
-
-  /* Modal */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s; }
-  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; padding: 28px; animation: fadeUp .25s ease; }
-  .modal-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 20px; }
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
-  .form-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s; }
-  .form-input:focus { border-color: var(--accent); }
-  textarea.form-input { resize: vertical; min-height: 72px; font-family: 'DM Mono', monospace; font-size: 13px; }
-  .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-row3 { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr; gap: 12px; }
-  @media(max-width:520px){ .form-row,.form-row3{ grid-template-columns:1fr; } }
-  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
-
-  /* Entry list in modal (word entries) */
   .entry-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-  .entry-row { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .entry-row { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 9px 10px; }
   .entry-row input, .entry-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; }
   .entry-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
   .entry-row .del-entry { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
@@ -188,33 +351,64 @@
   .entry-row-header { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr auto; gap: 8px; padding: 0 10px; }
   .entry-row-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
 
+  /* ── PAGINATION ── */
   .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
   .page-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'Manrope', sans-serif; transition: all .15s; }
   .page-btn:hover { border-color: var(--accent); color: var(--text); }
-  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 10px var(--accent-glow); }
 
   .empty { text-align: center; padding: 50px 20px; color: var(--muted); }
   .empty .icon { font-size: 36px; margin-bottom: 12px; }
 
-  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 12px 24px; font-size: 14px; color: var(--text); opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface); border: 1px solid var(--border2);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-radius: 14px; padding: 12px 22px; font-size: 14px; color: var(--text);
+    opacity: 0; transition: all .3s cubic-bezier(.4,0,.2,1); z-index: 999;
+    white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* ── CSV BUILDER ── */
+  .builder-root-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 0; }
+  .builder-root-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .builder-root-input { flex: 1; min-width: 100px; background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 700; letter-spacing: 1px; outline: none; text-transform: uppercase; padding: 4px 0; }
+  .builder-root-input::placeholder { color: var(--muted); text-transform: none; font-weight: 400; letter-spacing: 0; font-size: 14px; }
+  .builder-forms { padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .builder-form-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .builder-form-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .builder-form-field { display: flex; flex-direction: column; gap: 4px; }
+  .builder-form-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .builder-form-field input, .builder-form-field select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; padding: 9px 11px; outline: none; width: 100%; transition: border-color .15s; -webkit-appearance: none; }
+  .builder-form-field input:focus, .builder-form-field select:focus { border-color: var(--accent); }
+  .builder-form-field select { font-family: 'Manrope', sans-serif; font-size: 13px; cursor: pointer; }
+  .builder-form-field .bmeaning { color: #9dd49d; }
+  .builder-form-field .bmeaning::placeholder { color: #4a6a4a; }
+  .builder-form-card-footer { display: flex; justify-content: flex-end; padding-top: 2px; }
+  .builder-del-btn { background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 12px; padding: 5px 12px; border-radius: 8px; font-family: 'Manrope', sans-serif; font-weight: 600; transition: all .15s; }
+  .builder-del-btn:hover, .builder-del-btn:active { border-color: var(--danger); color: var(--danger); background: rgba(240,100,100,.08); }
+
+  /* ── MISC ── */
   .hidden { display: none !important; }
   .mt-16 { margin-top: 16px; }
   .text-center { text-align: center; }
   .color-success { color: var(--success); }
   .color-danger  { color: var(--danger); }
-
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-7px)} 40%,80%{transform:translateX(7px)} }
-
-
 
   @media(max-width:480px){
     .question-text{font-size:22px} .family-target{font-size:30px}
-    .answer-input{font-size:16px;padding:12px 14px} .btn{padding:10px 18px;font-size:14px}
-    .stats-pill{font-size:11px;gap:8px} .modal{padding:18px} .logo{font-size:22px}
-    header{flex-wrap:wrap;gap:8px} .db-table .col-phon,.db-table .col-mean{display:none}
+    .answer-input{font-size:16px;padding:12px 14px}
+    .btn{padding:9px 16px;font-size:13px}
+    .stats-pill{font-size:11px;gap:10px} .modal{padding:18px;border-radius:16px}
+    .logo{font-size:22px} header{flex-wrap:wrap;gap:8px}
+    .db-table .col-phon,.db-table .col-mean{display:none}
     .entry-row,.form-row3{grid-template-columns:1fr 1fr auto}
+    nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; border-radius: 14px; }
+    .nav-btn { padding: 7px 14px; font-size: 12px; }
   }
 </style>
 </head>
@@ -223,16 +417,16 @@
 
   <!-- HEADER -->
   <header>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;">
+    <div class="header-left">
       <div class="logo">Word<span>Family</span></div>
-      <span style="font-size:11px;color:var(--accent);margin-top:2px;letter-spacing:.5px;font-weight:600;">BETA</span>
+      <span id="header-greeting" class="header-sub">BETA</span>
     </div>
-    <div style="display:flex;gap:10px;align-items:center;">
+    <div class="header-right">
       <div class="stats-pill">
         <span>Words: <b id="total-count">0</b></span>
         <span>Score: <b id="session-score">0%</b></span>
       </div>
-      <button id="admin-login-btn" class="btn btn-secondary btn-sm" onclick="showLoginModal()">🔓 Login</button>
+      <button id="admin-login-btn" class="btn btn-ghost btn-sm" onclick="showLoginModal()">🔓 Login</button>
     </div>
   </header>
 
@@ -243,28 +437,35 @@
     <button class="nav-btn" onclick="showTab('mode2')">🧩 Mode 2</button>
     <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
     <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
+    <button class="nav-btn" onclick="showTab('guide')">📄 Guide</button>
   </nav>
 
   <!-- HOME -->
   <div id="tab-home" class="card">
-    <p class="section-sub" style="margin-bottom:6px">Choose a practice mode</p>
+    <!-- Dynamic greeting -->
+    <div class="home-greeting" id="home-greeting-block">
+      <div class="home-greeting-time" id="home-time-label">Good morning</div>
+      <div class="home-greeting-main" id="home-greeting-main">Welcome back! 👋</div>
+      <div class="home-greeting-sub" id="home-greeting-sub">Ready to level up your vocabulary today?</div>
+    </div>
+
     <h2 class="section-title">How do you want to train?</h2>
-    <p class="section-sub">Each session draws random words from your database.</p>
+    <p class="section-sub">Pick a mode and start practising.</p>
     <div class="mode-grid">
       <div class="mode-card" onclick="startMode1()">
-        <div class="icon">📝</div><h3>Meaning → Word</h3>
+        <span class="icon">📝</span><h3>Meaning → Word</h3>
         <p>See a Vietnamese meaning + word type. Type the correct English word.</p>
         <span class="badge badge-purple">Mode 1</span>
       </div>
       <div class="mode-card" onclick="startMode2()">
-        <div class="icon">🧩</div><h3>Word Family</h3>
+        <span class="icon">🧩</span><h3>Word Family</h3>
         <p>Given a root word, fill in all its forms: noun, verb, adjective, adverb.</p>
         <span class="badge badge-gold">Mode 2</span>
       </div>
       <div class="mode-card" onclick="startWeakWordsMode()">
-        <div class="icon">📚</div><h3>Weak Words</h3>
-        <p>Practice only the words you've gotten wrong before.</p>
-        <span class="badge badge-gold">Focus</span>
+        <span class="icon">🔥</span><h3>Weak Words</h3>
+        <p>Practice only the words you've gotten wrong before. Crush your weaknesses.</p>
+        <span class="badge badge-green">Focus</span>
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -284,7 +485,9 @@
       <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
         <button class="nav-btn active" id="m1-src-lesson-btn" onclick="switchM1Source('lesson')">📖 By Lesson</button>
         <button class="nav-btn" id="m1-src-unit-btn"   onclick="switchM1Source('unit')">📚 By Unit</button>
+        <button class="nav-btn" id="m1-src-pick-btn"   onclick="switchM1Source('pick')">📋 Pick Lessons</button>
         <button class="nav-btn" id="m1-src-custom-btn" onclick="switchM1Source('custom')">✏️ Custom</button>
+        <button class="nav-btn" id="m1-src-myfiles-btn" onclick="switchM1Source('myfiles')">📂 My Files</button>
         <button class="nav-btn" id="m1-src-db-btn"     onclick="switchM1Source('db')">🗂 Full Database</button>
       </div>
 
@@ -320,6 +523,15 @@
         </div>
       </div>
 
+      <!-- Pick specific lessons -->
+      <div id="m1-src-pick" style="display:none">
+        <div class="form-group">
+          <label>Lessons to include — one per line, format: <code style="color:var(--accent);background:rgba(124,106,247,.12);padding:1px 6px;border-radius:4px;">unit - lesson</code></label>
+          <textarea id="m1-pick-lessons" class="form-input" rows="6" placeholder="1 - 1&#10;1 - 3&#10;2 - 3&#10;4 - 2"></textarea>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">Units 1–8, Lessons 1–3. Duplicate or invalid lines are ignored.</p>
+      </div>
+
       <!-- Custom words -->
       <div id="m1-src-custom" style="display:none">
         <div class="form-group">
@@ -327,6 +539,19 @@
           <textarea id="m1-custom-words" class="form-input" rows="6" placeholder="Enter Vietnamese meanings or English words, one per line…&#10;e.g.&#10;Tình cờ gặp&#10;Tra cứu&#10;Phương pháp"></textarea>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">These will be matched against your database by meaning or word.</p>
+      </div>
+
+      <!-- My Files -->
+      <div id="m1-src-myfiles" style="display:none">
+        <div class="form-group">
+          <label>Upload your own CSV file(s)</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m1-myfiles-input').click()">📂 Choose Files…</button>
+            <span id="m1-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
+          </div>
+          <input type="file" id="m1-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM1MyFiles(event)">
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved to the database. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the correct CSV format.</p>
       </div>
 
       <!-- Full DB — no extra options -->
@@ -400,6 +625,7 @@
       <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
         <button class="nav-btn active" id="m2-src-lesson-btn" onclick="switchM2Source('lesson')">📖 By Lesson</button>
         <button class="nav-btn" id="m2-src-unit-btn"   onclick="switchM2Source('unit')">📚 By Unit</button>
+        <button class="nav-btn" id="m2-src-myfiles-btn" onclick="switchM2Source('myfiles')">📂 My Files</button>
         <button class="nav-btn" id="m2-src-db-btn"     onclick="switchM2Source('db')">🗂 Full Database</button>
       </div>
 
@@ -438,6 +664,19 @@
       <!-- Full DB -->
       <div id="m2-src-db" style="display:none">
         <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Uses all words currently in your database.</p>
+      </div>
+
+      <!-- My Files -->
+      <div id="m2-src-myfiles" style="display:none">
+        <div class="form-group">
+          <label>Upload your own CSV file(s)</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m2-myfiles-input').click()">📂 Choose Files…</button>
+            <span id="m2-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
+          </div>
+          <input type="file" id="m2-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM2MyFiles(event)">
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the CSV format.</p>
       </div>
 
       <div class="form-group">
@@ -502,8 +741,7 @@
           <button class="btn btn-secondary btn-sm" onclick="exportCSV()" id="export-btn">⬇ Export CSV</button>
           <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFiles').click()" id="import-btn">⬆ Import CSV</button>
           <input type="file" id="importFiles" accept=".csv" multiple class="hidden" onchange="importCSVFiles(event)">
-          <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>
-        </div>
+          <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>        </div>
       </div>
       <div class="db-toolbar">
         <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…" oninput="renderDB()">
@@ -538,11 +776,124 @@
     </div>
   </div>
 
+  <!-- GUIDE -->
+  <div id="tab-guide" class="hidden">
+
+    <!-- Sub-nav -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="nav-btn active" id="guide-sub-builder-btn" onclick="switchGuideTab('builder')">🛠 CSV Builder</button>
+      <button class="nav-btn" id="guide-sub-docs-btn" onclick="switchGuideTab('docs')">📄 Format Guide</button>
+    </div>
+
+    <!-- ── CSV BUILDER ── -->
+    <div id="guide-sub-builder">
+      <div class="card" style="margin-bottom:16px;">
+        <h2 class="section-title" style="margin-bottom:4px;">🛠 CSV Builder</h2>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Tạo danh sách từ của bạn và tải về dạng CSV — không cần text editor.</p>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+          <input type="text" id="builder-filename" class="form-input btn-sm" placeholder="my_words" style="max-width:130px;flex:1;" value="my_words">
+          <button class="btn btn-secondary btn-sm" onclick="builderExportCSV()" style="flex:1;min-width:130px;justify-content:center;">⬇ Tải CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="builderImportAndPractice()" style="flex:1;min-width:130px;justify-content:center;">▶ Luyện tập ngay</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);padding:8px 12px;background:rgba(124,106,247,.07);border-radius:8px;border:1px solid rgba(124,106,247,.2);">
+          💡 <strong style="color:var(--text)">Luyện tập ngay</strong> — load vào Mode 1 không lưu vào database. <strong style="color:var(--text)">Tải CSV</strong> — lưu file để dùng lại sau.
+        </div>
+      </div>
+
+      <div id="builder-word-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;"></div>
+
+      <button class="btn btn-secondary btn-full" onclick="builderAddRoot()" style="margin-bottom:16px;padding:16px;">＋ Thêm Root Word</button>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <span style="font-size:13px;color:var(--muted);">Root words: <b id="builder-stat-roots" style="color:var(--text);">0</b></span>
+        <span style="font-size:13px;color:var(--muted);">Word forms: <b id="builder-stat-forms" style="color:var(--text);">0</b></span>
+      </div>
+    </div>
+
+    <!-- ── FORMAT DOCS ── -->
+    <div id="guide-sub-docs" style="display:none;">
+      <div class="card">
+        <h2 class="section-title" style="margin-bottom:6px">📄 CSV Format Guide</h2>
+        <p class="section-sub">How to create a CSV file manually and use it to practice.</p>
+
+        <div class="settings-section">
+          <h3>Columns</h3>
+          <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:20px;">
+            <table class="db-table">
+              <thead><tr><th>Column</th><th>Required?</th><th>Description</th><th>Example</th></tr></thead>
+              <tbody>
+                <tr><td class="col-word" style="color:var(--accent);font-weight:700">root</td><td><span style="color:var(--danger)">Required</span></td><td class="col-mean">The base/root word (uppercased automatically)</td><td class="col-phon">ABBREVIATE</td></tr>
+                <tr><td class="col-word">word</td><td><span style="color:var(--muted)">Optional</span></td><td class="col-mean">A specific word form</td><td class="col-phon">abbreviation</td></tr>
+                <tr><td class="col-word">phonetic</td><td><span style="color:var(--muted)">Optional</span></td><td class="col-mean">Pronunciation in any format</td><td class="col-phon">/əˌbriːviˈeɪʃən/</td></tr>
+                <tr><td class="col-word">type</td><td><span style="color:var(--muted)">Optional</span></td><td class="col-mean">Word type: n, v, adj, adv, phr.v</td><td class="col-phon">n</td></tr>
+                <tr><td class="col-word">vietnamese_meaning</td><td><span style="color:var(--muted)">Optional</span></td><td class="col-mean">Vietnamese meaning shown during quiz</td><td class="col-phon">Sự viết tắt</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Example</h3>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:'DM Mono',monospace;font-size:13px;color:var(--text);overflow-x:auto;margin-bottom:20px;line-height:2;">
+            <span style="color:var(--muted)">root,word,phonetic,type,vietnamese_meaning</span><br>
+            ABBREVIATE,abbreviate,/əˈbriːvieɪt/,v,Viết tắt<br>
+            ABBREVIATE,abbreviation,/əˌbriːviˈeɪʃən/,n,Sự viết tắt<br>
+            ACCESS,access,/ˈækses/,v,Truy cập<br>
+            ACCESS,accessible,/əkˈsesɪbəl/,adj,Có thể truy cập<br>
+          </div>
+
+          <h3>Word Types</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            <span class="type-badge type-n">n — Noun</span>
+            <span class="type-badge type-v">v — Verb</span>
+            <span class="type-badge type-adj">adj — Adjective</span>
+            <span class="type-badge type-adv">adv — Adverb</span>
+            <span class="type-badge type-phrv">phr.v — Phrasal Verb</span>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>How to Use Your File</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">Option A — Import into Database</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.7;">Go to <strong style="color:var(--text)">🗂 Database → ⬆ Import CSV</strong>. Words merge into the main database with Weak Words tracking.</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">Option B — Session-only Practice</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.7;">Go to <strong style="color:var(--text)">📝 Mode 1 or 🧩 Mode 2 → 📂 My Files</strong>. Nothing is saved to the database.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section" style="margin-bottom:0;">
+          <h3>Tips</h3>
+          <div style="font-size:14px;color:var(--muted);line-height:2.1;">
+            • Each root word can have <strong style="color:var(--text)">as many rows as needed</strong> — one per word form.<br>
+            • You can import <strong style="color:var(--text)">multiple CSV files</strong> at once — they merge automatically.<br>
+            • Column order doesn't matter — matched by header name.<br>
+            • Extra columns are safely ignored.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- SETTINGS -->
   <div id="tab-settings" class="hidden">
     <div class="card">
       <h2 class="section-title" style="margin-bottom:6px">Settings</h2>
       <p class="section-sub">Manage your app preferences and data.</p>
+
+      <div class="settings-section">
+        <h3>Profile</h3>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <strong>Your Name</strong>
+            <span>Currently saved as: <b id="settings-name-display" style="color:var(--text);">—</b></span>
+          </div>
+          <button class="btn btn-secondary" onclick="openChangeName()">✏️ Change Name</button>
+        </div>
+      </div>
 
       <div class="settings-section">
         <h3>Data</h3>
@@ -590,6 +941,22 @@
   </div>
 </div>
 
+<!-- MODAL Welcome Name -->
+<div class="overlay hidden" id="name-modal">
+  <div class="modal" style="max-width:420px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:12px;">👋</div>
+    <div class="modal-title" style="text-align:center;margin-bottom:8px;" id="name-modal-title">Welcome to WordFamily!</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;" id="name-modal-sub">What should we call you?</p>
+    <div class="form-group" style="text-align:left;">
+      <label>Your name</label>
+      <input type="text" class="form-input" id="name-input" placeholder="e.g. Minh, Linh, Alex…" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" maxlength="30" onkeydown="if(event.key==='Enter')saveName()">
+    </div>
+    <div class="modal-footer" style="justify-content:center;margin-top:16px;">
+      <button class="btn btn-primary" onclick="saveName()" id="name-modal-btn" style="min-width:140px;">Let's go! →</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL Login -->
 <div class="overlay hidden" id="login-modal" onclick="if(event.target===this)closeLoginModal()">
   <div class="modal" style="max-width:400px;">
@@ -619,6 +986,7 @@
 // types: 'n' | 'v' | 'adj' | 'adv'
 // ══════════════════════════════════════════
 const STORAGE_KEY = 'wf_db_v2';
+const CSV_HASH_KEY = 'wf_csv_hash';
 
 // ── ACCOUNTS (SHA-256 of username → {role, passwordHash: SHA-256 of password}) ──
 // admin   username="admin"   SHA256 → 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
@@ -640,7 +1008,7 @@ async function sha256(str) {
 function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
 function updateStats() {
   const totalEntries = db.reduce((s,w)=>s+w.entries.length, 0);
-  document.getElementById('total-count').textContent = db.length;
+  document.getElementById('total-count').textContent = totalEntries;
   const dbCount = document.getElementById('db-count');
   const dbRoot  = document.getElementById('db-root-count');
   if (dbCount) dbCount.textContent = totalEntries;
@@ -649,11 +1017,54 @@ function updateStats() {
 
 async function initializeDB() {
   try {
-    // ALWAYS reload CSV
-    db = await autoLoadAllCSVs();
+    // Load saved data from localStorage
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try { db = JSON.parse(stored); } catch(e) { db = []; }
+    }
 
-    if (db.length) {
-      saveDB(); // overwrite old data
+    // Fetch all 26 CSV files and compute a hash to detect changes
+    const csvTexts = [];
+    for (let u = 1; u <= 8; u++) {
+      for (let l = 1; l <= 3; l++) {
+        try {
+          const res = await fetch(`database/ilearn/U${u}%20-%20${l}.csv`);
+          if (res.ok) csvTexts.push(await res.text());
+        } catch(e) {}
+      }
+    }
+    const combined = csvTexts.join('|');
+    const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(combined));
+    const currentHash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    const savedHash = localStorage.getItem(CSV_HASH_KEY) || '';
+
+    // If CSV files changed (or first visit), reload and merge — keep user words
+    if (!db.length || currentHash !== savedHash) {
+      const freshCSV = await autoLoadAllCSVs();
+
+      // Keep only words the user imported (marked with userAdded: true)
+      const userWords = db.filter(w => w.userAdded === true);
+
+      // Merge: start with fresh CSV, then layer user words on top
+      const merged = {};
+      freshCSV.forEach(w => { merged[w.root] = w; });
+      userWords.forEach(w => {
+        if (merged[w.root]) {
+          // Root exists in CSV — add any extra entries the user added
+          w.entries.forEach(e => {
+            if (!merged[w.root].entries.some(ex => ex.word === e.word)) {
+              merged[w.root].entries.push(e);
+            }
+          });
+        } else {
+          // Brand new root from user
+          merged[w.root] = w;
+        }
+      });
+
+      db = Object.values(merged);
+      localStorage.setItem(CSV_HASH_KEY, currentHash);
+      saveDB();
     }
 
   } catch (e) {
@@ -728,7 +1139,7 @@ function updateAdminUI() {
     if (resetAllBtn)  resetAllBtn.style.display  = 'none';
     if (deleteAllBtn) deleteAllBtn.style.display = 'none';
     if (exportBtn)    exportBtn.style.display    = 'none';
-    if (importBtn)    importBtn.style.display    = 'none';
+    if (importBtn)    importBtn.style.display    = 'inline-flex';
   }
   if (!document.getElementById('tab-database').classList.contains('hidden')) renderDB();
 }
@@ -775,7 +1186,7 @@ function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&l
 // ══════════════════════════════════════════
 // TAB / PANEL NAVIGATION
 // ══════════════════════════════════════════
-const tabs = ['home','mode1','mode2','database','settings'];
+const tabs = ['home','mode1','mode2','database','settings','guide'];
 let quizActive = false;
 
 function showTab(name, force) {
@@ -789,6 +1200,7 @@ function showTab(name, force) {
   if (name==='database') renderDB();
   if (name==='mode1') showPanel('m1','setup');
   if (name==='mode2') showPanel('m2','setup');
+  if (name==='settings') updateNameUI(getUserName());
 }
 function showPanel(mode, panel) {
   ['setup','quiz','score'].forEach(p=>document.getElementById(mode+'-'+p).classList.toggle('hidden',p!==panel));
@@ -866,19 +1278,63 @@ function startWeakWordsMode() {
 // ══════════════════════════════════════════
 // LESSON / UNIT CSV LOADER
 // ══════════════════════════════════════════
-let m1Source = 'lesson'; // 'lesson' | 'unit' | 'custom' | 'db'
-let m2Source = 'lesson'; // 'lesson' | 'unit' | 'db'
+let m1Source = 'lesson'; // 'lesson' | 'unit' | 'pick' | 'custom' | 'myfiles' | 'db'
+let m2Source = 'lesson'; // 'lesson' | 'unit' | 'myfiles' | 'db'
+let m1MyFilesWords = []; // words loaded from user-uploaded files for mode 1
+let m2MyFilesWords = []; // words loaded from user-uploaded files for mode 2
+
+async function handleM1MyFiles(event) {
+  const files = event.target.files;
+  if (!files.length) return;
+  const label = document.getElementById('m1-myfiles-label');
+  label.textContent = 'Loading…';
+  const words = await loadWordsFromFileList(files);
+  m1MyFilesWords = words;
+  label.textContent = files.length + ' file(s) — ' + words.length + ' root word(s) loaded';
+  if (!words.length) showToast('⚠️ No valid words found in the file(s). Check the CSV format in the Guide.');
+  else showToast('✓ Loaded ' + words.length + ' root word(s) from ' + files.length + ' file(s)');
+}
+
+async function handleM2MyFiles(event) {
+  const files = event.target.files;
+  if (!files.length) return;
+  const label = document.getElementById('m2-myfiles-label');
+  label.textContent = 'Loading…';
+  const words = await loadWordsFromFileList(files);
+  m2MyFilesWords = words;
+  label.textContent = files.length + ' file(s) — ' + words.length + ' root word(s) loaded';
+  if (!words.length) showToast('⚠️ No valid words found in the file(s). Check the CSV format in the Guide.');
+  else showToast('✓ Loaded ' + words.length + ' root word(s) from ' + files.length + ' file(s)');
+}
+
+async function loadWordsFromFileList(files) {
+  const merged = {};
+  for (const file of files) {
+    try {
+      const text = await file.text();
+      const words = parseCSVToWords(text);
+      words.forEach(w => {
+        if (!merged[w.root]) { merged[w.root] = { ...w, entries: [...w.entries], meanings: [...w.meanings] }; }
+        else {
+          w.entries.forEach(e => { if (!merged[w.root].entries.some(ex => ex.word===e.word)) merged[w.root].entries.push(e); });
+          w.meanings.forEach(m => { if (!merged[w.root].meanings.includes(m)) merged[w.root].meanings.push(m); });
+        }
+      });
+    } catch(e) { console.warn('Error parsing file:', file.name, e); }
+  }
+  return Object.values(merged);
+}
 
 function switchM1Source(src) {
   m1Source = src;
-  ['lesson','unit','custom','db'].forEach(s => {
+  ['lesson','unit','pick','custom','myfiles','db'].forEach(s => {
     document.getElementById('m1-src-'+s).style.display = s===src ? '' : 'none';
     document.getElementById('m1-src-'+s+'-btn').classList.toggle('active', s===src);
   });
 }
 function switchM2Source(src) {
   m2Source = src;
-  ['lesson','unit','db'].forEach(s => {
+  ['lesson','unit','myfiles','db'].forEach(s => {
     document.getElementById('m2-src-'+s).style.display = s===src ? '' : 'none';
     document.getElementById('m2-src-'+s+'-btn').classList.toggle('active', s===src);
   });
@@ -989,11 +1445,42 @@ async function _doBeginMode1() {
       const unit = document.getElementById('m1-unit-only').value;
       words = await loadUnitCSV(unit);
       if (!words.length) { showToast('⚠️ No words found for that unit.'); return; }
+    } else if (m1Source === 'pick') {
+      const raw = document.getElementById('m1-pick-lessons').value.trim();
+      if (!raw) { showToast('⚠️ Please enter at least one lesson.'); return; }
+      // Parse lines like "1 - 1", "1-1", "1 1" — flexible
+      const pairs = [];
+      const seen = new Set();
+      raw.split(/\n/).forEach(line => {
+        const m = line.trim().match(/^(\d+)\s*[-–]\s*(\d+)$/);
+        if (!m) return;
+        const u = parseInt(m[1]), l = parseInt(m[2]);
+        if (u < 1 || u > 8 || l < 1 || l > 3) return;
+        const key = u+'-'+l;
+        if (!seen.has(key)) { seen.add(key); pairs.push([u, l]); }
+      });
+      if (!pairs.length) { showToast('⚠️ No valid lessons found. Use format: 1 - 1'); return; }
+      const results = await Promise.all(pairs.map(([u, l]) => loadLessonCSV(u, l)));
+      // Merge by root
+      const merged = {};
+      results.flat().forEach(w => {
+        if (!merged[w.root]) { merged[w.root] = { ...w, entries: [...w.entries], meanings: [...w.meanings] }; }
+        else {
+          w.entries.forEach(e => { if (!merged[w.root].entries.some(ex => ex.word===e.word)) merged[w.root].entries.push(e); });
+          w.meanings.forEach(m => { if (!merged[w.root].meanings.includes(m)) merged[w.root].meanings.push(m); });
+        }
+      });
+      words = Object.values(merged);
+      if (!words.length) { showToast('⚠️ No words found for those lessons.'); return; }
+      showToast('✓ Loaded '+pairs.length+' lesson(s)');
     } else if (m1Source === 'custom') {
       const text = document.getElementById('m1-custom-words').value.trim();
       if (!text) { showToast('⚠️ Please enter some words or meanings.'); return; }
       words = resolveCustomWords(text);
       if (!words.length) { showToast('⚠️ No matching words found in your database.'); return; }
+    } else if (m1Source === 'myfiles') {
+      if (!m1MyFilesWords.length) { showToast('⚠️ Please upload at least one CSV file first.'); return; }
+      words = m1MyFilesWords;
     } else {
       // Full DB
       if (!db.length) { showToast('⚠️ Database is empty!'); return; }
@@ -1050,6 +1537,9 @@ async function _doBeginMode2() {
       const unit = document.getElementById('m2-unit-only').value;
       words = await loadUnitCSV(unit);
       if (!words.length) { showToast('⚠️ No words found for that unit.'); return; }
+    } else if (m2Source === 'myfiles') {
+      if (!m2MyFilesWords.length) { showToast('⚠️ Please upload at least one CSV file first.'); return; }
+      words = m2MyFilesWords;
     } else {
       if (!db.length) { showToast('⚠️ Database is empty!'); return; }
       words = db;
@@ -1106,7 +1596,13 @@ function showM1Hint() {
   document.getElementById('m1-hint-btn').style.display = 'none';
 }
 
-function normalize(s) { return s.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' '); }
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s]/g, '') // remove punctuation
+    .replace(/\s+/g, ' ');
+}
 
 // Increment mistakeCount on the real db entry (by root), so weak-words tracking
 // works even when the quiz word object came from a CSV loader (not a db reference).
@@ -1611,7 +2107,6 @@ function parseCSVLine(line) {
 }
 
 async function importCSVFiles(event) {
-  if (!isAdmin) { showToast('⚠️ Admin login required'); return; }
   const files=event.target.files; if (!files.length) return;
   let imported=0, skippedDup=0, skippedBad=0;
 
@@ -1650,7 +2145,7 @@ async function importCSVFiles(event) {
           data.meanings.forEach(m=>{ if (!existing.meanings.includes(m)) existing.meanings.push(m); });
         } else {
           const entries=[...new Map(data.entries.map(e=>[e.word+'|'+e.type,e])).values()];
-          db.push({ id:nextId++, root, entries, meanings:[...data.meanings], mistakeCount:0 });
+          db.push({ id:nextId++, root, entries, meanings:[...data.meanings], mistakeCount:0, userAdded:true });
           imported++;
         }
       }
@@ -1666,6 +2161,190 @@ async function importCSVFiles(event) {
 }
 
 // ══════════════════════════════════════════
+// CSV BUILDER
+// ══════════════════════════════════════════
+let builderRoots = [];
+let builderNextId = 1;
+
+function switchGuideTab(tab) {
+  ['builder','docs'].forEach(t => {
+    document.getElementById('guide-sub-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('guide-sub-'+t+'-btn').classList.toggle('active', t===tab);
+  });
+}
+
+function builderAddRoot() {
+  const id = builderNextId++;
+  builderRoots.push({ id, root: '', forms: [] });
+  builderRenderAll();
+  setTimeout(() => {
+    const el = document.getElementById('broot-'+id);
+    if (el) el.focus();
+  }, 50);
+}
+
+function builderDeleteRoot(id) {
+  builderRoots = builderRoots.filter(r => r.id !== id);
+  builderRenderAll();
+}
+
+function builderAddForm(rootId) {
+  builderSync();
+  const root = builderRoots.find(r => r.id === rootId);
+  if (!root) return;
+  root.forms.push({ word:'', phonetic:'', type:'n', meaning:'' });
+  builderRenderAll();
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.bword-'+rootId);
+    if (rows.length) rows[rows.length-1].focus();
+  }, 50);
+}
+
+function builderDeleteForm(rootId, idx) {
+  builderSync();
+  const root = builderRoots.find(r => r.id === rootId);
+  if (!root) return;
+  root.forms.splice(idx, 1);
+  builderRenderAll();
+}
+
+function builderSync() {
+  builderRoots.forEach(root => {
+    const re = document.getElementById('broot-'+root.id);
+    if (re) root.root = re.value.toUpperCase().trim();
+    root.forms.forEach((form, i) => {
+      const w = document.getElementById('bform-'+root.id+'-'+i+'-w');
+      const p = document.getElementById('bform-'+root.id+'-'+i+'-p');
+      const t = document.getElementById('bform-'+root.id+'-'+i+'-t');
+      const m = document.getElementById('bform-'+root.id+'-'+i+'-m');
+      if (w) form.word     = w.value.trim();
+      if (p) form.phonetic = p.value.trim();
+      if (t) form.type     = t.value;
+      if (m) form.meaning  = m.value.trim();
+    });
+  });
+}
+
+function builderRenderAll() {
+  const container = document.getElementById('builder-word-list');
+  if (!container) return;
+  builderSync();
+  container.innerHTML = '';
+
+  builderRoots.forEach(root => {
+    const card = document.createElement('div');
+    card.className = 'builder-root-card';
+
+    card.innerHTML = `
+      <div class="builder-root-header">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex-shrink:0;">Root Word</div>
+        <input id="broot-${root.id}" class="builder-root-input" type="text" placeholder="e.g. ABBREVIATE" value="${escapeHtml(root.root)}" oninput="this.value=this.value.toUpperCase()" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+        <button class="btn btn-secondary btn-sm" onclick="builderAddForm(${root.id})" style="flex-shrink:0;">＋ Add Form</button>
+        <button onclick="builderDeleteRoot(${root.id})" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:16px;padding:5px 9px;flex-shrink:0;" title="Delete root word">🗑</button>
+      </div>
+      <div class="builder-forms" id="bforms-${root.id}"></div>
+    `;
+    container.appendChild(card);
+
+    const formsDiv = document.getElementById('bforms-'+root.id);
+    if (root.forms.length === 0) {
+      formsDiv.innerHTML = `<div style="font-size:13px;color:var(--muted);padding:12px 4px;text-align:center;">Chưa có word form nào — nhấn <strong style="color:var(--text)">＋ Add Form</strong> để thêm</div>`;
+    } else {
+      root.forms.forEach((form, i) => {
+        const fc = document.createElement('div');
+        fc.className = 'builder-form-card';
+        const typeOpts = ['n','v','adj','adv','phr.v'].map(t =>
+          `<option value="${t}"${form.type===t?' selected':''}>${t} — ${{n:'Noun',v:'Verb',adj:'Adjective',adv:'Adverb','phr.v':'Phrasal Verb'}[t]}</option>`
+        ).join('');
+        fc.innerHTML = `
+          <div class="builder-form-card-row">
+            <div class="builder-form-field">
+              <label>Word</label>
+              <input id="bform-${root.id}-${i}-w" class="bword-${root.id}" type="text" placeholder="e.g. abbreviation" value="${escapeHtml(form.word)}" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+            </div>
+            <div class="builder-form-field">
+              <label>Type</label>
+              <select id="bform-${root.id}-${i}-t">${typeOpts}</select>
+            </div>
+          </div>
+          <div class="builder-form-field">
+            <label>Vietnamese Meaning</label>
+            <input id="bform-${root.id}-${i}-m" class="bmeaning" type="text" placeholder="Nhập nghĩa tiếng Việt…" value="${escapeHtml(form.meaning)}" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="builder-form-field">
+            <label>Phonetic <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <input id="bform-${root.id}-${i}-p" type="text" placeholder="/fəˈnetɪk/" value="${escapeHtml(form.phonetic)}" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="builder-form-card-footer">
+            <button class="builder-del-btn" onclick="builderDeleteForm(${root.id},${i})">✕ Remove this form</button>
+          </div>
+        `;
+        formsDiv.appendChild(fc);
+      });
+    }
+  });
+
+  // Update stats
+  document.getElementById('builder-stat-roots').textContent = builderRoots.length;
+  document.getElementById('builder-stat-forms').textContent = builderRoots.reduce((s,r)=>s+r.forms.length,0);
+}
+
+function builderGetWords() {
+  builderSync();
+  return builderRoots
+    .filter(r => r.root.trim())
+    .map((r, i) => ({
+      id: -(i+1),
+      root: r.root.trim().toUpperCase(),
+      entries: r.forms.filter(f => f.word.trim()).map(f => ({
+        word: f.word.trim(), phonetic: f.phonetic.trim(), type: f.type, meaning: f.meaning.trim()
+      })),
+      meanings: r.forms.filter(f=>f.meaning.trim()).map(f=>f.meaning.trim()),
+      mistakeCount: 0
+    }));
+}
+
+function builderExportCSV() {
+  const words = builderGetWords();
+  if (!words.length) { showToast('⚠️ Thêm ít nhất một root word trước.'); return; }
+  const rows = ['root,word,phonetic,type,vietnamese_meaning'];
+  words.forEach(word => {
+    if (!word.entries.length) {
+      rows.push([word.root,'','','',''].map(csvEscape).join(','));
+    } else {
+      word.entries.forEach(e => {
+        rows.push([word.root, e.word, e.phonetic, e.type, e.meaning].map(csvEscape).join(','));
+      });
+    }
+  });
+  const fname = (document.getElementById('builder-filename').value.trim()||'my_words').replace(/[^a-z0-9_\-]/gi,'_');
+  const blob = new Blob([rows.join('\n')], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isIOS) {
+    // iOS Safari doesn't support download attribute — open in new tab so user can Share → Save to Files
+    window.open(url, '_blank');
+    showToast('📂 Nhấn Share → Save to Files để lưu file');
+  } else {
+    const a = document.createElement('a');
+    a.href = url; a.download = fname+'.csv'; a.click();
+    showToast('✓ Đã tải '+fname+'.csv ('+words.length+' từ)');
+  }
+}
+
+function builderImportAndPractice() {
+  const words = builderGetWords();
+  if (!words.length) { showToast('⚠️ Add at least one root word first.'); return; }
+  const withMeanings = words.filter(w => w.entries.some(e => e.meaning));
+  if (!withMeanings.length) { showToast('⚠️ Add Vietnamese meanings so the quiz has something to ask.'); return; }
+  m1MyFilesWords = words;
+  showTab('mode1', true);
+  switchM1Source('myfiles');
+  document.getElementById('m1-myfiles-label').textContent = words.length+' root word(s) from Builder';
+  showToast('✓ Loaded '+words.length+' word(s) — press Start Quiz!');
+}
+
+// ══════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════
 function shuffle(arr) { for (let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
@@ -1676,9 +2355,137 @@ function showToast(msg) {
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+// ══════════════════════════════════════════
+// USER NAME
+// ══════════════════════════════════════════
+const NAME_KEY = 'wf_username';
+
+function getUserName() {
+  return localStorage.getItem(NAME_KEY) || '';
+}
+
+function getGreeting(name) {
+  const h = new Date().getHours();
+  const timePart = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good night';
+
+  const withName = name ? `, ${name}` : '';
+  const mains = name ? [
+    `${timePart}, ${name}! 👋`,
+    `Hey ${name}! Ready to grind? 💪`,
+    `Welcome back, ${name}! ✨`,
+    `${timePart}, ${name}! Let's go 🚀`,
+    `${name}! Great to see you again 🌟`,
+  ] : [
+    `${timePart}! 👋`,
+    `Welcome back! ✨`,
+    `Ready to learn? 🚀`,
+  ];
+
+  const subs = [
+    "How are you doing today? Let's smash some words.",
+    "Hope you're having a great day — vocab time!",
+    "Consistency beats intensity. One session at a time.",
+    "Your future self will thank you for practising today.",
+    "Small progress every day adds up to big results. 🔥",
+    "Ready to level up your vocabulary?",
+    "Let's see how sharp your memory is today 🧠",
+    "Another day, another word family conquered. 💡",
+  ];
+
+  return {
+    timePart,
+    main: mains[Math.floor(Math.random() * mains.length)],
+    sub: subs[Math.floor(Math.random() * subs.length)],
+  };
+}
+
+function updateNameUI(name) {
+  const headerGreeting = document.getElementById('header-greeting');
+  const display = document.getElementById('settings-name-display');
+  if (name) {
+    headerGreeting.textContent = 'Hi, ' + name + '! 👋';
+    headerGreeting.style.color = 'var(--accent2)';
+    if (display) display.textContent = name;
+  } else {
+    headerGreeting.textContent = 'BETA';
+    headerGreeting.style.color = 'var(--accent)';
+    if (display) display.textContent = '—';
+  }
+  // Update home greeting
+  const g = getGreeting(name);
+  const timeEl = document.getElementById('home-time-label');
+  const mainEl = document.getElementById('home-greeting-main');
+  const subEl  = document.getElementById('home-greeting-sub');
+  if (timeEl) timeEl.textContent = g.timePart;
+  if (mainEl) mainEl.textContent = g.main;
+  if (subEl)  subEl.textContent  = g.sub;
+}
+
+function saveName() {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) { document.getElementById('name-input').focus(); return; }
+  localStorage.setItem(NAME_KEY, val);
+  updateNameUI(val);
+  document.getElementById('name-modal').classList.add('hidden');
+  showToast('✓ Welcome, ' + val + '!');
+}
+
+function openChangeName() {
+  const current = getUserName();
+  document.getElementById('name-modal-title').textContent = 'Change your name';
+  document.getElementById('name-modal-sub').textContent   = 'What should we call you?';
+  document.getElementById('name-modal-btn').textContent   = '✓ Save';
+  const inp = document.getElementById('name-input');
+  inp.value = current;
+  document.getElementById('name-modal').classList.remove('hidden');
+  setTimeout(() => inp.focus(), 60);
+}
+
+function initNameModal() {
+  const name = getUserName();
+  updateNameUI(name);
+  if (!name) {
+    // First visit — show welcome modal after a short delay
+    setTimeout(() => {
+      document.getElementById('name-modal-title').textContent = 'Welcome to WordFamily!';
+      document.getElementById('name-modal-sub').textContent   = 'What should we call you?';
+      document.getElementById('name-modal-btn').textContent   = "Let's go! →";
+      document.getElementById('name-input').value = '';
+      document.getElementById('name-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('name-input').focus(), 80);
+    }, 400);
+  }
+}
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  // Don't fire if user is typing in an enabled input/textarea/select
+  const tag = document.activeElement && document.activeElement.tagName;
+  const isEnabled = document.activeElement && !document.activeElement.disabled;
+  if (isEnabled && (tag === 'TEXTAREA' || tag === 'SELECT')) return;
+  if (isEnabled && tag === 'INPUT') return;
+
+  // Mode 1: next button visible → go to next question
+  const m1Next = document.getElementById('m1-next-btn');
+  if (m1Next && !m1Next.classList.contains('hidden')) {
+    e.preventDefault();
+    nextMode1();
+    return;
+  }
+  // Mode 2: next button visible → go to next word
+  const m2Next = document.getElementById('m2-next-btn');
+  if (m2Next && !m2Next.classList.contains('hidden')) {
+    e.preventDefault();
+    nextMode2();
+    return;
+  }
+});
+
 // ── INIT ──
 initializeDB().then(()=>{
   updateAdminUI();
+  initNameModal();
   const stored = localStorage.getItem(STORAGE_KEY);
   // If we just auto-loaded from CSVs (db has entries, stored was just written), show a toast
   if (db.length) showToast('✓ Loaded '+db.length+' words from book files');
