@@ -17,6 +17,22 @@
     --glass: rgba(255,255,255,.03);
     --glass-border: rgba(255,255,255,.07);
   }
+  [data-theme="light"] {
+    --bg: #f5f7fb; --surface: #ffffff; --surface2: #f0f2f6; --surface3: #e8ebf2;
+    --border: #dde1ec; --border2: #c8cfe0;
+    --accent: #6655d9; --accent-glow: rgba(102,85,217,.2);
+    --accent2: #d49c10; --accent3: #22b57a;
+    --text: #1a1f2e; --muted: #8590b0; --muted2: #6070a0;
+    --danger: #d94444; --success: #22b57a;
+    --glass: rgba(0,0,0,.03);
+    --glass-border: rgba(0,0,0,.08);
+  }
+  [data-theme="light"] body::before {
+    background:
+      radial-gradient(ellipse 600px 400px at 10% 20%, rgba(102,85,217,.06) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 350px at 90% 80%, rgba(34,181,122,.04) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(212,156,16,.03) 0%, transparent 70%);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
@@ -34,10 +50,21 @@
     background-size: 200px; opacity: 0.5;
   }
 
-  .app { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 28px 20px 100px; }
+  .app { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 22px 20px 100px; }
 
   /* ── HEADER ── */
-  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; gap: 12px; flex-wrap: wrap; }
+  header {
+    position: sticky; top: 14px; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
   .header-left { display: flex; flex-direction: column; gap: 2px; }
   .logo { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
   .logo span { background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -53,12 +80,29 @@
   }
   .stats-pill b { color: var(--accent2); font-weight: 700; }
 
-  /* ── NAV ── */
-  nav {
-    display: flex; gap: 4px; margin-bottom: 28px; flex-wrap: wrap;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 999px; padding: 5px; width: fit-content; max-width: 100%;
+  /* ── SHELL LAYOUT ── */
+  .shell { display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
+  .sidebar {
+    position: sticky; top: 96px;
+    background: rgba(255,255,255,.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 10px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.22);
   }
+  .sidebar-title {
+    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--muted); padding: 10px 10px 8px;
+  }
+  .content { min-width: 0; }
+
+  /* ── MAIN NAV ── */
+  #main-nav {
+    display: flex; flex-direction: column; gap: 6px;
+    background: transparent; border: none; padding: 0; margin: 0;
+  }
+  /* Default "pill" nav buttons (used across the app for subtabs) */
   .nav-btn {
     padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600;
     cursor: pointer; border: none; background: transparent; color: var(--muted2);
@@ -71,12 +115,21 @@
     color: #fff; box-shadow: 0 2px 16px var(--accent-glow);
   }
 
+  /* Sidebar variant: only apply to main navigation */
+  #main-nav .nav-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: 14px;
+    border: 1px solid transparent;
+  }
+  #main-nav .nav-btn:hover { background: rgba(255,255,255,.03); border-color: var(--glass-border); }
+
   /* ── CARDS ── */
   .card {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 28px;
     animation: fadeUp .35s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 4px 24px rgba(0,0,0,.3);
+    box-shadow: 0 14px 60px rgba(0,0,0,.30);
   }
   @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
 
@@ -275,6 +328,7 @@
     background: var(--surface2); color: var(--muted); font-size: 10px; font-weight: 700;
     text-transform: uppercase; letter-spacing: .8px; padding: 11px 14px;
     text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap;
+    position: sticky; top: 0; z-index: 1;
   }
   .db-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
   .db-table tbody tr:last-child { border-bottom: none; }
@@ -336,8 +390,8 @@
   .combined-row { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
   .combined-row input, .combined-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; min-width: 0; }
   .combined-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
-  .combined-row .meaning-input { color: #9dd49d; font-style: italic; }
-  .combined-row .meaning-input::placeholder { color: #4a6a4a; font-style: italic; }
+  .combined-row .meaning-input { color: #9dd49d; }
+  .combined-row .meaning-input::placeholder { color: #4a6a4a; }
   .combined-row .del-entry { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
   .combined-row .del-entry:hover { color: var(--danger); }
   .combined-row-header { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; padding: 0 12px; margin-bottom: 4px; }
@@ -398,17 +452,109 @@
   .color-success { color: var(--success); }
   .color-danger  { color: var(--danger); }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-7px)} 40%,80%{transform:translateX(7px)} }
+  @keyframes xpPop { 0%{opacity:0;transform:translateY(0) scale(.8)} 30%{opacity:1;transform:translateY(-28px) scale(1.2)} 80%{opacity:1;transform:translateY(-48px) scale(1)} 100%{opacity:0;transform:translateY(-60px) scale(.9)} }
+  .xp-popup { position:fixed; font-size:18px; font-weight:800; color:var(--accent2); pointer-events:none; animation: xpPop .9s cubic-bezier(.4,0,.2,1) forwards; z-index:9999; font-family:'Manrope',sans-serif; text-shadow:0 0 16px rgba(240,180,41,.5); }
+  .answer-input.shake { animation: shake .3s ease; }
+  .level-up-banner { position:fixed; top:80px; left:50%; transform:translateX(-50%) translateY(-80px); opacity:0; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; padding:12px 28px; border-radius:999px; font-weight:800; font-size:15px; z-index:9999; transition:transform .4s cubic-bezier(.4,0,.2,1), opacity .4s; box-shadow:0 8px 32px rgba(123,104,238,.4); white-space:nowrap; pointer-events:none; }
+  .level-up-banner.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  /* Exam mode overlay */
+  .exam-overlay { position:absolute;inset:0;background:rgba(240,100,100,.06);border:1.5px solid rgba(240,100,100,.3);border-radius:var(--radius);pointer-events:none; }
+  /* AI mode badge */
+  .ai-badge { display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 12px;border-radius:8px;background:rgba(123,104,238,.18);color:var(--accent);border:1px solid rgba(123,104,238,.3); }
+  /* DB sort button */
+  .sort-active { background:rgba(123,104,238,.18) !important; color:var(--accent) !important; border-color:rgba(123,104,238,.4) !important; }
 
-  @media(max-width:480px){
-    .question-text{font-size:22px} .family-target{font-size:30px}
-    .answer-input{font-size:16px;padding:12px 14px}
-    .btn{padding:9px 16px;font-size:13px}
-    .stats-pill{font-size:11px;gap:10px} .modal{padding:18px;border-radius:16px}
-    .logo{font-size:22px} header{flex-wrap:wrap;gap:8px}
-    .db-table .col-phon,.db-table .col-mean{display:none}
-    .entry-row,.form-row3{grid-template-columns:1fr 1fr auto}
-    nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; border-radius: 14px; }
-    .nav-btn { padding: 7px 14px; font-size: 12px; }
+  /* ── TABLET (iPad) ── */
+  @media(max-width:900px){
+    .shell { grid-template-columns: 200px 1fr; gap: 12px; }
+    .logo { font-size: 24px; }
+    .stats-pill { gap: 12px; padding: 6px 14px; font-size: 12px; }
+    .card { padding: 20px; }
+  }
+
+  /* ── MOBILE (≤ 640px) ── */
+  @media(max-width:640px){
+    .app { padding: 12px 12px 80px; }
+    header { top: 8px; padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+    .logo { font-size: 22px; }
+    .header-sub { font-size: 11px; }
+    /* Condense stats pill to 2 key items on mobile */
+    .stats-pill { gap: 10px; padding: 5px 12px; font-size: 11px; }
+    .stats-pill span:nth-child(3),
+    .stats-pill span:nth-child(4) { display: none; }
+    /* Header right buttons — smaller */
+    .header-right { gap: 6px; }
+    .header-right .btn-sm { padding: 6px 10px; font-size: 11px; }
+
+    /* Shell: sidebar becomes top horizontal nav */
+    .shell { grid-template-columns: 1fr; gap: 10px; }
+    .sidebar { position: sticky; top: 80px; padding: 6px 8px; border-radius: 14px; }
+    .sidebar-title { display: none; }
+    #main-nav { flex-direction: row; overflow-x: auto; gap: 6px; padding: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    #main-nav::-webkit-scrollbar { display: none; }
+    #main-nav .nav-btn { width: auto; flex-shrink: 0; justify-content: center; padding: 8px 14px; border-radius: 999px; font-size: 12px; gap: 6px; }
+
+    /* Cards */
+    .card { padding: 16px; }
+    .section-title { font-size: 20px; }
+    .section-sub { font-size: 13px; margin-bottom: 16px; }
+
+    /* Home greeting */
+    .home-greeting { padding: 18px; }
+    .home-greeting-main { font-size: 20px; }
+
+    /* Question box */
+    .question-box { padding: 20px 14px; }
+    .question-text { font-size: 22px; }
+    .family-target { font-size: 28px; }
+
+    /* Answer input — prevent iOS zoom (font must be ≥16px) */
+    .answer-input { font-size: 16px; padding: 14px 16px; }
+
+    /* Buttons — bigger touch targets */
+    .btn { padding: 12px 18px; font-size: 13px; white-space: normal; min-height: 44px; }
+    .btn-sm { padding: 9px 14px; font-size: 12px; min-height: 38px; }
+    .page-btn { width: 40px; height: 40px; font-size: 14px; }
+
+    /* Action row wrap nicely */
+    .action-row { gap: 8px; }
+    .action-row .btn { flex: 1 1 auto; min-width: 120px; }
+
+    /* Modal — bottom sheet on mobile */
+    .overlay { align-items: flex-end; padding: 0; }
+    .modal { width: 100%; max-width: 100%; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-radius: 20px 20px 0 0; max-height: 88vh; overflow-y: auto; padding: 20px 16px 32px; -webkit-overflow-scrolling: touch; }
+    .form-input { font-size: 16px; } /* prevent iOS zoom */
+
+    /* Entry rows in modal — stack columns on mobile */
+    .combined-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .combined-row > *:nth-child(3) { grid-column: 1 / -1; }
+    .combined-row-header { display: none; }
+    .entry-row { grid-template-columns: 1fr auto; gap: 6px; }
+    .entry-row > *:nth-child(2),
+    .entry-row > *:nth-child(3) { display: none; }
+    .entry-row-header { display: none; }
+    .form-row3 { grid-template-columns: 1fr; }
+
+    /* DB table — hide less important columns */
+    .db-table .col-phon, .db-table .col-mean { display: none; }
+
+    /* Family grid — 1 col on very small */
+    .family-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* Del entry buttons — bigger tap zone */
+    .del-entry { padding: 6px 10px !important; font-size: 16px !important; min-width: 36px; min-height: 36px; }
+
+    /* Misc */
+    .quiz-header { flex-wrap: wrap; gap: 8px; }
+    .progress-wrap { order: 3; flex: 0 0 100%; margin: 0; }
+  }
+
+  /* ── VERY SMALL PHONES (≤ 380px) ── */
+  @media(max-width:380px){
+    .stats-pill span:nth-child(2) { display: none; }
+    .logo { font-size: 20px; }
+    .btn { padding: 10px 14px; }
+    .family-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -425,23 +571,34 @@
       <div class="stats-pill">
         <span>Words: <b id="total-count">0</b></span>
         <span>Score: <b id="session-score">0%</b></span>
+        <span>⚡ <b id="xp-display">0</b> XP</span>
+        <span>Lv <b id="level-display">1</b></span>
       </div>
       <button id="admin-login-btn" class="btn btn-ghost btn-sm" onclick="showLoginModal()">🔓 Login</button>
+      <button id="mute-btn" class="btn btn-ghost btn-sm" aria-label="Toggle sound" title="Toggle sound">🔊</button>
+      <button id="theme-toggle" class="btn btn-ghost btn-sm" aria-label="Toggle theme" title="Toggle light/dark mode">🌙</button>
     </div>
   </header>
 
-  <!-- NAV -->
-  <nav>
-    <button class="nav-btn active" onclick="showTab('home')">🏠 Home</button>
-    <button class="nav-btn" onclick="showTab('mode1')">📝 Mode 1</button>
-    <button class="nav-btn" onclick="showTab('mode2')">🧩 Mode 2</button>
-    <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
-    <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
-    <button class="nav-btn" onclick="showTab('guide')">📄 Guide</button>
-  </nav>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-title">Navigation</div>
+      <!-- NAV -->
+      <nav id="main-nav">
+        <button class="nav-btn active" onclick="showTab('home')">🏠 Home</button>
+        <button class="nav-btn" onclick="showTab('mode1')">📝 Mode 1</button>
+        <button class="nav-btn" onclick="showTab('mode2')">🧩 Mode 2</button>
+        <button class="nav-btn" onclick="showTab('ai')">🧠 AI Mode</button>
+        <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
+        <button class="nav-btn" onclick="showTab('stats')">📊 Stats</button>
+        <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
+        <button class="nav-btn" onclick="showTab('guide')">📄 Guide</button>
+      </nav>
+    </aside>
 
-  <!-- HOME -->
-  <div id="tab-home" class="card">
+    <main class="content">
+      <!-- HOME -->
+      <div id="tab-home" class="card">
     <!-- Dynamic greeting -->
     <div class="home-greeting" id="home-greeting-block">
       <div class="home-greeting-time" id="home-time-label">Good morning</div>
@@ -467,270 +624,416 @@
         <p>Practice only the words you've gotten wrong before. Crush your weaknesses.</p>
         <span class="badge badge-green">Focus</span>
       </div>
+      <div class="mode-card" onclick="showTab('mode1');setTimeout(()=>startExamMode(),80)">
+        <span class="icon">⏱</span><h3>Exam Mode</h3>
+        <p>No hints, strict timer, score revealed only at the end. Real exam pressure.</p>
+        <span class="badge badge-gold">Hard</span>
+      </div>
+      <div class="mode-card" onclick="showTab('ai');setTimeout(()=>startAIMode(),80)">
+        <span class="icon">🤖</span><h3>AI Sentence Mode</h3>
+        <p>Fill in the blank from a real sentence. Trains contextual word usage.</p>
+        <span class="badge badge-purple">AI</span>
+      </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn btn-secondary" onclick="showTab('database')">🗂 Manage Database</button>
       <button id="home-add-btn" class="btn btn-secondary" onclick="openAddModal()" style="display:none">＋ Add Word</button>
     </div>
+      </div>
+
+      <!-- MODE 1 (inlined) -->
+      <div id="tab-mode1" class="hidden">
+        <!-- mode1.html content starts -->
+<div id="m1-setup" class="card">
+  <p class="section-sub" style="margin-bottom:6px">Mode 1</p>
+  <h2 class="section-title">Meaning → Word</h2>
+  <p class="section-sub">Choose your word source, then start the quiz.</p>
+
+  <!-- Source selector tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    <button class="nav-btn active" id="m1-src-lesson-btn" onclick="switchM1Source('lesson')">📖 By Lesson</button>
+    <button class="nav-btn" id="m1-src-unit-btn"   onclick="switchM1Source('unit')">📚 By Unit</button>
+    <button class="nav-btn" id="m1-src-pick-btn"   onclick="switchM1Source('pick')">📋 Pick Lessons</button>
+    <button class="nav-btn" id="m1-src-custom-btn" onclick="switchM1Source('custom')">✏️ Custom</button>
+    <button class="nav-btn" id="m1-src-myfiles-btn" onclick="switchM1Source('myfiles')">📂 My Files</button>
+    <button class="nav-btn" id="m1-src-db-btn"     onclick="switchM1Source('db')">🗂 Full Database</button>
   </div>
 
-  <!-- MODE 1 -->
-  <div id="tab-mode1" class="hidden">
-    <div id="m1-setup" class="card">
-      <p class="section-sub" style="margin-bottom:6px">Mode 1</p>
-      <h2 class="section-title">Meaning → Word</h2>
-      <p class="section-sub">Choose your word source, then start the quiz.</p>
-
-      <!-- Source selector tabs -->
-      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-        <button class="nav-btn active" id="m1-src-lesson-btn" onclick="switchM1Source('lesson')">📖 By Lesson</button>
-        <button class="nav-btn" id="m1-src-unit-btn"   onclick="switchM1Source('unit')">📚 By Unit</button>
-        <button class="nav-btn" id="m1-src-pick-btn"   onclick="switchM1Source('pick')">📋 Pick Lessons</button>
-        <button class="nav-btn" id="m1-src-custom-btn" onclick="switchM1Source('custom')">✏️ Custom</button>
-        <button class="nav-btn" id="m1-src-myfiles-btn" onclick="switchM1Source('myfiles')">📂 My Files</button>
-        <button class="nav-btn" id="m1-src-db-btn"     onclick="switchM1Source('db')">🗂 Full Database</button>
-      </div>
-
-      <!-- By Lesson -->
-      <div id="m1-src-lesson" style="">
-        <div class="form-row" style="margin-bottom:14px;">
-          <div class="form-group" style="margin-bottom:0">
-            <label>Unit</label>
-            <select id="m1-unit" class="form-input" onchange="updateM1LessonSelect()">
-              <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-              <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-              <option value="7">Unit 7</option><option value="8">Unit 8</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Lesson</label>
-            <select id="m1-lesson" class="form-input">
-              <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- By Unit (all 3 lessons) -->
-      <div id="m1-src-unit" style="display:none">
-        <div class="form-group">
-          <label>Unit</label>
-          <select id="m1-unit-only" class="form-input" style="max-width:160px">
-            <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-            <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-            <option value="7">Unit 7</option><option value="8">Unit 8</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Pick specific lessons -->
-      <div id="m1-src-pick" style="display:none">
-        <div class="form-group">
-          <label>Lessons to include — one per line, format: <code style="color:var(--accent);background:rgba(124,106,247,.12);padding:1px 6px;border-radius:4px;">unit - lesson</code></label>
-          <textarea id="m1-pick-lessons" class="form-input" rows="6" placeholder="1 - 1&#10;1 - 3&#10;2 - 3&#10;4 - 2"></textarea>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">Units 1–8, Lessons 1–3. Duplicate or invalid lines are ignored.</p>
-      </div>
-
-      <!-- Custom words -->
-      <div id="m1-src-custom" style="display:none">
-        <div class="form-group">
-          <label>Enter words (one per line, or paste Vietnamese meanings)</label>
-          <textarea id="m1-custom-words" class="form-input" rows="6" placeholder="Enter Vietnamese meanings or English words, one per line…&#10;e.g.&#10;Tình cờ gặp&#10;Tra cứu&#10;Phương pháp"></textarea>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">These will be matched against your database by meaning or word.</p>
-      </div>
-
-      <!-- My Files -->
-      <div id="m1-src-myfiles" style="display:none">
-        <div class="form-group">
-          <label>Upload your own CSV file(s)</label>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m1-myfiles-input').click()">📂 Choose Files…</button>
-            <span id="m1-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
-          </div>
-          <input type="file" id="m1-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM1MyFiles(event)">
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved to the database. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the correct CSV format.</p>
-      </div>
-
-      <!-- Full DB — no extra options -->
-      <div id="m1-src-db" style="display:none">
-        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Uses all words currently in your database.</p>
-      </div>
-
-      <div class="form-group">
-        <label>Number of questions</label>
-        <select id="m1-count" class="form-input" style="max-width:160px">
-          <option value="10">10 questions</option>
-          <option value="20" selected>20 questions</option>
-          <option value="30">30 questions</option>
-          <option value="999">All words</option>
+  <!-- By Lesson -->
+  <div id="m1-src-lesson" style="">
+    <div class="form-row" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Unit</label>
+        <select id="m1-unit" class="form-input" onchange="updateM1LessonSelect()">
+          <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
+          <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
+          <option value="7">Unit 7</option><option value="8">Unit 8</option>
         </select>
       </div>
-      <button class="btn btn-primary" id="m1-start-btn" onclick="beginMode1()">Start Quiz →</button>
-    </div>
-
-    <div id="m1-quiz" class="card hidden">
-      <div class="quiz-header">
-        <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m1')">← Exit</button>
-        <div class="progress-wrap">
-          <div class="progress-bar"><div class="progress-fill" id="m1-progress" style="width:0%"></div></div>
-          <div class="progress-label" id="m1-prog-label">0 / 0</div>
-        </div>
-        <div class="timer-pill" id="m1-timer">⏱ 0:00</div>
-        <div style="font-size:13px;color:var(--muted);flex-shrink:0">⚡ <span id="m1-streak">0</span></div>
-      </div>
-      <div class="question-box">
-        <div class="question-label">Vietnamese Meaning</div>
-        <div class="question-text" id="m1-meaning">—</div>
-        <div id="m1-type-tag" class="question-type-tag" style="display:none"></div>
-        <button class="question-hint-btn" id="m1-hint-btn" onclick="showM1Hint()">💡 Show hint</button>
-        <div class="question-hint" id="m1-hint"></div>
-      </div>
-      <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
-      <div class="feedback-box" id="m1-feedback"></div>
-      <div class="action-row">
-        <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
-        <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
-        <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip</button>
-      </div>
-    </div>
-
-    <div id="m1-score" class="card score-card hidden">
-      <div style="font-size:36px;margin-bottom:8px">🎉</div>
-      <div class="score-big"><span id="m1-pct">0</span>%</div>
-      <div class="score-label">Quiz Complete!</div>
-      <div class="score-stats">
-        <div class="score-stat"><div class="val color-success" id="m1-correct">0</div><div class="key">Correct</div></div>
-        <div class="score-stat"><div class="val color-danger" id="m1-wrong-count">0</div><div class="key">Wrong</div></div>
-        <div class="score-stat"><div class="val" id="m1-total-q">0</div><div class="key">Total</div></div>
-        <div class="score-stat"><div class="val" id="m1-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="beginMode1()">Try Again</button>
-        <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODE 2 -->
-  <div id="tab-mode2" class="hidden">
-    <div id="m2-setup" class="card">
-      <p class="section-sub" style="margin-bottom:6px">Mode 2</p>
-      <h2 class="section-title">Word Family Quiz</h2>
-      <p class="section-sub">Given a root word, fill in all related forms.</p>
-
-      <!-- Source selector tabs -->
-      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-        <button class="nav-btn active" id="m2-src-lesson-btn" onclick="switchM2Source('lesson')">📖 By Lesson</button>
-        <button class="nav-btn" id="m2-src-unit-btn"   onclick="switchM2Source('unit')">📚 By Unit</button>
-        <button class="nav-btn" id="m2-src-myfiles-btn" onclick="switchM2Source('myfiles')">📂 My Files</button>
-        <button class="nav-btn" id="m2-src-db-btn"     onclick="switchM2Source('db')">🗂 Full Database</button>
-      </div>
-
-      <!-- By Lesson -->
-      <div id="m2-src-lesson" style="">
-        <div class="form-row" style="margin-bottom:14px;">
-          <div class="form-group" style="margin-bottom:0">
-            <label>Unit</label>
-            <select id="m2-unit" class="form-input" onchange="updateM2LessonSelect()">
-              <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-              <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-              <option value="7">Unit 7</option><option value="8">Unit 8</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Lesson</label>
-            <select id="m2-lesson" class="form-input">
-              <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- By Unit -->
-      <div id="m2-src-unit" style="display:none">
-        <div class="form-group">
-          <label>Unit</label>
-          <select id="m2-unit-only" class="form-input" style="max-width:160px">
-            <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-            <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-            <option value="7">Unit 7</option><option value="8">Unit 8</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Full DB -->
-      <div id="m2-src-db" style="display:none">
-        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Uses all words currently in your database.</p>
-      </div>
-
-      <!-- My Files -->
-      <div id="m2-src-myfiles" style="display:none">
-        <div class="form-group">
-          <label>Upload your own CSV file(s)</label>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m2-myfiles-input').click()">📂 Choose Files…</button>
-            <span id="m2-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
-          </div>
-          <input type="file" id="m2-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM2MyFiles(event)">
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the CSV format.</p>
-      </div>
-
-      <div class="form-group">
-        <label>Number of root words</label>
-        <select id="m2-count" class="form-input" style="max-width:160px">
-          <option value="5">5 words</option>
-          <option value="10" selected>10 words</option>
-          <option value="20">20 words</option>
-          <option value="999">All</option>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Lesson</label>
+        <select id="m1-lesson" class="form-input">
+          <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
         </select>
       </div>
-      <button class="btn btn-primary" id="m2-start-btn" onclick="beginMode2()">Start Quiz →</button>
     </div>
+  </div>
 
-    <div id="m2-quiz" class="card hidden">
-      <div class="quiz-header">
-        <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m2')">← Exit</button>
-        <div class="progress-wrap">
-          <div class="progress-bar"><div class="progress-fill" id="m2-progress" style="width:0%"></div></div>
-          <div class="progress-label" id="m2-prog-label">0 / 0</div>
-        </div>
-        <div class="timer-pill" id="m2-timer">⏱ 0:00</div>
-      </div>
-      <div class="text-center" style="margin-bottom:20px">
-        <div class="family-target" id="m2-root">—</div>
-        <div style="font-size:14px;color:var(--muted)">Fill in all word family forms you know</div>
-      </div>
-      <div class="family-grid" id="m2-slots"></div>
-      <div class="feedback-box" id="m2-feedback"></div>
-      <div class="action-row mt-16">
-        <button class="btn btn-primary" id="m2-submit-btn" onclick="checkMode2()">Check Answers</button>
-        <button class="btn btn-secondary hidden" id="m2-next-btn" onclick="nextMode2()">Next Word →</button>
-      </div>
+  <!-- By Unit (all 3 lessons) -->
+  <div id="m1-src-unit" style="display:none">
+    <div class="form-group">
+      <label>Unit</label>
+      <select id="m1-unit-only" class="form-input" style="max-width:160px">
+        <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
+        <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
+        <option value="7">Unit 7</option><option value="8">Unit 8</option>
+      </select>
     </div>
+  </div>
 
-    <div id="m2-score" class="card score-card hidden">
-      <div style="font-size:36px;margin-bottom:8px">✨</div>
-      <div class="score-big"><span id="m2-pct">0</span>%</div>
-      <div class="score-label">Quiz Complete!</div>
-      <div class="score-stats">
-        <div class="score-stat"><div class="val color-success" id="m2-correct">0</div><div class="key">Correct</div></div>
-        <div class="score-stat"><div class="val color-danger" id="m2-wrong-count">0</div><div class="key">Wrong</div></div>
-        <div class="score-stat"><div class="val" id="m2-total-q">0</div><div class="key">Fields</div></div>
-        <div class="score-stat"><div class="val" id="m2-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+  <!-- Pick specific lessons -->
+  <div id="m1-src-pick" style="display:none">
+    <div class="form-group">
+      <label>Lessons to include — one per line, format: <code style="color:var(--accent);background:rgba(124,106,247,.12);padding:1px 6px;border-radius:4px;">unit - lesson</code></label>
+      <textarea id="m1-pick-lessons" class="form-input" rows="6" placeholder="1 - 1&#10;1 - 3&#10;2 - 3&#10;4 - 2"></textarea>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">Units 1–8, Lessons 1–3. Duplicate or invalid lines are ignored.</p>
+  </div>
+
+  <!-- Custom words -->
+  <div id="m1-src-custom" style="display:none">
+    <div class="form-group">
+      <label>Enter words (one per line, or paste Vietnamese meanings)</label>
+      <textarea id="m1-custom-words" class="form-input" rows="6" placeholder="Enter Vietnamese meanings or English words, one per line…&#10;e.g.&#10;Tình cờ gặp&#10;Tra cứu&#10;Phương pháp"></textarea>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:12px;">These will be matched against your database by meaning or word.</p>
+  </div>
+
+  <!-- My Files -->
+  <div id="m1-src-myfiles" style="display:none">
+    <div class="form-group">
+      <label>Upload your own CSV file(s)</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m1-myfiles-input').click()">📂 Choose Files…</button>
+        <span id="m1-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
       </div>
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="beginMode2()">Try Again</button>
-        <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
+      <input type="file" id="m1-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM1MyFiles(event)">
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved to the database. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the correct CSV format.</p>
+  </div>
+
+  <!-- Full DB — no extra options -->
+  <div id="m1-src-db" style="display:none">
+    <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Uses all words currently in your database.</p>
+  </div>
+
+  <div class="form-group">
+    <label>Number of questions</label>
+    <select id="m1-count" class="form-input" style="max-width:160px">
+      <option value="10">10 questions</option>
+      <option value="20" selected>20 questions</option>
+      <option value="30">30 questions</option>
+      <option value="999">All words</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" id="m1-start-btn" onclick="beginMode1()">Start Quiz →</button>
+</div>
+
+<div id="m1-quiz" class="card hidden">
+  <div class="quiz-header">
+    <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m1')">← Exit</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="m1-progress" style="width:0%"></div></div>
+      <div class="progress-label" id="m1-prog-label">0 / 0</div>
+    </div>
+    <div class="timer-pill" id="m1-timer">⏱ 0:00</div>
+    <button class="btn btn-ghost btn-sm" id="pause-timer-btn" onclick="toggleTimerPause()" aria-label="Pause timer" title="Pause/Resume timer" style="padding:5px 10px;font-size:15px;">⏸️</button>
+    <div style="font-size:13px;color:var(--muted);flex-shrink:0">⚡ <span id="m1-streak">0</span></div>
+  </div>
+  <div class="question-box">
+    <div class="question-label">Vietnamese Meaning</div>
+    <div class="question-text" id="m1-meaning">—</div>
+    <div id="m1-type-tag" class="question-type-tag" style="display:none"></div>
+    <button class="question-hint-btn" id="m1-hint-btn" onclick="showM1Hint()">💡 Show hint</button>
+    <div class="question-hint" id="m1-hint"></div>
+  </div>
+  <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
+  <div class="feedback-box" id="m1-feedback" role="status" aria-live="polite"></div>
+  <div class="action-row">
+    <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
+    <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
+    <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip</button>
+  </div>
+</div>
+
+<div id="m1-score" class="card score-card hidden">
+  <div style="font-size:36px;margin-bottom:8px">🎉</div>
+  <div class="score-big"><span id="m1-pct">0</span>%</div>
+  <div class="score-label">Quiz Complete!</div>
+  <div class="score-stats">
+    <div class="score-stat"><div class="val color-success" id="m1-correct">0</div><div class="key">Correct</div></div>
+    <div class="score-stat"><div class="val color-danger" id="m1-wrong-count">0</div><div class="key">Wrong</div></div>
+    <div class="score-stat"><div class="val" id="m1-total-q">0</div><div class="key">Total</div></div>
+    <div class="score-stat"><div class="val" id="m1-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+  </div>
+  <div id="m1-xp-earned" style="font-size:20px;font-weight:800;color:var(--accent2);margin-bottom:16px;display:none"></div>
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="beginMode1()">Try Again</button>
+    <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
+  </div>
+</div>
+
+<!-- EXAM MODE quiz panel -->
+<div id="exam-quiz" class="card hidden" style="position:relative;">
+  <div class="exam-overlay"></div>
+  <div class="quiz-header">
+    <button class="btn btn-secondary btn-sm" onclick="exitExamMode()">← Exit</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="exam-progress" style="width:0%"></div></div>
+      <div class="progress-label" id="exam-prog-label">0 / 0</div>
+    </div>
+    <div class="timer-pill" id="exam-timer">⏱ 0:00</div>
+  </div>
+  <div style="margin-bottom:12px;text-align:center"><span style="font-size:11px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:1px;">⚠ Exam Mode — No Hints · No Feedback</span></div>
+  <div class="question-box">
+    <div class="question-label">Vietnamese Meaning</div>
+    <div class="question-text" id="exam-meaning">—</div>
+    <div id="exam-type-tag" class="question-type-tag" style="display:none"></div>
+  </div>
+  <input type="text" class="answer-input" id="exam-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkExam()">
+  <div class="action-row">
+    <button class="btn btn-primary" id="exam-submit-btn" onclick="checkExam()">Next →</button>
+    <button class="btn btn-secondary" id="exam-skip-btn" onclick="skipExam()">Skip</button>
+  </div>
+</div>
+
+<!-- EXAM MODE score -->
+<div id="exam-score" class="card score-card hidden">
+  <div style="font-size:36px;margin-bottom:8px">🏆</div>
+  <div class="score-big"><span id="exam-pct">0</span>%</div>
+  <div class="score-label">Exam Complete!</div>
+  <div class="score-stats">
+    <div class="score-stat"><div class="val color-success" id="exam-correct">0</div><div class="key">Correct</div></div>
+    <div class="score-stat"><div class="val color-danger" id="exam-wrong-count">0</div><div class="key">Wrong</div></div>
+    <div class="score-stat"><div class="val" id="exam-total-q">0</div><div class="key">Total</div></div>
+    <div class="score-stat"><div class="val" id="exam-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+  </div>
+  <div id="exam-review-list" style="text-align:left;margin-bottom:20px;display:none;">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;">Review</div>
+    <div id="exam-review-items" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+  <div id="exam-xp-earned" style="font-size:20px;font-weight:800;color:var(--accent2);margin-bottom:16px;display:none"></div>
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="startExamMode()">Try Again</button>
+    <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
+  </div>
+</div>
+        <!-- mode1.html content ends -->
+      </div>
+
+      <!-- MODE 2 (inlined) -->
+      <div id="tab-mode2" class="hidden">
+        <!-- mode2.html content starts -->
+<div id="m2-setup" class="card">
+  <p class="section-sub" style="margin-bottom:6px">Mode 2</p>
+  <h2 class="section-title">Word Family Quiz</h2>
+  <p class="section-sub">Given a root word, fill in all related forms.</p>
+
+  <!-- Source selector tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    <button class="nav-btn active" id="m2-src-lesson-btn" onclick="switchM2Source('lesson')">📖 By Lesson</button>
+    <button class="nav-btn" id="m2-src-unit-btn"   onclick="switchM2Source('unit')">📚 By Unit</button>
+    <button class="nav-btn" id="m2-src-myfiles-btn" onclick="switchM2Source('myfiles')">📂 My Files</button>
+    <button class="nav-btn" id="m2-src-db-btn"     onclick="switchM2Source('db')">🗂 Full Database</button>
+  </div>
+
+  <!-- By Lesson -->
+  <div id="m2-src-lesson" style="">
+    <div class="form-row" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Unit</label>
+        <select id="m2-unit" class="form-input" onchange="updateM2LessonSelect()">
+          <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
+          <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
+          <option value="7">Unit 7</option><option value="8">Unit 8</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Lesson</label>
+        <select id="m2-lesson" class="form-input">
+          <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <!-- DATABASE -->
-  <div id="tab-database" class="hidden">
+  <!-- By Unit -->
+  <div id="m2-src-unit" style="display:none">
+    <div class="form-group">
+      <label>Unit</label>
+      <select id="m2-unit-only" class="form-input" style="max-width:160px">
+        <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
+        <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
+        <option value="7">Unit 7</option><option value="8">Unit 8</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Full DB -->
+  <div id="m2-src-db" style="display:none">
+    <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Uses all words currently in your database.</p>
+  </div>
+
+  <!-- My Files -->
+  <div id="m2-src-myfiles" style="display:none">
+    <div class="form-group">
+      <label>Upload your own CSV file(s)</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('m2-myfiles-input').click()">📂 Choose Files…</button>
+        <span id="m2-myfiles-label" style="font-size:13px;color:var(--muted);">No files selected</span>
+      </div>
+      <input type="file" id="m2-myfiles-input" accept=".csv" multiple class="hidden" onchange="handleM2MyFiles(event)">
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Files are used for this session only — nothing is saved. See the <button onclick="showTab('guide')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0;font-family:inherit;">📄 Guide</button> tab for the CSV format.</p>
+  </div>
+
+  <div class="form-group">
+    <label>Number of root words</label>
+    <select id="m2-count" class="form-input" style="max-width:160px">
+      <option value="5">5 words</option>
+      <option value="10" selected>10 words</option>
+      <option value="20">20 words</option>
+      <option value="999">All</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" id="m2-start-btn" onclick="beginMode2()">Start Quiz →</button>
+</div>
+
+<div id="m2-quiz" class="card hidden">
+  <div class="quiz-header">
+    <button class="btn btn-secondary btn-sm" onclick="exitQuiz('m2')">← Exit</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="m2-progress" style="width:0%"></div></div>
+      <div class="progress-label" id="m2-prog-label">0 / 0</div>
+    </div>
+    <div class="timer-pill" id="m2-timer">⏱ 0:00</div>
+  </div>
+  <div class="text-center" style="margin-bottom:20px">
+    <div class="family-target" id="m2-root">—</div>
+    <div style="font-size:14px;color:var(--muted)">Fill in all word family forms you know</div>
+  </div>
+  <div class="family-grid" id="m2-slots"></div>
+  <div class="feedback-box" id="m2-feedback" role="status" aria-live="polite"></div>
+  <div class="action-row mt-16">
+    <button class="btn btn-primary" id="m2-submit-btn" onclick="checkMode2()">Check Answers</button>
+    <button class="btn btn-secondary hidden" id="m2-next-btn" onclick="nextMode2()">Next Word →</button>
+  </div>
+</div>
+
+<div id="m2-score" class="card score-card hidden">
+  <div style="font-size:36px;margin-bottom:8px">✨</div>
+  <div class="score-big"><span id="m2-pct">0</span>%</div>
+  <div class="score-label">Quiz Complete!</div>
+  <div class="score-stats">
+    <div class="score-stat"><div class="val color-success" id="m2-correct">0</div><div class="key">Correct</div></div>
+    <div class="score-stat"><div class="val color-danger" id="m2-wrong-count">0</div><div class="key">Wrong</div></div>
+    <div class="score-stat"><div class="val" id="m2-total-q">0</div><div class="key">Fields</div></div>
+    <div class="score-stat"><div class="val" id="m2-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+  </div>
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="beginMode2()">Try Again</button>
+    <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
+  </div>
+</div>
+        <!-- mode2.html content ends -->
+      </div>
+
+      <!-- AI MODE (inlined, API removed) -->
+      <div id="tab-ai" class="hidden">
+        <!-- ai_mode.html content (AI settings removed) -->
+<div id="ai-setup" class="card">
+  <p class="section-sub" style="margin-bottom:6px">AI Mode</p>
+  <h2 class="section-title">Sentence Cloze (Apply Knowledge)</h2>
+  <p class="section-sub">Use context to choose the right word form. You'll see a Vietnamese meaning and a sentence with a blank.</p>
+
+  <div class="form-row" style="margin-bottom:14px;">
+    <div class="form-group" style="margin-bottom:0">
+      <label>Question count</label>
+      <select id="ai-count" class="form-input" style="max-width:180px">
+        <option value="10" selected>10 questions</option>
+        <option value="20">20 questions</option>
+        <option value="30">30 questions</option>
+        <option value="999">All possible</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label>Hints</label>
+      <select id="ai-hints" class="form-input" style="max-width:220px">
+        <option value="optional" selected>Optional hint button</option>
+        <option value="off">No hints</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- AI Generation settings removed; always uses templates -->
+  <button class="btn btn-primary" id="ai-start-btn" onclick="startAIMode()">Start AI Mode →</button>
+</div>
+
+<!-- AI MODE quiz panel -->
+<div id="ai-quiz" class="card hidden">
+  <div class="quiz-header">
+    <button class="btn btn-secondary btn-sm" onclick="exitAIMode()">← Exit</button>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="ai-progress" style="width:0%"></div></div>
+      <div class="progress-label" id="ai-prog-label">0 / 0</div>
+    </div>
+    <div class="timer-pill" id="ai-timer">⏱ 0:00</div>
+  </div>
+
+  <div class="question-box">
+    <div class="question-label">Vietnamese Meaning</div>
+    <div class="question-text" id="ai-meaning" style="font-size:22px;line-height:1.7;">—</div>
+    <div class="question-type-tag" id="ai-type-tag" style="display:none"></div>
+  </div>
+
+  <div class="question-box" style="padding:22px 22px;margin-bottom:14px;">
+    <div class="question-label">Sentence</div>
+    <div class="question-text" id="ai-sentence" style="font-size:20px;line-height:1.75;">—</div>
+    <div id="ai-hint" style="font-size:13px;color:var(--muted2);margin-top:10px;font-style:italic;display:none"></div>
+    <button class="question-hint-btn" id="ai-hint-btn" onclick="showAIHint()">💡 Show hint</button>
+  </div>
+
+  <div id="ai-loading" style="text-align:center;color:var(--muted);font-size:13px;padding:8px;display:none;">Preparing…</div>
+  <input type="text" class="answer-input" id="ai-input" placeholder="Type the missing word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkAI()">
+  <div class="feedback-box" id="ai-feedback" role="status" aria-live="polite"></div>
+  <div class="action-row">
+    <button class="btn btn-primary" id="ai-submit-btn" onclick="checkAI()">Check Answer</button>
+    <button class="btn btn-secondary hidden" id="ai-next-btn" onclick="nextAI()">Next →</button>
+    <button class="btn btn-secondary" id="ai-skip-btn" onclick="skipAI()">Skip</button>
+  </div>
+</div>
+
+<!-- AI MODE score -->
+<div id="ai-score" class="card score-card hidden">
+  <div style="font-size:36px;margin-bottom:8px">🧠</div>
+  <div class="score-big"><span id="ai-pct">0</span>%</div>
+  <div class="score-label">AI Mode Complete!</div>
+  <div class="score-stats">
+    <div class="score-stat"><div class="val color-success" id="ai-correct">0</div><div class="key">Correct</div></div>
+    <div class="score-stat"><div class="val color-danger" id="ai-wrong-count">0</div><div class="key">Wrong</div></div>
+    <div class="score-stat"><div class="val" id="ai-total-q">0</div><div class="key">Total</div></div>
+    <div class="score-stat"><div class="val" id="ai-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+  </div>
+  <div class="action-row">
+    <button class="btn btn-primary" onclick="startAIMode()">Try Again</button>
+    <button class="btn btn-secondary" onclick="showTab('home')">Home</button>
+  </div>
+</div>
+        <!-- ai_mode.html content ends -->
+      </div>
+
+      <!-- DATABASE -->
+      <div id="tab-database" class="hidden">
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
         <div>
@@ -744,7 +1047,7 @@
           <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>        </div>
       </div>
       <div class="db-toolbar">
-        <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…" oninput="renderDB()">
+        <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…">
         <select class="form-input btn-sm" id="db-filter-type" onchange="renderDB()" style="max-width:130px;padding:9px 12px;">
           <option value="">All types</option>
           <option value="n">Noun (n)</option>
@@ -754,6 +1057,7 @@
           <option value="phr.v">Phrasal Verb (phr.v)</option>
         </select>
         <button class="btn btn-secondary btn-sm" onclick="startWeakWordsMode()">📚 Weak Words</button>
+        <button class="btn btn-secondary btn-sm" id="sort-mistakes-btn" onclick="toggleSortByMistakes()">↓ Sort: Mistakes</button>
         <button id="reset-all-btn" class="btn btn-secondary btn-sm" onclick="resetAllMistakes()" style="display:none">🔄 Reset All</button>
         <button id="delete-all-btn" class="btn btn-danger btn-sm" onclick="deleteAllWords()" style="display:none">🗑 Delete All</button>
       </div>
@@ -774,10 +1078,10 @@
       </div>
       <div class="pagination" id="db-pagination"></div>
     </div>
-  </div>
+      </div>
 
-  <!-- GUIDE -->
-  <div id="tab-guide" class="hidden">
+      <!-- GUIDE -->
+      <div id="tab-guide" class="hidden">
 
     <!-- Sub-nav -->
     <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
@@ -876,10 +1180,20 @@
         </div>
       </div>
     </div>
-  </div>
+      </div>
 
-  <!-- SETTINGS -->
-  <div id="tab-settings" class="hidden">
+
+      <!-- STATS -->
+      <div id="tab-stats" class="hidden">
+    <div class="card">
+      <h2 class="section-title" style="margin-bottom:6px">📊 Statistics</h2>
+      <p class="section-sub">Your learning progress at a glance.</p>
+      <div id="stats-content" style="display:flex;flex-direction:column;gap:20px;"></div>
+    </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="tab-settings" class="hidden">
     <div class="card">
       <h2 class="section-title" style="margin-bottom:6px">Settings</h2>
       <p class="section-sub">Manage your app preferences and data.</p>
@@ -906,6 +1220,9 @@
         </div>
       </div>
     </div>
+      </div>
+
+    </main>
   </div>
 
 </div>
@@ -977,7 +1294,8 @@
   </div>
 </div>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div class="level-up-banner" id="level-up-banner">🎉 Level Up!</div>
 
 <script>
 // ══════════════════════════════════════════
@@ -1040,7 +1358,8 @@ async function initializeDB() {
 
     // If CSV files changed (or first visit), reload and merge — keep user words
     if (!db.length || currentHash !== savedHash) {
-      const freshCSV = await autoLoadAllCSVs();
+      // Build fresh DB from the already-fetched CSV texts (avoids double-fetch)
+      const freshCSV = buildWordsFromCSVTexts(csvTexts);
 
       // Keep only words the user imported (marked with userAdded: true)
       const userWords = db.filter(w => w.userAdded === true);
@@ -1084,12 +1403,12 @@ async function initializeDB() {
   updateStats();
 }
 
-async function autoLoadAllCSVs() {
+function buildWordsFromCSVTexts(csvTexts) {
   const allWords = {};
   let idCounter = 1;
-  for (let u = 1; u <= 8; u++) {
-    for (let l = 1; l <= 3; l++) {
-      const words = await loadLessonCSV(u, l);
+  (csvTexts || []).forEach(text => {
+    try {
+      const words = parseCSVToWords(text);
       words.forEach(w => {
         if (!allWords[w.root]) {
           allWords[w.root] = { id: idCounter++, root: w.root, entries: [...w.entries], meanings: [...w.meanings], mistakeCount: 0 };
@@ -1098,8 +1417,10 @@ async function autoLoadAllCSVs() {
           w.meanings.forEach(m => { if (!allWords[w.root].meanings.includes(m)) allWords[w.root].meanings.push(m); });
         }
       });
+    } catch (e) {
+      // ignore bad file contents
     }
-  }
+  });
   return Object.values(allWords);
 }
 
@@ -1116,6 +1437,13 @@ function migrateFromV1(old) {
 // ══════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════
+function setButtonVariant(btn, variant) {
+  if (!btn) return;
+  const variants = ['btn-primary','btn-secondary','btn-ghost','btn-danger','btn-success'];
+  variants.forEach(v => btn.classList.remove(v));
+  btn.classList.add(variant);
+}
+
 function updateAdminUI() {
   const loginBtn      = document.getElementById('admin-login-btn');
   const homeAddBtn    = document.getElementById('home-add-btn');
@@ -1125,7 +1453,8 @@ function updateAdminUI() {
   const exportBtn     = document.getElementById('export-btn');
   const importBtn     = document.getElementById('import-btn');
   if (isAdmin) {
-    loginBtn.innerHTML = '👑 Admin'; loginBtn.classList.replace('btn-secondary','btn-primary');
+    loginBtn.textContent = '👑 Admin';
+    setButtonVariant(loginBtn, 'btn-primary');
     if (homeAddBtn)   homeAddBtn.style.display   = 'inline-flex';
     if (dbAddBtn)     dbAddBtn.style.display     = 'inline-flex';
     if (resetAllBtn)  resetAllBtn.style.display  = 'inline-flex';
@@ -1133,7 +1462,8 @@ function updateAdminUI() {
     if (exportBtn)    exportBtn.style.display    = 'inline-flex';
     if (importBtn)    importBtn.style.display    = 'inline-flex';
   } else {
-    loginBtn.innerHTML = '🔓 Login'; loginBtn.classList.replace('btn-primary','btn-secondary');
+    loginBtn.textContent = '🔓 Login';
+    setButtonVariant(loginBtn, 'btn-ghost');
     if (homeAddBtn)   homeAddBtn.style.display   = 'none';
     if (dbAddBtn)     dbAddBtn.style.display     = 'none';
     if (resetAllBtn)  resetAllBtn.style.display  = 'none';
@@ -1186,8 +1516,11 @@ function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&l
 // ══════════════════════════════════════════
 // TAB / PANEL NAVIGATION
 // ══════════════════════════════════════════
-const tabs = ['home','mode1','mode2','database','settings','guide'];
+const tabs = ['home','mode1','mode2','ai','database','stats','settings','guide'];
 let quizActive = false;
+
+// All panels in mode1 tab
+const M1_PANELS = ['m1-setup','m1-quiz','m1-score','exam-quiz','exam-score','ai-quiz','ai-score'];
 
 function showTab(name, force) {
   if (!force && quizActive) {
@@ -1196,33 +1529,50 @@ function showTab(name, force) {
   quizActive = false;
   stopTimer();
   tabs.forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t!==name));
-  document.querySelectorAll('.nav-btn').forEach((btn,i)=>btn.classList.toggle('active',tabs[i]===name));
+  const mainNav = document.getElementById('main-nav');
+  const navBtns = mainNav ? mainNav.querySelectorAll('.nav-btn') : [];
+  navBtns.forEach((btn,i)=>btn.classList.toggle('active', tabs[i]===name));
   if (name==='database') renderDB();
+  if (name==='stats') renderStats();
   if (name==='mode1') showPanel('m1','setup');
   if (name==='mode2') showPanel('m2','setup');
+  if (name==='ai') showAIPanel('setup');
   if (name==='settings') updateNameUI(getUserName());
 }
 function showPanel(mode, panel) {
   ['setup','quiz','score'].forEach(p=>document.getElementById(mode+'-'+p).classList.toggle('hidden',p!==panel));
+}
+function showM1Panel(panel) {
+  M1_PANELS.forEach(id => document.getElementById(id).classList.toggle('hidden', id !== panel));
 }
 function exitQuiz(mode) { quizActive = false; stopTimer(); showTab('home', true); }
 
 // ══════════════════════════════════════════
 // TIMER
 // ══════════════════════════════════════════
-let timerInterval = null, timerSeconds = 0, timerEl = null;
+let timerInterval = null, timerSeconds = 0, timerEl = null, timerPaused = false;
 
 function startTimer(elId) {
   stopTimer();
+  timerPaused = false;
   timerSeconds = 0; timerEl = document.getElementById(elId);
   updateTimerDisplay();
+  const pauseBtn = document.getElementById('pause-timer-btn');
+  if (pauseBtn) pauseBtn.textContent = '⏸️';
   timerInterval = setInterval(function() {
-    timerSeconds++;
-    updateTimerDisplay();
+    if (!timerPaused) { timerSeconds++; updateTimerDisplay(); }
   }, 1000);
 }
 function stopTimer() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  timerPaused = false;
+  const pauseBtn = document.getElementById('pause-timer-btn');
+  if (pauseBtn) pauseBtn.textContent = '⏸️';
+}
+function toggleTimerPause() {
+  timerPaused = !timerPaused;
+  const btn = document.getElementById('pause-timer-btn');
+  if (btn) btn.textContent = timerPaused ? '▶️' : '⏸️';
 }
 function updateTimerDisplay() {
   if (!timerEl) return;
@@ -1510,8 +1860,19 @@ async function _doBeginMode1() {
   } finally { showLoadingBtn('m1-start-btn', false); }
 
   const n = parseInt(document.getElementById('m1-count').value);
-  shuffle(pool);
-  m1Questions = pool.slice(0, Math.min(n, pool.length));
+  // SRS: sort by mistakeCount descending, then shuffle within each group
+  pool.sort((a,b) => (b.word.mistakeCount||0) - (a.word.mistakeCount||0));
+  let srsResult = [];
+  let si = 0;
+  while (si < pool.length) {
+    let sj = si;
+    while (sj < pool.length && (pool[sj].word.mistakeCount||0) === (pool[si].word.mistakeCount||0)) sj++;
+    const group = pool.slice(si, sj);
+    shuffle(group);
+    srsResult.push(...group);
+    si = sj;
+  }
+  m1Questions = srsResult.slice(0, Math.min(n, srsResult.length));
   m1Idx=0; m1Correct=0; m1Wrong=0; m1Streak=0; m1Revealed=false;
   quizActive = true;
   showPanel('m1','quiz');
@@ -1617,62 +1978,7 @@ function getWordAnswers(word) {
   return word.entries.map(e => normalize(e.word.split('/')[0])).filter(Boolean);
 }
 
-function checkMode1() {
-  if (m1Revealed) { nextMode1(); return; }
-  const q = m1Questions[m1Idx];
-  const input = document.getElementById('m1-input');
-  const userVal = normalize(input.value);
-  if (!userVal) return;
 
-  // Build accepted answers: the specific entry's word + any other entry in db
-  // that has the exact same meaning (same-meaning synonyms should all be accepted)
-  let allAnswers = [];
-  if (q.entry) {
-    allAnswers.push(normalize(q.entry.word.split('/')[0]));
-  } else {
-    allAnswers.push(normalize(q.word.root));
-  }
-  // Search entire db for entries with identical meaning
-  const qMeaning = q.meaning.trim().toLowerCase();
-  db.forEach(word => {
-    word.entries.forEach(entry => {
-      if (entry.meaning && entry.meaning.trim().toLowerCase() === qMeaning) {
-        const norm = normalize(entry.word.split('/')[0]);
-        if (norm && !allAnswers.includes(norm)) allAnswers.push(norm);
-      }
-    });
-    // Also check word-level meanings (legacy data)
-    if (word.meanings.some(m => m.trim().toLowerCase() === qMeaning)) {
-      word.entries.forEach(entry => {
-        const norm = normalize(entry.word.split('/')[0]);
-        if (norm && !allAnswers.includes(norm)) allAnswers.push(norm);
-      });
-    }
-  });
-  const isCorrect = allAnswers.some(a => a === userVal);
-
-  const fb = document.getElementById('m1-feedback');
-  m1Revealed = true;
-
-  if (isCorrect) {
-    input.className='answer-input correct'; m1Correct++; m1Streak++;
-    fb.className='feedback-box correct'; fb.textContent='✓ Correct! Well done.';
-  } else {
-    input.className='answer-input wrong'; m1Wrong++; m1Streak=0;
-    recordMistake(q.word);
-    fb.className='feedback-box wrong';
-    const correctWord = q.entry ? (q.entry.word + (q.entry.phonetic ? ' ' + q.entry.phonetic : '')) : q.word.root;
-    fb.textContent = '✗ Correct answer: ' + correctWord;
-  }
-  fb.style.display='block';
-  input.disabled=true;
-  document.getElementById('m1-hint-btn').style.display='none';
-  document.getElementById('m1-hint').style.display='block';
-  document.getElementById('m1-submit-btn').classList.add('hidden');
-  document.getElementById('m1-next-btn').classList.remove('hidden');
-  document.getElementById('m1-skip-btn').classList.add('hidden');
-  updateSessionScore();
-}
 
 function skipMode1() {
   if (m1Revealed) return;
@@ -1694,18 +2000,7 @@ function skipMode1() {
 
 function nextMode1() { m1Idx++; renderMode1(); }
 
-function finishMode1() {
-  quizActive = false;
-  stopTimer();
-  const total=m1Correct+m1Wrong;
-  const pct=total?Math.round((m1Correct/total)*100):0;
-  document.getElementById('m1-pct').textContent=pct;
-  document.getElementById('m1-correct').textContent=m1Correct;
-  document.getElementById('m1-wrong-count').textContent=m1Wrong;
-  document.getElementById('m1-total-q').textContent=total;
-  document.getElementById('m1-time-stat').textContent=formatTime(timerSeconds);
-  showPanel('m1','score'); saveDB(); updateSessionScore();
-}
+
 
 // ══════════════════════════════════════════
 // MODE 2 — Word Family
@@ -1742,39 +2037,7 @@ function renderMode2() {
   m2CurrentWordChecked=false;
 }
 
-function checkMode2() {
-  const slots=document.querySelectorAll('.family-slot');
-  let totalCorrect=0, totalWrong=0;
 
-  slots.forEach(slot=>{
-    const input=slot.querySelector('input');
-    const userVal=normalize(input.value);
-    const correctRaw=slot.dataset.answer;
-    const correct=normalize(correctRaw.split('/')[0]);
-    input.disabled=true;
-    if (!userVal) {
-      slot.classList.add('skipped'); input.value='→ '+correctRaw; totalWrong++;
-    } else if (userVal===correct) {
-      slot.classList.add('correct'); totalCorrect++;
-    } else {
-      slot.classList.add('wrong'); input.value=input.value+' → '+correctRaw; totalWrong++;
-    }
-  });
-
-  if (totalWrong>0) { recordMistake(m2Queue[m2Idx]); }
-
-  if (!m2CurrentWordChecked) {
-    m2TotalCorrect+=totalCorrect; m2TotalWrong+=totalWrong; m2TotalFields+=slots.length; m2CurrentWordChecked=true;
-  }
-
-  const fb=document.getElementById('m2-feedback'); fb.style.display='block';
-  if (totalWrong===0) { fb.className='feedback-box correct'; fb.textContent='✓ Perfect! '+totalCorrect+'/'+slots.length+' correct'; }
-  else { fb.className='feedback-box wrong'; fb.textContent=totalCorrect+'/'+slots.length+' correct. Review highlighted fields.'; }
-
-  document.getElementById('m2-submit-btn').classList.add('hidden');
-  document.getElementById('m2-next-btn').classList.remove('hidden');
-  updateSessionScore();
-}
 
 function nextMode2() { m2Idx++; m2CurrentWordChecked=false; renderMode2(); }
 
@@ -1800,71 +2063,6 @@ function updateSessionScore() {
 // ══════════════════════════════════════════
 let dbPage=1;
 const PER_PAGE=20;
-
-function renderDB() {
-  const q=(document.getElementById('db-search').value||'').toLowerCase();
-  const filterType=document.getElementById('db-filter-type').value;
-
-  // Flatten to rows: one row per entry
-  let rows=[];
-  db.forEach(word=>{
-    word.entries.forEach(entry=>{
-      if (filterType && entry.type!==filterType) return;
-      if (q && !(
-        word.root.toLowerCase().includes(q) ||
-        entry.word.toLowerCase().includes(q) ||
-        (entry.phonetic||'').toLowerCase().includes(q) ||
-        (entry.meaning||'').toLowerCase().includes(q) ||
-        word.meanings.some(m=>m.toLowerCase().includes(q))
-      )) return;
-      rows.push({ word, entry });
-    });
-    // If word has no entries but has meanings, still show it
-    if (word.entries.length===0 && !filterType) {
-      if (!q || word.root.toLowerCase().includes(q) || word.meanings.some(m=>m.toLowerCase().includes(q))) {
-        rows.push({ word, entry: null });
-      }
-    }
-  });
-
-  updateStats();
-  const total=Math.ceil(rows.length/PER_PAGE);
-  if (dbPage>total) dbPage=Math.max(1,total);
-  const page=rows.slice((dbPage-1)*PER_PAGE, dbPage*PER_PAGE);
-
-  const typeClass = { n:'type-n', v:'type-v', adj:'type-adj', adv:'type-adv', 'phr.v':'type-phrv' };
-  const typeLabel = { n:'n', v:'v', adj:'adj', adv:'adv', 'phr.v':'phr.v' };
-
-  const tbody=document.getElementById('word-list');
-  if (!rows.length) {
-    tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="icon">🔍</div>No words found</div></td></tr>';
-  } else {
-    tbody.innerHTML=page.map(({word,entry})=>{
-      const errChip=word.mistakeCount?'<span style="color:var(--danger);font-size:11px;font-weight:700;">❌'+word.mistakeCount+'</span>':'';
-      const wordStr=entry?escapeHtml(entry.word):'<span style="color:var(--muted);font-style:italic;">—</span>';
-      const phonStr=entry&&entry.phonetic?escapeHtml(entry.phonetic):'';
-      const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
-      const meanStr = entry
-        ? escapeHtml((entry.meaning && entry.meaning.trim()) ? entry.meaning : word.meanings.slice(0,2).join(', '))
-        : escapeHtml(word.meanings.slice(0,2).join(', '));
-      return '<tr onclick="openEditModal('+word.id+')" title="Click to edit">'
-        +'<td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+'</td>'
-        +'<td class="col-word">'+wordStr+'</td>'
-        +'<td class="col-phon">'+phonStr+'</td>'
-        +'<td class="col-type">'+typeStr+'</td>'
-        +'<td class="col-mean">'+meanStr+'</td>'
-        +'<td style="text-align:right;padding-right:10px;"><span style="color:var(--muted);font-size:16px;">›</span></td>'
-        +'</tr>';
-    }).join('');
-  }
-
-  const pg=document.getElementById('db-pagination'); pg.innerHTML='';
-  for (let i=1;i<=total;i++) {
-    const b=document.createElement('button');
-    b.className='page-btn'+(i===dbPage?' active':''); b.textContent=i;
-    b.onclick=()=>{ dbPage=i; renderDB(); }; pg.appendChild(b);
-  }
-}
 
 // ══════════════════════════════════════════
 // MODAL — Add / Edit Word
@@ -2119,7 +2317,7 @@ async function importCSVFiles(event) {
       // Parse header
       const header=parseCSVLine(lines[0]).map(h=>h.toLowerCase().replace(/\s+/g,'_'));
       const ci={ root:header.findIndex(h=>h==='root'||h==='root_word'||h.includes('root')), word:header.indexOf('word'), phonetic:header.indexOf('phonetic'), type:header.indexOf('type'), meaning:header.findIndex(h=>h.includes('mean')||h.includes('viet')) };
-      if (ci.root===-1) { console.warn('No root column in',file.name); skippedBad++; continue; }
+      if (ci.root===-1) { showToast(`❌ File "${file.name}" is missing a "root" column — skipped.`); skippedBad++; continue; }
 
       // Group rows by root
       const groups={};
@@ -2364,11 +2562,77 @@ function getUserName() {
   return localStorage.getItem(NAME_KEY) || '';
 }
 
+// ══════════════════════════════════════════
+// FALLBACK TEMPLATE SENTENCES (loaded from Templates/*.txt)
+// ══════════════════════════════════════════
+const _templateCache = new Map(); // filename -> string[]
+
+function _templateFilenameForType(type) {
+  const t = (type || '').toLowerCase();
+  if (t === 'n') return 'Templates/noun.txt';
+  if (t === 'v') return 'Templates/verb.txt';
+  if (t === 'adj') return 'Templates/adjective.txt';
+  if (t === 'adv') return 'Templates/adverb.txt';
+  if (t === 'phr.v') return 'Templates/phrasal_verb.txt';
+  return 'Templates/noun.txt';
+}
+
+async function loadTemplateSentences(type) {
+  const filename = _templateFilenameForType(type);
+  if (_templateCache.has(filename)) return _templateCache.get(filename);
+  try {
+    const res = await fetch(filename, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const lines = text
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(l => l && !l.startsWith('#') && !l.startsWith('//'));
+    // Keep only usable lines (must have a blank)
+    const usable = lines.filter(l => l.includes('_____'));
+    _templateCache.set(filename, usable.length ? usable : lines);
+  } catch (e) {
+    _templateCache.set(filename, []);
+  }
+  return _templateCache.get(filename);
+}
+
+async function pickTemplateSentence(type) {
+  const arr = await loadTemplateSentences(type);
+  if (arr && arr.length) return arr[Math.floor(Math.random() * arr.length)];
+  return 'Use the meaning to choose the right word: "_____" .';
+}
+
+// ── Greeting sub-text: loaded from greetings.txt, falls back to built-in list ──
+const FALLBACK_SUBS = [
+  "How are you doing today? Let's smash some words.",
+  "Hope you're having a great day — vocab time!",
+  "Consistency beats intensity. One session at a time.",
+  "Your future self will thank you for practising today.",
+  "Small progress every day adds up to big results. 🔥",
+  "Ready to level up your vocabulary?",
+  "Let's see how sharp your memory is today 🧠",
+  "Another day, another word family conquered. 💡",
+];
+
+let _greetingSubs = null;
+async function loadGreetingSubs() {
+  if (_greetingSubs) return _greetingSubs;
+  try {
+    const res = await fetch('greetings.txt');
+    if (!res.ok) throw new Error('not found');
+    const text = await res.text();
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    _greetingSubs = lines.length ? lines : FALLBACK_SUBS;
+  } catch(e) {
+    _greetingSubs = FALLBACK_SUBS;
+  }
+  return _greetingSubs;
+}
+
 function getGreeting(name) {
   const h = new Date().getHours();
   const timePart = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good night';
-
-  const withName = name ? `, ${name}` : '';
   const mains = name ? [
     `${timePart}, ${name}! 👋`,
     `Hey ${name}! Ready to grind? 💪`,
@@ -2380,26 +2644,13 @@ function getGreeting(name) {
     `Welcome back! ✨`,
     `Ready to learn? 🚀`,
   ];
-
-  const subs = [
-    "How are you doing today? Let's smash some words.",
-    "Hope you're having a great day — vocab time!",
-    "Consistency beats intensity. One session at a time.",
-    "Your future self will thank you for practising today.",
-    "Small progress every day adds up to big results. 🔥",
-    "Ready to level up your vocabulary?",
-    "Let's see how sharp your memory is today 🧠",
-    "Another day, another word family conquered. 💡",
-  ];
-
   return {
     timePart,
     main: mains[Math.floor(Math.random() * mains.length)],
-    sub: subs[Math.floor(Math.random() * subs.length)],
   };
 }
 
-function updateNameUI(name) {
+async function updateNameUI(name) {
   const headerGreeting = document.getElementById('header-greeting');
   const display = document.getElementById('settings-name-display');
   if (name) {
@@ -2411,14 +2662,16 @@ function updateNameUI(name) {
     headerGreeting.style.color = 'var(--accent)';
     if (display) display.textContent = '—';
   }
-  // Update home greeting
   const g = getGreeting(name);
   const timeEl = document.getElementById('home-time-label');
   const mainEl = document.getElementById('home-greeting-main');
   const subEl  = document.getElementById('home-greeting-sub');
   if (timeEl) timeEl.textContent = g.timePart;
   if (mainEl) mainEl.textContent = g.main;
-  if (subEl)  subEl.textContent  = g.sub;
+  if (subEl) {
+    const subs = await loadGreetingSubs();
+    subEl.textContent = subs[Math.floor(Math.random() * subs.length)];
+  }
 }
 
 function saveName() {
@@ -2482,12 +2735,705 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  const modalIds = ['login-modal','name-modal','modal-overlay'];
+  for (const id of modalIds) {
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('hidden')) {
+      e.preventDefault();
+      if (id === 'login-modal') closeLoginModal();
+      else if (id === 'name-modal') el.classList.add('hidden');
+      else closeModal();
+      return;
+    }
+  }
+});
+
+// ══════════════════════════════════════════
+// XP & LEVEL SYSTEM
+// ══════════════════════════════════════════
+const XP_KEY = 'wf_xp';
+const XPperLevel = 100;
+let totalXP = parseInt(localStorage.getItem(XP_KEY) || '0');
+
+function getCurrentLevel(xp) { return Math.floor(xp / XPperLevel) + 1; }
+function getXPForNext(xp) { return XPperLevel - (xp % XPperLevel); }
+
+function addXP(amount, sourceEl) {
+  const oldLevel = getCurrentLevel(totalXP);
+  totalXP += amount;
+  localStorage.setItem(XP_KEY, totalXP);
+  const newLevel = getCurrentLevel(totalXP);
+  updateXPUI();
+  // Popup
+  if (sourceEl) {
+    const rect = sourceEl.getBoundingClientRect();
+    const pop = document.createElement('div');
+    pop.className = 'xp-popup';
+    pop.textContent = '+' + amount + ' XP';
+    let left = rect.left + rect.width/2 - 30;
+    left = Math.min(window.innerWidth - 60, Math.max(10, left));
+    pop.style.left = left + 'px';
+    pop.style.top  = (rect.top + window.scrollY - 10) + 'px';
+    document.body.appendChild(pop);
+    setTimeout(() => pop.remove(), 950);
+  }
+  if (newLevel > oldLevel) {
+    const banner = document.getElementById('level-up-banner');
+    banner.textContent = '🎉 Level Up! You\'re now Level ' + newLevel;
+    banner.classList.add('show');
+    setTimeout(() => banner.classList.remove('show'), 3500);
+    playSound('levelup');
+  }
+}
+
+function updateXPUI() {
+  document.getElementById('xp-display').textContent = totalXP;
+  document.getElementById('level-display').textContent = getCurrentLevel(totalXP);
+}
+
+// ══════════════════════════════════════════
+// SOUND EFFECTS (Web Audio API)
+// ══════════════════════════════════════════
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+let soundMuted = localStorage.getItem('soundMuted') === 'true';
+function playSound(type) {
+  if (soundMuted) return;
+  try {
+    const ctx = getAudioCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if (type === 'correct') {
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.07);
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      o.start(); o.stop(ctx.currentTime + 0.3);
+    } else if (type === 'wrong') {
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(200, ctx.currentTime);
+      o.frequency.setValueAtTime(150, ctx.currentTime + 0.05);
+      g.gain.setValueAtTime(0.12, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      o.start(); o.stop(ctx.currentTime + 0.25);
+    } else if (type === 'levelup') {
+      [523,659,784,1047].forEach((freq, i) => {
+        const oo = ctx.createOscillator(); const gg = ctx.createGain();
+        oo.connect(gg); gg.connect(ctx.destination);
+        oo.frequency.value = freq;
+        gg.gain.setValueAtTime(0.15, ctx.currentTime + i*0.1);
+        gg.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.1 + 0.2);
+        oo.start(ctx.currentTime + i*0.1); oo.stop(ctx.currentTime + i*0.1 + 0.2);
+      });
+    }
+  } catch(e) {}
+}
+
+function shakeInput(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('shake');
+  void el.offsetWidth; // reflow
+  el.classList.add('shake');
+  setTimeout(() => el.classList.remove('shake'), 320);
+}
+
+// ══════════════════════════════════════════
+// DB SORT BY MISTAKES
+// ══════════════════════════════════════════
+let dbSortByMistakes = false;
+function toggleSortByMistakes() {
+  dbSortByMistakes = !dbSortByMistakes;
+  const btn = document.getElementById('sort-mistakes-btn');
+  btn.classList.toggle('sort-active', dbSortByMistakes);
+  btn.textContent = dbSortByMistakes ? '↓ Sort: Mistakes ✓' : '↓ Sort: Mistakes';
+  renderDB();
+}
+
+// Patch renderDB to support sort
+function renderDB() {
+  const q=(document.getElementById('db-search').value||'').toLowerCase();
+  const filterType=document.getElementById('db-filter-type').value;
+  let rows=[];
+  db.forEach(word=>{
+    word.entries.forEach(entry=>{
+      if (filterType && entry.type!==filterType) return;
+      if (q && !(
+        word.root.toLowerCase().includes(q) ||
+        entry.word.toLowerCase().includes(q) ||
+        (entry.phonetic||'').toLowerCase().includes(q) ||
+        (entry.meaning||'').toLowerCase().includes(q) ||
+        word.meanings.some(m=>m.toLowerCase().includes(q))
+      )) return;
+      rows.push({ word, entry });
+    });
+    if (word.entries.length===0 && !filterType) {
+      if (!q || word.root.toLowerCase().includes(q) || word.meanings.some(m=>m.toLowerCase().includes(q))) {
+        rows.push({ word, entry: null });
+      }
+    }
+  });
+  if (dbSortByMistakes) {
+    rows.sort((a,b) => (b.word.mistakeCount||0) - (a.word.mistakeCount||0));
+  }
+  updateStats();
+  const total=Math.ceil(rows.length/PER_PAGE);
+  if (dbPage>total) dbPage=Math.max(1,total);
+  const page=rows.slice((dbPage-1)*PER_PAGE, dbPage*PER_PAGE);
+  const typeClass = { n:'type-n', v:'type-v', adj:'type-adj', adv:'type-adv', 'phr.v':'type-phrv' };
+  const typeLabel = { n:'n', v:'v', adj:'adj', adv:'adv', 'phr.v':'phr.v' };
+  const tbody=document.getElementById('word-list');
+  if (!rows.length) {
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="icon">🔍</div>No words found</div></td></tr>';
+  } else {
+    tbody.innerHTML=page.map(({word,entry})=>{
+      const errChip=word.mistakeCount?'<span style="color:var(--danger);font-size:11px;font-weight:700;">❌'+word.mistakeCount+'</span>':'';
+      const wordStr=entry?escapeHtml(entry.word):'<span style="color:var(--muted);font-style:italic;">—</span>';
+      const phonStr=entry&&entry.phonetic?escapeHtml(entry.phonetic):'';
+      const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
+      const meanStr = entry
+        ? escapeHtml((entry.meaning && entry.meaning.trim()) ? entry.meaning : word.meanings.slice(0,2).join(', '))
+        : escapeHtml(word.meanings.slice(0,2).join(', '));
+      return '<tr onclick="openEditModal('+word.id+')" title="Click to edit">'
+        +'<td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+'</td>'
+        +'<td class="col-word">'+wordStr+'</td>'
+        +'<td class="col-phon">'+phonStr+'</td>'
+        +'<td class="col-type">'+typeStr+'</td>'
+        +'<td class="col-mean">'+meanStr+'</td>'
+        +'<td style="text-align:right;padding-right:10px;"><span style="color:var(--muted);font-size:16px;">›</span></td>'
+        +'</tr>';
+    }).join('');
+  }
+  const pg=document.getElementById('db-pagination'); pg.innerHTML='';
+  for (let i=1;i<=total;i++) {
+    const b=document.createElement('button');
+    b.className='page-btn'+(i===dbPage?' active':''); b.textContent=i;
+    b.onclick=()=>{ dbPage=i; renderDB(); }; pg.appendChild(b);
+  }
+}
+
+// ══════════════════════════════════════════
+// PATCH checkMode1 — add XP + sound + shake
+// ══════════════════════════════════════════
+function checkMode1() {
+  if (m1Revealed) { nextMode1(); return; }
+  const q = m1Questions[m1Idx];
+  const input = document.getElementById('m1-input');
+  const userVal = normalize(input.value);
+  if (!userVal) return;
+
+  let allAnswers = [];
+  if (q.entry) {
+    // Accept all slash-separated variants
+    q.entry.word.split('/').forEach(v => {
+      const n = normalize(v.trim()); if (n) allAnswers.push(n);
+    });
+  } else {
+    allAnswers.push(normalize(q.word.root));
+  }
+  const qMeaning = q.meaning.trim().toLowerCase();
+  db.forEach(word => {
+    word.entries.forEach(entry => {
+      if (entry.meaning && entry.meaning.trim().toLowerCase() === qMeaning) {
+        entry.word.split('/').forEach(v => {
+          const norm = normalize(v.trim());
+          if (norm && !allAnswers.includes(norm)) allAnswers.push(norm);
+        });
+      }
+    });
+    if (word.meanings.some(m => m.trim().toLowerCase() === qMeaning)) {
+      word.entries.forEach(entry => {
+        entry.word.split('/').forEach(v => {
+          const norm = normalize(v.trim());
+          if (norm && !allAnswers.includes(norm)) allAnswers.push(norm);
+        });
+      });
+    }
+  });
+  const isCorrect = allAnswers.some(a => a === userVal);
+
+  const fb = document.getElementById('m1-feedback');
+  m1Revealed = true;
+
+  if (isCorrect) {
+    input.className='answer-input correct'; m1Correct++; m1Streak++;
+    fb.className='feedback-box correct';
+    const streakBonus = m1Streak >= 5 ? 5 : 0;
+    const xpAmt = 10 + streakBonus;
+    fb.textContent = '✓ Correct! Well done.' + (streakBonus ? ' 🔥 Streak bonus +' + streakBonus + ' XP!' : '');
+    playSound('correct');
+    addXP(xpAmt, input);
+  } else {
+    input.className='answer-input wrong'; m1Wrong++; m1Streak=0;
+    recordMistake(q.word);
+    fb.className='feedback-box wrong';
+    const correctWord = q.entry ? (q.entry.word + (q.entry.phonetic ? ' ' + q.entry.phonetic : '')) : q.word.root;
+    fb.textContent = '✗ Correct answer: ' + correctWord;
+    playSound('wrong');
+    shakeInput('m1-input');
+  }
+  fb.style.display='block';
+  input.disabled=true;
+  document.getElementById('m1-hint-btn').style.display='none';
+  document.getElementById('m1-hint').style.display='block';
+  document.getElementById('m1-submit-btn').classList.add('hidden');
+  document.getElementById('m1-next-btn').classList.remove('hidden');
+  document.getElementById('m1-skip-btn').classList.add('hidden');
+  updateSessionScore();
+}
+
+// ══════════════════════════════════════════
+// PATCH finishMode1 — show XP earned
+// ══════════════════════════════════════════
+function finishMode1() {
+  quizActive = false; stopTimer();
+  const total=m1Correct+m1Wrong;
+  const pct=total?Math.round((m1Correct/total)*100):0;
+  document.getElementById('m1-pct').textContent=pct;
+  document.getElementById('m1-correct').textContent=m1Correct;
+  document.getElementById('m1-wrong-count').textContent=m1Wrong;
+  document.getElementById('m1-total-q').textContent=total;
+  document.getElementById('m1-time-stat').textContent=formatTime(timerSeconds);
+  const xpEl = document.getElementById('m1-xp-earned');
+  const xpTotal = m1Correct * 10;
+  xpEl.textContent = '+' + xpTotal + ' XP earned this session!';
+  xpEl.style.display = xpTotal ? 'block' : 'none';
+  showPanel('m1','score'); saveDB(); updateSessionScore();
+}
+
+// ══════════════════════════════════════════
+// PATCH checkMode2 — multi-slash + sound + shake
+// ══════════════════════════════════════════
+function checkMode2() {
+  const slots=document.querySelectorAll('.family-slot');
+  let totalCorrect=0, totalWrong=0;
+  let anyShake = false;
+
+  slots.forEach(slot=>{
+    const input=slot.querySelector('input');
+    const userVal=normalize(input.value);
+    const correctRaw=slot.dataset.answer;
+    // Accept all slash variants
+    const variants = correctRaw.split('/').map(v => normalize(v.trim())).filter(Boolean);
+    input.disabled=true;
+    if (!userVal) {
+      slot.classList.add('skipped'); input.value='→ '+correctRaw; totalWrong++;
+    } else if (variants.includes(userVal)) {
+      slot.classList.add('correct'); totalCorrect++;
+    } else {
+      slot.classList.add('wrong'); input.value=input.value+' → '+correctRaw; totalWrong++;
+      anyShake = true;
+    }
+  });
+
+  if (totalWrong>0) { recordMistake(m2Queue[m2Idx]); playSound('wrong'); }
+  else { playSound('correct'); addXP(10 * totalCorrect, document.getElementById('m2-submit-btn')); }
+  if (anyShake) {
+    slots.forEach(slot => { if (slot.classList.contains('wrong')) slot.style.animation='none'; });
+  }
+
+  if (!m2CurrentWordChecked) {
+    m2TotalCorrect+=totalCorrect; m2TotalWrong+=totalWrong; m2TotalFields+=slots.length; m2CurrentWordChecked=true;
+  }
+
+  const fb=document.getElementById('m2-feedback'); fb.style.display='block';
+  if (totalWrong===0) { fb.className='feedback-box correct'; fb.textContent='✓ Perfect! '+totalCorrect+'/'+slots.length+' correct'; }
+  else { fb.className='feedback-box wrong'; fb.textContent=totalCorrect+'/'+slots.length+' correct. Review the highlighted fields.'; }
+
+  document.getElementById('m2-submit-btn').classList.add('hidden');
+  document.getElementById('m2-next-btn').classList.remove('hidden');
+  updateSessionScore();
+}
+
+// ══════════════════════════════════════════
+// EXAM MODE
+// ══════════════════════════════════════════
+let examQuestions=[], examIdx=0, examCorrect=0, examWrong=0;
+let examReview = []; // {meaning, correct, userAnswer, realAnswer}
+
+function startExamMode() {
+  if (!db.length) { showToast('⚠️ Database is empty!'); return; }
+  const pool = [];
+  db.forEach(word => {
+    word.entries.forEach(entry => {
+      const meaning = (entry.meaning && entry.meaning.trim()) ? entry.meaning : null;
+      if (meaning) pool.push({ word, entry, meaning });
+    });
+  });
+  if (!pool.length) { showToast('⚠️ No meanings found for exam.'); return; }
+  shuffle(pool);
+  examQuestions = pool.slice(0, Math.min(20, pool.length));
+  examIdx=0; examCorrect=0; examWrong=0; examReview=[];
+  quizActive = true;
+  showTab('mode1', true);
+  M1_PANELS.forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('exam-quiz').classList.remove('hidden');
+  startTimer('exam-timer');
+  renderExam();
+}
+
+function exitExamMode() { quizActive=false; stopTimer(); showTab('home',true); }
+
+function renderExam() {
+  if (examIdx >= examQuestions.length) { finishExam(); return; }
+  const q = examQuestions[examIdx];
+  const pct = ((examIdx+1)/examQuestions.length)*100;
+  document.getElementById('exam-progress').style.width=pct+'%';
+  document.getElementById('exam-prog-label').textContent=(examIdx+1)+' / '+examQuestions.length;
+  document.getElementById('exam-meaning').textContent=q.meaning;
+  const typeLabels={n:'Noun (n)',v:'Verb (v)',adj:'Adjective (adj)',adv:'Adverb (adv)','phr.v':'Phrasal Verb (phr.v)'};
+  const typeTag=document.getElementById('exam-type-tag');
+  if (q.entry && q.entry.type) { typeTag.textContent=typeLabels[q.entry.type]||q.entry.type; typeTag.style.display='inline-block'; }
+  else { typeTag.style.display='none'; }
+  const inp=document.getElementById('exam-input');
+  inp.value=''; inp.className='answer-input'; inp.disabled=false; inp.focus();
+}
+
+function checkExam() {
+  const q=examQuestions[examIdx];
+  const input=document.getElementById('exam-input');
+  const userVal=normalize(input.value);
+  if (!userVal && examIdx < examQuestions.length-1) { skipExam(); return; }
+  const variants = q.entry.word.split('/').map(v=>normalize(v.trim())).filter(Boolean);
+  const isCorrect = variants.includes(userVal);
+  if (isCorrect) { examCorrect++; playSound('correct'); }
+  else { examWrong++; playSound('wrong'); shakeInput('exam-input'); recordMistake(q.word); }
+  examReview.push({ meaning: q.meaning, correct: isCorrect, userAnswer: userVal, realAnswer: q.entry.word });
+  examIdx++;
+  setTimeout(renderExam, 100);
+}
+
+function skipExam() {
+  const q=examQuestions[examIdx];
+  examWrong++; recordMistake(q.word);
+  examReview.push({ meaning: q.meaning, correct: false, userAnswer: '(skipped)', realAnswer: q.entry.word });
+  examIdx++; renderExam();
+}
+
+function finishExam() {
+  quizActive=false; stopTimer();
+  const total=examCorrect+examWrong;
+  const pct=total?Math.round((examCorrect/total)*100):0;
+  document.getElementById('exam-pct').textContent=pct;
+  document.getElementById('exam-correct').textContent=examCorrect;
+  document.getElementById('exam-wrong-count').textContent=examWrong;
+  document.getElementById('exam-total-q').textContent=total;
+  document.getElementById('exam-time-stat').textContent=formatTime(timerSeconds);
+  // XP
+  const xpAmt = examCorrect * 15; // bonus XP for exam
+  if (xpAmt) { addXP(xpAmt); document.getElementById('exam-xp-earned').textContent='+'+xpAmt+' XP (Exam Bonus!)'; document.getElementById('exam-xp-earned').style.display='block'; }
+  // Review list
+  const reviewDiv = document.getElementById('exam-review-list');
+  const reviewItems = document.getElementById('exam-review-items');
+  reviewDiv.style.display = 'block';
+  reviewItems.innerHTML = examReview.slice(0,10).map(r =>
+    `<div style="padding:10px 14px;border-radius:9px;border:1px solid ${r.correct?'rgba(52,211,153,.25)':'rgba(240,100,100,.25)'};background:${r.correct?'rgba(52,211,153,.06)':'rgba(240,100,100,.06)'};">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:3px;">${escapeHtml(r.meaning)}</div>
+      <div style="font-size:14px;font-weight:700;color:${r.correct?'var(--success)':'var(--danger)'};">${r.correct?'✓':('✗ '+escapeHtml(r.userAnswer)+' → ')}<span style="color:var(--text)">${escapeHtml(r.realAnswer)}</span></div>
+    </div>`
+  ).join('');
+  M1_PANELS.forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('exam-score').classList.remove('hidden');
+  saveDB(); updateSessionScore();
+}
+
+// ══════════════════════════════════════════
+// AI MODE — Sentence Cloze (template only, API removed)
+// ══════════════════════════════════════════
+let aiQuestions=[], aiIdx=0, aiCorrect=0, aiWrong=0, aiRevealed=false;
+let aiCurrentSentence='', aiCurrentAnswer='', aiCurrentHint='', aiCurrentMeaning='', aiHintsMode='optional';
+
+function showAIPanel(panel) {
+  ['setup','quiz','score'].forEach(p => {
+    const el = document.getElementById('ai-' + p);
+    if (el) el.classList.toggle('hidden', p !== panel);
+  });
+}
+
+async function startAIMode() {
+  if (!db.length) { showToast('⚠️ Database is empty!'); return; }
+
+  const countEl = document.getElementById('ai-count');
+  const hintsEl = document.getElementById('ai-hints');
+  const n = countEl ? parseInt(countEl.value) : 10;
+  aiHintsMode = hintsEl ? hintsEl.value : 'optional';
+
+  const pool = [];
+  db.forEach(word => {
+    word.entries.forEach(entry => {
+      const meaning = (entry.meaning || '').trim();
+      if (entry.word && entry.type && meaning) pool.push({ word, entry, meaning });
+    });
+  });
+  if (!pool.length) { showToast('⚠️ No words with Vietnamese meanings found for AI Mode.'); return; }
+
+  shuffle(pool);
+  aiQuestions = pool.slice(0, Math.min(n, pool.length));
+  aiIdx=0; aiCorrect=0; aiWrong=0; aiRevealed=false;
+
+  quizActive=true;
+  showTab('ai', true);
+  showAIPanel('quiz');
+  startTimer('ai-timer');
+  await renderAI();
+}
+
+function exitAIMode() { quizActive=false; stopTimer(); showTab('home',true); }
+
+async function renderAI() {
+  if (aiIdx >= aiQuestions.length) { finishAI(); return; }
+  const pct=((aiIdx+1)/aiQuestions.length)*100;
+  document.getElementById('ai-progress').style.width=pct+'%';
+  document.getElementById('ai-prog-label').textContent=(aiIdx+1)+' / '+aiQuestions.length;
+  document.getElementById('ai-loading').style.display = 'none';
+  document.getElementById('ai-hint').style.display='none';
+  document.getElementById('ai-hint-btn').style.display = (aiHintsMode === 'off') ? 'none' : 'inline-flex';
+  const inp=document.getElementById('ai-input');
+  inp.value=''; inp.className='answer-input'; inp.disabled=false;
+  document.getElementById('ai-feedback').style.display='none';
+  document.getElementById('ai-submit-btn').classList.remove('hidden');
+  document.getElementById('ai-next-btn').classList.add('hidden');
+  document.getElementById('ai-skip-btn').classList.remove('hidden');
+  aiRevealed=false;
+
+  const q=aiQuestions[aiIdx];
+  aiCurrentMeaning = q.meaning;
+  const meaningEl = document.getElementById('ai-meaning');
+  if (meaningEl) meaningEl.textContent = q.meaning;
+
+  const typeLabels = { n:'Noun (n)', v:'Verb (v)', adj:'Adjective (adj)', adv:'Adverb (adv)', 'phr.v':'Phrasal Verb (phr.v)' };
+  const typeTag = document.getElementById('ai-type-tag');
+  if (typeTag && q.entry && q.entry.type) {
+    typeTag.textContent = typeLabels[q.entry.type] || q.entry.type;
+    typeTag.style.display = 'inline-flex';
+  } else if (typeTag) {
+    typeTag.style.display = 'none';
+  }
+
+  const type = q.entry.type || 'n';
+  const variants = q.entry.word.split('/').map(v => v.trim()).filter(Boolean);
+  const target = variants[0] || q.entry.word;
+  aiCurrentAnswer = normalize(target);
+  aiCurrentHint = 'Root: ' + q.word.root + (q.entry.phonetic ? ' · ' + q.entry.phonetic : '') + (q.entry.type ? ' · ' + (typeLabels[q.entry.type] || q.entry.type) : '');
+
+  const sentenceEl = document.getElementById('ai-sentence');
+  // Always use template sentences (no API)
+  aiCurrentSentence = await pickTemplateSentence(type);
+  sentenceEl.textContent = aiCurrentSentence;
+  inp.focus();
+}
+
+function showAIHint() {
+  document.getElementById('ai-hint').textContent = aiCurrentHint;
+  document.getElementById('ai-hint').style.display='block';
+  document.getElementById('ai-hint-btn').style.display='none';
+}
+
+function checkAI() {
+  if (aiRevealed) { nextAI(); return; }
+  const inp=document.getElementById('ai-input');
+  const userVal=normalize(inp.value);
+  if (!userVal) return;
+  const q=aiQuestions[aiIdx];
+  const variants=q.entry.word.split('/').map(v=>normalize(v.trim())).filter(Boolean);
+  const isCorrect=variants.includes(userVal);
+  const fb=document.getElementById('ai-feedback');
+  aiRevealed=true;
+  if (isCorrect) {
+    inp.className='answer-input correct'; aiCorrect++;
+    fb.className='feedback-box correct'; fb.textContent='✓ Correct! Well done.';
+    playSound('correct'); addXP(12, inp);
+  } else {
+    inp.className='answer-input wrong'; aiWrong++;
+    recordMistake(q.word);
+    fb.className='feedback-box wrong'; fb.textContent='✗ Correct: '+q.entry.word;
+    playSound('wrong'); shakeInput('ai-input');
+  }
+  fb.style.display='block'; inp.disabled=true;
+  document.getElementById('ai-hint-btn').style.display='none';
+  document.getElementById('ai-hint').style.display='block';
+  document.getElementById('ai-hint').textContent=aiCurrentHint;
+  document.getElementById('ai-submit-btn').classList.add('hidden');
+  document.getElementById('ai-next-btn').classList.remove('hidden');
+  document.getElementById('ai-skip-btn').classList.add('hidden');
+  updateSessionScore();
+}
+
+function skipAI() {
+  if (aiRevealed) return;
+  const q=aiQuestions[aiIdx];
+  aiWrong++; recordMistake(q.word);
+  const fb=document.getElementById('ai-feedback');
+  fb.className='feedback-box wrong'; fb.textContent='Skipped. Answer: '+q.entry.word;
+  fb.style.display='block'; aiRevealed=true;
+  document.getElementById('ai-input').disabled=true;
+  document.getElementById('ai-submit-btn').classList.add('hidden');
+  document.getElementById('ai-next-btn').classList.remove('hidden');
+  document.getElementById('ai-skip-btn').classList.add('hidden');
+  updateSessionScore();
+}
+
+async function nextAI() { aiIdx++; await renderAI(); }
+
+function finishAI() {
+  quizActive=false; stopTimer();
+  const total=aiCorrect+aiWrong;
+  const pct=total?Math.round((aiCorrect/total)*100):0;
+  document.getElementById('ai-pct').textContent=pct;
+  document.getElementById('ai-correct').textContent=aiCorrect;
+  document.getElementById('ai-wrong-count').textContent=aiWrong;
+  document.getElementById('ai-total-q').textContent=total;
+  document.getElementById('ai-time-stat').textContent=formatTime(timerSeconds);
+  showAIPanel('score');
+  saveDB(); updateSessionScore();
+}
+
+
+// ══════════════════════════════════════════
+// DEBOUNCED SEARCH
+// ══════════════════════════════════════════
+let dbSearchTimeout;
+document.getElementById('db-search').addEventListener('input', () => {
+  clearTimeout(dbSearchTimeout);
+  dbSearchTimeout = setTimeout(() => renderDB(), 300);
+});
+
+// ══════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  // Ctrl+K / Cmd+K → focus search in database tab
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    const searchBox = document.getElementById('db-search');
+    if (searchBox && !document.getElementById('tab-database').classList.contains('hidden')) {
+      searchBox.focus();
+    } else {
+      showTab('database');
+      setTimeout(() => document.getElementById('db-search').focus(), 200);
+    }
+  }
+  // Escape → exit quiz if in progress
+  if (e.key === 'Escape' && quizActive) {
+    if (confirm('Exit current quiz? Progress will be lost.')) {
+      exitQuiz();
+    }
+  }
+});
+
+// ══════════════════════════════════════════
+// THEME TOGGLE
+// ══════════════════════════════════════════
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = saved === 'light' ? '☀️' : '🌙';
+})();
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('theme-toggle').textContent = next === 'light' ? '☀️' : '🌙';
+});
+
+// ══════════════════════════════════════════
+// MUTE TOGGLE
+// ══════════════════════════════════════════
+(function initMute() {
+  const btn = document.getElementById('mute-btn');
+  if (btn) btn.textContent = soundMuted ? '🔇' : '🔊';
+})();
+
+document.getElementById('mute-btn').addEventListener('click', () => {
+  soundMuted = !soundMuted;
+  localStorage.setItem('soundMuted', soundMuted);
+  document.getElementById('mute-btn').textContent = soundMuted ? '🔇' : '🔊';
+});
+
+// ══════════════════════════════════════════
+// STATS DASHBOARD
+// ══════════════════════════════════════════
+function renderStats() {
+  const el = document.getElementById('stats-content');
+  if (!el) return;
+
+  const totalWords = db.length;
+  const totalEntries = db.reduce((s, w) => s + w.entries.length, 0);
+  const masteredWords = db.filter(w => (w.mistakeCount || 0) === 0 && w.entries.length > 0).length;
+  const weakWords = db.filter(w => (w.mistakeCount || 0) > 0).length;
+  const topMistakes = [...db].filter(w => w.mistakeCount > 0)
+    .sort((a,b) => (b.mistakeCount||0) - (a.mistakeCount||0)).slice(0, 5);
+  const totalMistakes = db.reduce((s, w) => s + (w.mistakeCount||0), 0);
+
+  const currentLevel = getCurrentLevel(totalXP);
+  const xpForNext = currentLevel * 200;
+  const xpProgress = Math.min(100, Math.round((totalXP % 200) / 200 * 100));
+
+  const statCard = (icon, label, value, color='var(--accent)') =>
+    `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;display:flex;align-items:center;gap:14px;">
+      <div style="font-size:26px;">${icon}</div>
+      <div>
+        <div style="font-size:22px;font-weight:700;color:${color};">${value}</div>
+        <div style="font-size:12px;color:var(--muted2);margin-top:2px;">${label}</div>
+      </div>
+    </div>`;
+
+  const topMistakesHTML = topMistakes.length
+    ? topMistakes.map(w =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+          <span style="font-family:'DM Mono',monospace;font-weight:700;">${escapeHtml(w.root)}</span>
+          <span style="color:var(--danger);font-size:13px;font-weight:700;">❌ ${w.mistakeCount} mistake${w.mistakeCount>1?'s':''}</span>
+        </div>`).join('')
+    : '<div style="color:var(--muted);font-size:14px;padding:10px 0;">No mistakes recorded yet — keep it up!</div>';
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+      ${statCard('📚', 'Total root words', totalWords)}
+      ${statCard('📝', 'Total word forms', totalEntries)}
+      ${statCard('✅', 'Mastered words', masteredWords, 'var(--success)')}
+      ${statCard('⚠️', 'Words with mistakes', weakWords, 'var(--danger)')}
+      ${statCard('⚡', 'Total XP', totalXP, 'var(--accent2)')}
+      ${statCard('🏅', 'Current level', currentLevel, 'var(--accent)')}
+    </div>
+
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;">
+      <div style="font-weight:700;margin-bottom:10px;">⚡ XP Progress to Level ${currentLevel + 1}</div>
+      <div style="background:var(--surface3);border-radius:999px;height:10px;overflow:hidden;margin-bottom:6px;">
+        <div style="background:linear-gradient(90deg,var(--accent),#a78bfa);height:100%;width:${xpProgress}%;border-radius:999px;transition:width .5s;"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted2);">${totalXP % 200} / 200 XP to next level</div>
+    </div>
+
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;">
+      <div style="font-weight:700;margin-bottom:12px;">🔴 Top 5 Most Missed Words</div>
+      ${topMistakesHTML}
+    </div>
+
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;">
+      <div style="font-weight:700;margin-bottom:6px;">📊 Overall Accuracy</div>
+      <div style="font-size:13px;color:var(--muted2);">
+        Total mistakes recorded: <b style="color:var(--text);">${totalMistakes}</b><br>
+        Mistake-free words: <b style="color:var(--success);">${masteredWords} / ${totalWords}</b>
+        (${totalWords ? Math.round(masteredWords/totalWords*100) : 0}%)
+      </div>
+    </div>
+  `;
+}
+
 // ── INIT ──
 initializeDB().then(()=>{
   updateAdminUI();
   initNameModal();
-  const stored = localStorage.getItem(STORAGE_KEY);
-  // If we just auto-loaded from CSVs (db has entries, stored was just written), show a toast
+  updateXPUI();
   if (db.length) showToast('✓ Loaded '+db.length+' words from book files');
 });
 </script>
