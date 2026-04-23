@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080910">
 <title>WordFamily – Vocab Trainer</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;WordFamily&quot;,&quot;short_name&quot;:&quot;WordFamily&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%23080910&quot;,&quot;theme_color&quot;:&quot;%23080910&quot;,&quot;start_url&quot;:&quot;.&quot;}">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -16,6 +18,94 @@
     --radius: 16px; --radius-sm: 10px;
     --glass: rgba(255,255,255,.03);
     --glass-border: rgba(255,255,255,.07);
+    --font-size-base: 16px;
+  }
+
+  /* ── Font size scale applied globally ── */
+  body { font-size: var(--font-size-base); }
+  .question-text { font-size: calc(var(--font-size-base) * 1.875) !important; }
+  .answer-input  { font-size: calc(var(--font-size-base) * 1.125) !important; }
+
+  /* ── Daily streak pill ── */
+  .streak-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(240,180,41,.12); border: 1px solid rgba(240,180,41,.3);
+    border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 700;
+    color: var(--accent2); cursor: default; white-space: nowrap;
+  }
+  .streak-pill.on-fire { background: rgba(240,100,41,.15); border-color: rgba(240,120,41,.4); color: #f08030; }
+
+  /* ── Leech badge ── */
+  .leech-chip {
+    font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px;
+    background: rgba(240,100,100,.18); color: var(--danger); border: 1px solid rgba(240,100,100,.3);
+    margin-left: 4px; vertical-align: middle;
+  }
+
+  /* ── Near-miss feedback ── */
+  .feedback-box.near-miss {
+    background: rgba(240,180,41,.08); border: 1px solid rgba(240,180,41,.25); color: var(--accent2);
+  }
+
+  /* ── Undo button ── */
+  .btn-undo {
+    background: rgba(123,104,238,.1); color: var(--accent);
+    border: 1px solid rgba(123,104,238,.25);
+  }
+  .btn-undo:hover { background: rgba(123,104,238,.2); }
+
+  /* ── Heatmap ── */
+  .heatmap-grid {
+    display: grid; grid-template-columns: repeat(52, 1fr); gap: 3px;
+    margin-top: 10px; overflow-x: auto;
+  }
+  .heatmap-cell {
+    width: 100%; aspect-ratio: 1; border-radius: 3px;
+    background: var(--surface3); cursor: default;
+    transition: transform .1s;
+  }
+  .heatmap-cell:hover { transform: scale(1.4); z-index: 1; }
+  .heatmap-cell[data-level="1"] { background: rgba(123,104,238,.3); }
+  .heatmap-cell[data-level="2"] { background: rgba(123,104,238,.55); }
+  .heatmap-cell[data-level="3"] { background: rgba(123,104,238,.8); }
+  .heatmap-cell[data-level="4"] { background: var(--accent); }
+  .heatmap-months {
+    display: flex; gap: 0; font-size: 10px; color: var(--muted); margin-bottom: 4px; overflow-x: auto;
+  }
+
+  /* ── Mobile bottom nav ── */
+  #mobile-bottom-nav {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 6px 4px env(safe-area-inset-bottom, 6px);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    justify-content: space-around; align-items: flex-end;
+    box-shadow: 0 -4px 24px rgba(0,0,0,.3);
+  }
+  .bottom-nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 8px; border-radius: 12px; font-size: 20px;
+    background: transparent; border: none; color: var(--muted2); cursor: pointer;
+    transition: all .18s; min-width: 44px; flex: 1; max-width: 72px;
+    font-family: 'Manrope', sans-serif;
+  }
+  .bottom-nav-btn span.bnav-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .3px; line-height: 1;
+  }
+  .bottom-nav-btn.active { color: var(--accent); background: rgba(123,104,238,.12); }
+  .bottom-nav-btn:active { transform: scale(.9); }
+
+  /* ── Session history ── */
+  .session-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px;
+  }
+  .session-row:last-child { border-bottom: none; }
+  .session-mode-tag {
+    font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 7px;
+    background: rgba(123,104,238,.15); color: var(--accent);
   }
   [data-theme="light"] {
     --bg: #f5f7fb; --surface: #ffffff; --surface2: #f0f2f6; --surface3: #e8ebf2;
@@ -673,6 +763,17 @@
     }
   }
 
+  /* ── Mobile bottom nav visible ── */
+  @media(max-width:680px) {
+    #mobile-bottom-nav { display: flex; }
+    /* hide sidebar on mobile since bottom nav replaces it */
+    .sidebar { display: none; }
+    .shell { display: block; }
+    /* extra bottom padding so content isn't hidden behind nav */
+    .app { padding-bottom: 90px; }
+    #toast { bottom: 80px; }
+  }
+
   /* ══════════════════════════════════════
      VERY SMALL PHONES (≤ 380px)
      ══════════════════════════════════════ */
@@ -703,6 +804,7 @@
         <span>⚡ <b id="xp-display">0</b> XP</span>
         <span>Lv <b id="level-display">1</b></span>
       </div>
+      <div class="streak-pill" id="streak-pill" title="Daily study streak">🔥 <span id="streak-count">0</span>d</div>
       <button id="admin-login-btn" class="btn btn-ghost btn-sm" onclick="showLoginModal()">🔓 Login</button>
       <button id="mute-btn" class="btn btn-ghost btn-sm" aria-label="Toggle sound" title="Toggle sound">🔊</button>
       <button id="theme-toggle" class="btn btn-ghost btn-sm" aria-label="Toggle theme" title="Toggle light/dark mode">🌙</button>
@@ -762,6 +864,11 @@
         <span class="icon">🤖</span><h3>AI Sentence Mode</h3>
         <p>Fill in the blank from a real sentence. Trains contextual word usage.</p>
         <span class="badge badge-purple">AI</span>
+      </div>
+      <div class="mode-card" onclick="startSRSReview()" id="srs-mode-card">
+        <span class="icon">🧬</span><h3>SRS Review</h3>
+        <p>Smart spaced repetition — only the words due today, ordered by priority.</p>
+        <span class="badge badge-green" id="srs-due-badge">Loading…</span>
       </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -883,7 +990,7 @@
     <div class="question-label">Vietnamese Meaning</div>
     <div class="question-text" id="m1-meaning">—</div>
     <div id="m1-type-tag" class="question-type-tag" style="display:none"></div>
-    <button class="question-hint-btn" id="m1-hint-btn" onclick="showM1Hint()">💡 Show hint</button>
+    <button class="question-hint-btn" id="m1-hint-btn" onclick="showM1Hint()" title="Press H to reveal hint">💡 Show hint <kbd style="font-size:10px;opacity:.6;background:rgba(255,255,255,.08);border-radius:4px;padding:1px 5px;border:1px solid rgba(255,255,255,.15);">H</kbd></button>
     <div class="question-hint" id="m1-hint"></div>
   </div>
   <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
@@ -892,6 +999,7 @@
     <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
     <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
     <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip</button>
+    <button class="btn btn-undo hidden" id="m1-undo-btn" onclick="undoMode1()" title="Undo last answer">↩ Undo</button>
   </div>
 </div>
 
@@ -1185,6 +1293,13 @@
           <option value="adv">Adverb (adv)</option>
           <option value="phr.v">Phrasal Verb (phr.v)</option>
         </select>
+        <select class="form-input btn-sm" id="db-filter-special" onchange="renderDB()" style="max-width:140px;padding:9px 12px;">
+          <option value="">All words</option>
+          <option value="due">🧬 SRS Due</option>
+          <option value="leech">🐛 Leeches</option>
+          <option value="weak">⚠️ Weak words</option>
+          <option value="mastered">✅ Mastered</option>
+        </select>
         <button class="btn btn-secondary btn-sm" onclick="startWeakWordsMode()">📚 Weak Words</button>
         <button class="btn btn-secondary btn-sm" id="sort-mistakes-btn" onclick="toggleSortByMistakes()">↓ Sort: Mistakes</button>
         <button id="reset-all-btn" class="btn btn-secondary btn-sm" onclick="resetAllMistakes()" style="display:none">🔄 Reset All</button>
@@ -1318,6 +1433,11 @@
       <h2 class="section-title" style="margin-bottom:6px">📊 Statistics</h2>
       <p class="section-sub">Your learning progress at a glance.</p>
       <div id="stats-content" style="display:flex;flex-direction:column;gap:20px;"></div>
+      <div style="margin-top:24px;">
+        <div style="font-weight:700;margin-bottom:4px;font-size:14px;">🗓 Study Activity (last 52 weeks)</div>
+        <p style="font-size:12px;color:var(--muted2);margin-bottom:6px;">Each cell = one day. Darker = more cards reviewed.</p>
+        <div id="stats-heatmap" style="overflow-x:auto;"></div>
+      </div>
     </div>
       </div>
 
@@ -1339,6 +1459,24 @@
       </div>
 
       <div class="settings-section">
+        <h3>Display</h3>
+        <div class="settings-row" style="align-items:flex-start;gap:16px;flex-wrap:wrap;">
+          <div class="settings-row-info">
+            <strong>Question Font Size</strong>
+            <span>Adjust the size of question text during quizzes.</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <span style="font-size:12px;color:var(--muted);">A</span>
+            <input type="range" id="font-size-slider" min="12" max="26" step="1" value="16"
+              oninput="applyFontSize(this.value)"
+              style="width:120px;accent-color:var(--accent);">
+            <span style="font-size:18px;color:var(--muted);">A</span>
+            <span id="font-size-label" style="font-size:12px;color:var(--muted2);min-width:32px;">16px</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
         <h3>Data</h3>
         <div class="settings-row">
           <div class="settings-row-info">
@@ -1346,6 +1484,13 @@
             <span>Removes all saved progress, mistake counts, and your database from this device. The app will reload fresh from the CSV files.</span>
           </div>
           <button class="btn btn-danger" onclick="clearAllData()">🗑 Clear Data</button>
+        </div>
+      </div>
+
+      <div class="settings-section" style="margin-bottom:0;">
+        <h3>Session History</h3>
+        <div id="session-history-list" style="display:flex;flex-direction:column;gap:0;">
+          <div style="color:var(--muted);font-size:13px;padding:12px 0;">No sessions recorded yet. Complete a quiz to see your history here.</div>
         </div>
       </div>
     </div>
@@ -1356,7 +1501,15 @@
 
 </div>
 
-<!-- MODAL Add/Edit Word -->
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-bottom-nav" aria-label="Mobile navigation">
+  <button class="bottom-nav-btn active" onclick="showTab('home')" data-tab="home">🏠<span class="bnav-label">Home</span></button>
+  <button class="bottom-nav-btn" onclick="showTab('mode1')" data-tab="mode1">📝<span class="bnav-label">Mode 1</span></button>
+  <button class="bottom-nav-btn" onclick="showTab('mode2')" data-tab="mode2">🧩<span class="bnav-label">Mode 2</span></button>
+  <button class="bottom-nav-btn" onclick="showTab('database')" data-tab="database">🗂<span class="bnav-label">Words</span></button>
+  <button class="bottom-nav-btn" onclick="showTab('stats')" data-tab="stats">📊<span class="bnav-label">Stats</span></button>
+  <button class="bottom-nav-btn" onclick="showTab('settings')" data-tab="settings">⚙️<span class="bnav-label">More</span></button>
+</nav>
 <div class="overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" style="max-width:820px;">
     <div class="modal-title" id="modal-title">Add Word</div>
@@ -1435,7 +1588,416 @@
 const STORAGE_KEY = 'wf_db_v2';
 const CSV_HASH_KEY = 'wf_csv_hash';
 
-// ── ACCOUNTS (SHA-256 of username → {role, passwordHash: SHA-256 of password}) ──
+// ══════════════════════════════════════════
+// SPACED REPETITION SYSTEM (SM-2 Algorithm)
+// ══════════════════════════════════════════
+// Each word gets a `srs` object:
+// { interval: days, easeFactor: 2.5, repetitions: 0, dueDate: ISO string, lastResult: 'correct'|'wrong' }
+// Quality grades: 5=perfect, 4=correct+hesitation, 3=correct+difficulty, 2=wrong(easy recall), 1=wrong, 0=blackout
+
+const SRS_DEFAULTS = { interval: 0, easeFactor: 2.5, repetitions: 0, dueDate: null, lastResult: null };
+
+function srsToday() {
+  const d = new Date(); d.setHours(0,0,0,0); return d;
+}
+
+function srsDueDate(word) {
+  if (!word.srs || !word.srs.dueDate) return null;
+  const d = new Date(word.srs.dueDate); d.setHours(0,0,0,0); return d;
+}
+
+function srsIsDue(word) {
+  const due = srsDueDate(word);
+  if (!due) return true; // never reviewed = always due
+  return due <= srsToday();
+}
+
+function srsDaysUntilDue(word) {
+  const due = srsDueDate(word);
+  if (!due) return 0;
+  const diff = due - srsToday();
+  return Math.ceil(diff / 86400000);
+}
+
+// SM-2 core: update srs data based on quality (0-5)
+function srsUpdate(word, quality) {
+  if (!word.srs) word.srs = { ...SRS_DEFAULTS };
+  let { interval, easeFactor, repetitions } = word.srs;
+
+  // Clamp quality
+  quality = Math.max(0, Math.min(5, quality));
+
+  if (quality >= 3) {
+    // Correct response
+    if (repetitions === 0) interval = 1;
+    else if (repetitions === 1) interval = 6;
+    else interval = Math.round(interval * easeFactor);
+    repetitions++;
+  } else {
+    // Incorrect — reset but keep ease factor penalty
+    repetitions = 0;
+    interval = 1;
+  }
+
+  // Update ease factor (minimum 1.3)
+  easeFactor = Math.max(1.3, easeFactor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+
+  const due = new Date();
+  due.setHours(0,0,0,0);
+  due.setDate(due.getDate() + interval);
+
+  word.srs = {
+    interval,
+    easeFactor: parseFloat(easeFactor.toFixed(2)),
+    repetitions,
+    dueDate: due.toISOString(),
+    lastResult: quality >= 3 ? 'correct' : 'wrong'
+  };
+}
+
+// Convert correct/wrong + streak to quality grade
+function srsQuality(isCorrect, streak) {
+  if (isCorrect) {
+    if (streak >= 5) return 5;
+    if (streak >= 3) return 4;
+    return 3;
+  } else {
+    return 1; // wrong
+  }
+}
+
+// Get all due words for SRS review
+function srsDueWords() {
+  return db.filter(w => srsIsDue(w) && w.entries.length > 0);
+}
+
+// Sort pool for SRS: overdue first, then new words, then by mistakeCount
+function srsSortPool(pool) {
+  return pool.sort((a, b) => {
+    const dA = srsDaysUntilDue(a.word), dB = srsDaysUntilDue(b.word);
+    // Overdue items (negative days) come first
+    if (dA !== dB) return dA - dB;
+    // Then sort by mistake count descending
+    return (b.word.mistakeCount||0) - (a.word.mistakeCount||0);
+  });
+}
+
+// Update home badge
+function updateSRSBadge() {
+  const badge = document.getElementById('srs-due-badge');
+  if (!badge) return;
+  const due = srsDueWords().length;
+  if (due === 0) {
+    badge.textContent = '✓ All caught up';
+    badge.className = 'badge badge-green';
+  } else {
+    badge.textContent = due + ' due now';
+    badge.className = due > 10 ? 'badge badge-gold' : 'badge badge-green';
+  }
+}
+
+// ── SRS REVIEW MODE ──
+function startSRSReview() {
+  const dueWords = srsDueWords();
+  if (!dueWords.length) { showToast('🎉 No words due for review! Come back later.'); return; }
+  const pool = [];
+  dueWords.forEach(word => {
+    word.entries.forEach(entry => {
+      const meaning = (entry.meaning && entry.meaning.trim()) ? entry.meaning.trim() : null;
+      if (meaning) pool.push({ word, entry, meaning });
+    });
+  });
+  if (!pool.length) { showToast('⚠️ No meanings found for SRS review.'); return; }
+  srsSortPool(pool);
+  const n = Math.min(50, pool.length);
+  m1Questions = pool.slice(0, n);
+  m1Idx=0; m1Correct=0; m1Wrong=0; m1Streak=0; m1Revealed=false;
+  quizActive = true;
+  showTab('mode1', true); showPanel('m1','quiz'); startTimer('m1-timer');
+  renderMode1();
+  showToast('🧬 SRS Review: '+n+' cards due');
+}
+
+// ══════════════════════════════════════════
+// DAILY STREAK
+// ══════════════════════════════════════════
+const STREAK_KEY   = 'wf_streak';
+const LAST_DAY_KEY = 'wf_last_day';
+
+function getTodayStr() {
+  const d = new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');
+}
+
+function loadStreak() {
+  return {
+    count: parseInt(localStorage.getItem(STREAK_KEY) || '0'),
+    lastDay: localStorage.getItem(LAST_DAY_KEY) || ''
+  };
+}
+
+function markStudiedToday() {
+  const today = getTodayStr();
+  let { count, lastDay } = loadStreak();
+  if (lastDay === today) return count; // already marked today
+  const yesterday = (() => {
+    const d = new Date(); d.setDate(d.getDate()-1);
+    return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');
+  })();
+  if (lastDay === yesterday) count++;
+  else count = 1; // streak broken or first day
+  localStorage.setItem(STREAK_KEY, count);
+  localStorage.setItem(LAST_DAY_KEY, today);
+  updateStreakUI(count);
+  return count;
+}
+
+function updateStreakUI(count) {
+  if (count === undefined) count = loadStreak().count;
+  const pill = document.getElementById('streak-pill');
+  const el   = document.getElementById('streak-count');
+  if (!pill || !el) return;
+  el.textContent = count;
+  pill.classList.toggle('on-fire', count >= 3);
+  pill.title = count === 0 ? 'No streak yet — study today!' :
+               count === 1 ? 'Day 1 — keep it up!' :
+               count + '-day streak — you\'re on fire! 🔥';
+}
+
+// ══════════════════════════════════════════
+// SESSION HISTORY
+// ══════════════════════════════════════════
+const HISTORY_KEY = 'wf_session_history';
+const MAX_HISTORY = 30;
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function saveSessionToHistory(mode, correct, wrong, timeSeconds) {
+  const sessions = loadHistory();
+  sessions.unshift({
+    date: new Date().toISOString(),
+    mode, correct, wrong,
+    total: correct + wrong,
+    pct: (correct+wrong) ? Math.round(correct/(correct+wrong)*100) : 0,
+    time: timeSeconds
+  });
+  if (sessions.length > MAX_HISTORY) sessions.length = MAX_HISTORY;
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(sessions));
+}
+
+function renderSessionHistory() {
+  const el = document.getElementById('session-history-list');
+  if (!el) return;
+  const sessions = loadHistory();
+  if (!sessions.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px 0;">No sessions yet — complete a quiz to see history here.</div>';
+    return;
+  }
+  const modeLabels = { mode1:'Mode 1', mode2:'Mode 2', ai:'AI Mode', exam:'Exam', srs:'SRS Review', weak:'Weak Words' };
+  el.innerHTML = sessions.map(s => {
+    const d = new Date(s.date);
+    const dateStr = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const timeStr = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const color = s.pct >= 80 ? 'var(--success)' : s.pct >= 50 ? 'var(--accent2)' : 'var(--danger)';
+    return `<div class="session-row">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+        <span class="session-mode-tag">${modeLabels[s.mode]||s.mode}</span>
+        <span style="font-size:12px;color:var(--muted2);">${dateStr} ${timeStr}</span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;flex-shrink:0;">
+        <span style="font-size:13px;color:var(--muted2);">${s.correct}✓ ${s.wrong}✗</span>
+        <span style="font-size:15px;font-weight:800;color:${color};">${s.pct}%</span>
+        <span style="font-size:11px;color:var(--muted);">${formatTime(s.time)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// HEATMAP (last 52 weeks of study days)
+// ══════════════════════════════════════════
+const HEATMAP_KEY = 'wf_heatmap';
+
+function loadHeatmap() {
+  try { return JSON.parse(localStorage.getItem(HEATMAP_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+
+function markHeatmapToday(count) {
+  const map = loadHeatmap();
+  const key = getTodayStr();
+  map[key] = (map[key]||0) + count;
+  // Prune old keys (keep only last 400 days)
+  const keys = Object.keys(map).sort();
+  if (keys.length > 400) keys.slice(0, keys.length-400).forEach(k => delete map[k]);
+  localStorage.setItem(HEATMAP_KEY, JSON.stringify(map));
+}
+
+function renderHeatmap(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const map = loadHeatmap();
+  const cells = [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  // Start from 52 weeks ago
+  const start = new Date(today); start.setDate(start.getDate() - 363);
+  // Align to Monday
+  const dow = start.getDay(); // 0=Sun
+  start.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1));
+  const max = Math.max(1, ...Object.values(map));
+  const weeks = [];
+  let cur = new Date(start);
+  while (cur <= today) {
+    const week = [];
+    for (let d = 0; d < 7; d++) {
+      const key = cur.getFullYear()+'-'+(cur.getMonth()+1).toString().padStart(2,'0')+'-'+cur.getDate().toString().padStart(2,'0');
+      const val = map[key]||0;
+      const level = val===0 ? 0 : val<max*0.25 ? 1 : val<max*0.5 ? 2 : val<max*0.75 ? 3 : 4;
+      const isFuture = cur > today;
+      week.push({ key, val, level: isFuture ? -1 : level, date: new Date(cur) });
+      cur.setDate(cur.getDate()+1);
+    }
+    weeks.push(week);
+  }
+  // Month labels
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let monthHTML = '<div class="heatmap-months" style="padding-left:20px;">';
+  let lastMonth = -1;
+  weeks.forEach((week, wi) => {
+    const m = week[0].date.getMonth();
+    if (m !== lastMonth) { monthHTML += `<span style="min-width:${wi===0?0:1}px;flex:1;">${monthNames[m]}</span>`; lastMonth=m; }
+  });
+  monthHTML += '</div>';
+
+  // Day labels
+  const dayLabels = '<div style="display:flex;flex-direction:column;gap:3px;margin-right:4px;padding-top:0;">' +
+    ['M','','W','','F','',''].map(l=>`<div style="height:12px;font-size:9px;color:var(--muted);line-height:12px;">${l}</div>`).join('') + '</div>';
+
+  const gridHTML = '<div style="display:flex;gap:3px;">' + weeks.map(week =>
+    '<div style="display:flex;flex-direction:column;gap:3px;">' +
+    week.map(cell => cell.level === -1
+      ? '<div style="width:12px;height:12px;"></div>'
+      : `<div class="heatmap-cell" data-level="${cell.level}" style="width:12px;height:12px;" title="${cell.key}: ${cell.val} cards"></div>`
+    ).join('') + '</div>'
+  ).join('') + '</div>';
+
+  el.innerHTML = monthHTML + '<div style="display:flex;align-items:flex-start;">' + dayLabels + gridHTML + '</div>';
+}
+
+// ══════════════════════════════════════════
+// PER-ENTRY SRS (track each word form separately)
+// ══════════════════════════════════════════
+// Entry-level SRS stored on each entry: entry.srs = { interval, easeFactor, repetitions, dueDate, lastResult }
+function entrySrsUpdate(entry, quality) {
+  if (!entry.srs) entry.srs = { ...SRS_DEFAULTS };
+  let { interval, easeFactor, repetitions } = entry.srs;
+  quality = Math.max(0, Math.min(5, quality));
+  if (quality >= 3) {
+    if (repetitions === 0) interval = 1;
+    else if (repetitions === 1) interval = 6;
+    else interval = Math.round(interval * easeFactor);
+    repetitions++;
+  } else {
+    repetitions = 0; interval = 1;
+  }
+  easeFactor = Math.max(1.3, easeFactor + 0.1 - (5-quality)*(0.08+(5-quality)*0.02));
+  const due = new Date(); due.setHours(0,0,0,0); due.setDate(due.getDate()+interval);
+  entry.srs = { interval, easeFactor: parseFloat(easeFactor.toFixed(2)), repetitions, dueDate: due.toISOString(), lastResult: quality>=3?'correct':'wrong' };
+}
+
+// ══════════════════════════════════════════
+// LEECH DETECTION (5+ mistakes = leech)
+// ══════════════════════════════════════════
+const LEECH_THRESHOLD = 5;
+function isLeech(word) { return (word.mistakeCount||0) >= LEECH_THRESHOLD; }
+function checkAndNotifyLeech(word) {
+  if ((word.mistakeCount||0) === LEECH_THRESHOLD) {
+    showToast('🐛 "'+word.root+'" is a leech word — practice it extra!');
+  }
+}
+
+// ══════════════════════════════════════════
+// NEAR-MISS DETECTION
+// ══════════════════════════════════════════
+function levenshtein(a, b) {
+  const m=a.length, n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+function isNearMiss(userVal, correctAnswers) {
+  // Near miss if within edit distance 2 of any correct answer and length is at least 4
+  return correctAnswers.some(ans => ans.length >= 4 && levenshtein(userVal, ans) <= 2 && userVal !== ans);
+}
+
+// ══════════════════════════════════════════
+// UNDO LAST ANSWER (Mode 1)
+// ══════════════════════════════════════════
+let m1LastSnapshot = null; // stores state before last answer
+
+function saveUndoSnapshot() {
+  m1LastSnapshot = {
+    idx: m1Idx,
+    correct: m1Correct,
+    wrong: m1Wrong,
+    streak: m1Streak,
+    word: m1Questions[m1Idx] ? m1Questions[m1Idx].word : null,
+    wasWrong: false // filled in after check
+  };
+}
+
+function undoMode1() {
+  if (!m1LastSnapshot || m1LastSnapshot.idx === 0 && m1Idx === 0) return;
+  // Restore counters
+  m1Idx     = m1LastSnapshot.idx;
+  m1Correct = m1LastSnapshot.correct;
+  m1Wrong   = m1LastSnapshot.wrong;
+  m1Streak  = m1LastSnapshot.streak;
+  // If last answer was wrong, undo the mistake count
+  if (m1LastSnapshot.wasWrong && m1LastSnapshot.word) {
+    const w = m1LastSnapshot.word;
+    if (w.mistakeCount > 0) w.mistakeCount--;
+    const dbWord = db.find(x => x.root === w.root);
+    if (dbWord && dbWord.mistakeCount > 0) { dbWord.mistakeCount--; saveDB(); }
+  }
+  m1LastSnapshot = null;
+  m1Revealed = false;
+  document.getElementById('m1-undo-btn').classList.add('hidden');
+  renderMode1();
+  showToast('↩ Undone — try again!');
+}
+
+// ══════════════════════════════════════════
+// FONT SIZE SETTING
+// ══════════════════════════════════════════
+const FONT_SIZE_KEY = 'wf_font_size';
+
+function applyFontSize(size) {
+  size = parseInt(size);
+  document.documentElement.style.setProperty('--font-size-base', size+'px');
+  localStorage.setItem(FONT_SIZE_KEY, size);
+  const lbl = document.getElementById('font-size-label');
+  if (lbl) lbl.textContent = size+'px';
+  const slider = document.getElementById('font-size-slider');
+  if (slider) slider.value = size;
+}
+
+function initFontSize() {
+  const saved = parseInt(localStorage.getItem(FONT_SIZE_KEY) || '16');
+  applyFontSize(saved);
+}
+
+// Mobile bottom nav sync
+function syncMobileNav(tabName) {
+  document.querySelectorAll('#mobile-bottom-nav .bottom-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+}
 // admin   username="admin"   SHA256 → 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
 const ACCOUNTS = {
   '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918': { role:'admin', displayName:'Admin', passwordHash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }
@@ -1452,7 +2014,7 @@ async function sha256(str) {
 
 
 // ── DB helpers ──
-function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
+function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); updateSRSBadge(); }
 function updateStats() {
   const totalEntries = db.reduce((s,w)=>s+w.entries.length, 0);
   document.getElementById('total-count').textContent = totalEntries;
@@ -1520,9 +2082,10 @@ async function initializeDB() {
     db = [];
   }
 
-  // Ensure mistakeCount exists
+  // Ensure mistakeCount exists and initialize SRS data
   db.forEach(w => {
     if (w.mistakeCount === undefined) w.mistakeCount = 0;
+    if (!w.srs) w.srs = { ...SRS_DEFAULTS };
   });
 
   // Fix nextId
@@ -1661,12 +2224,13 @@ function showTab(name, force) {
   const mainNav = document.getElementById('main-nav');
   const navBtns = mainNav ? mainNav.querySelectorAll('.nav-btn') : [];
   navBtns.forEach((btn,i)=>btn.classList.toggle('active', tabs[i]===name));
+  syncMobileNav(name);
   if (name==='database') renderDB();
-  if (name==='stats') renderStats();
+  if (name==='stats') { renderStats(); renderHeatmap('stats-heatmap'); }
   if (name==='mode1') showPanel('m1','setup');
   if (name==='mode2') showPanel('m2','setup');
   if (name==='ai') showAIPanel('setup');
-  if (name==='settings') updateNameUI(getUserName());
+  if (name==='settings') { updateNameUI(getUserName()); renderSessionHistory(); }
 }
 function showPanel(mode, panel) {
   ['setup','quiz','score'].forEach(p=>document.getElementById(mode+'-'+p).classList.toggle('hidden',p!==panel));
@@ -2096,10 +2660,33 @@ function normalize(str) {
 
 // Increment mistakeCount on the real db entry (by root), so weak-words tracking
 // works even when the quiz word object came from a CSV loader (not a db reference).
-function recordMistake(quizWord) {
+function recordMistake(quizWord, entry) {
   quizWord.mistakeCount = (quizWord.mistakeCount || 0) + 1;
   const dbWord = db.find(w => w.root === quizWord.root);
-  if (dbWord) { dbWord.mistakeCount = (dbWord.mistakeCount || 0) + 1; saveDB(); }
+  if (dbWord) {
+    dbWord.mistakeCount = (dbWord.mistakeCount || 0) + 1;
+    srsUpdate(dbWord, 1);
+    // Per-entry SRS
+    if (entry) {
+      const dbEntry = dbWord.entries.find(e => e.word === entry.word);
+      if (dbEntry) entrySrsUpdate(dbEntry, 1);
+    }
+    checkAndNotifyLeech(dbWord);
+    saveDB();
+  }
+}
+
+function recordCorrect(quizWord, streak, entry) {
+  const dbWord = db.find(w => w.root === quizWord.root);
+  if (dbWord) {
+    srsUpdate(dbWord, srsQuality(true, streak));
+    // Per-entry SRS
+    if (entry) {
+      const dbEntry = dbWord.entries.find(e => e.word === entry.word);
+      if (dbEntry) entrySrsUpdate(dbEntry, srsQuality(true, streak));
+    }
+    saveDB();
+  }
 }
 
 function getWordAnswers(word) {
@@ -2127,7 +2714,11 @@ function skipMode1() {
   updateSessionScore();
 }
 
-function nextMode1() { m1Idx++; renderMode1(); }
+function nextMode1() {
+  m1LastSnapshot = null;
+  document.getElementById('m1-undo-btn').classList.add('hidden');
+  m1Idx++; renderMode1();
+}
 
 
 
@@ -2180,6 +2771,11 @@ function finishMode2() {
   document.getElementById('m2-total-q').textContent=m2TotalFields;
   document.getElementById('m2-time-stat').textContent=formatTime(timerSeconds);
   showPanel('m2','score'); saveDB(); updateSessionScore();
+  if (m2TotalFields > 0) {
+    saveSessionToHistory('mode2', m2TotalCorrect, m2TotalWrong, timerSeconds);
+    markStudiedToday();
+    markHeatmapToday(m2TotalFields);
+  }
 }
 
 function updateSessionScore() {
@@ -2277,6 +2873,28 @@ function openEditModal(id) {
     document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';
   }
   document.getElementById('modal-overlay').classList.remove('hidden');
+
+  // Show SRS info in modal if it exists
+  let srsInfoEl = document.getElementById('modal-srs-info');
+  if (!srsInfoEl) {
+    srsInfoEl = document.createElement('div');
+    srsInfoEl.id = 'modal-srs-info';
+    srsInfoEl.style.cssText = 'font-size:12px;color:var(--muted2);margin-top:10px;padding:8px 12px;background:var(--surface3);border-radius:8px;border:1px solid var(--border);';
+    document.getElementById('modal-overlay').querySelector('.modal').appendChild(srsInfoEl);
+  }
+  if (word.srs && word.srs.dueDate) {
+    const due = srsDaysUntilDue(word);
+    const dueStr = due <= 0 ? '⚠️ Due now' : `Next review in ${due} day${due>1?'s':''}`;
+    const lastStr = word.srs.lastResult ? `Last: ${word.srs.lastResult}` : '';
+    const efStr = `EF: ${word.srs.easeFactor.toFixed(2)}`;
+    const repStr = `Reps: ${word.srs.repetitions}`;
+    const intStr = `Interval: ${word.srs.interval}d`;
+    srsInfoEl.innerHTML = `🧬 SRS — ${dueStr} &nbsp;·&nbsp; ${efStr} &nbsp;·&nbsp; ${repStr} &nbsp;·&nbsp; ${intStr}${lastStr?' &nbsp;·&nbsp; '+lastStr:''}`;
+    srsInfoEl.style.display = '';
+  } else {
+    srsInfoEl.innerHTML = '🧬 SRS — Not yet reviewed';
+    srsInfoEl.style.display = '';
+  }
 }
 
 function closeModal() {
@@ -2284,6 +2902,8 @@ function closeModal() {
   document.getElementById('add-entry-row-btn').disabled=false;
   document.getElementById('save-btn').style.display='inline-flex';
   document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';
+  const srsInfoEl = document.getElementById('modal-srs-info');
+  if (srsInfoEl) srsInfoEl.style.display = 'none';
   _editWordId=null;
 }
 
@@ -2988,8 +3608,15 @@ function toggleSortByMistakes() {
 function renderDB() {
   const q=(document.getElementById('db-search').value||'').toLowerCase();
   const filterType=document.getElementById('db-filter-type').value;
+  const filterSpecial=(document.getElementById('db-filter-special')||{}).value||'';
   let rows=[];
   db.forEach(word=>{
+    // Special word-level filters
+    if (filterSpecial === 'due'     && !srsIsDue(word)) return;
+    if (filterSpecial === 'leech'   && !isLeech(word)) return;
+    if (filterSpecial === 'weak'    && !(word.mistakeCount > 0)) return;
+    if (filterSpecial === 'mastered'&& word.mistakeCount > 0) return;
+
     word.entries.forEach(entry=>{
       if (filterType && entry.type!==filterType) return;
       if (q && !(
@@ -3022,6 +3649,9 @@ function renderDB() {
   } else {
     tbody.innerHTML=page.map(({word,entry})=>{
       const errChip=word.mistakeCount?'<span style="color:var(--danger);font-size:11px;font-weight:700;">❌'+word.mistakeCount+'</span>':'';
+      const leechChip=isLeech(word)?'<span class="leech-chip">🐛 Leech</span>':'';
+      const srsChip=srsIsDue(word)?'<span style="color:var(--accent);font-size:10px;font-weight:700;margin-left:4px;" title="Due for SRS review">🧬</span>':
+        (word.srs&&word.srs.dueDate?'<span style="color:var(--muted);font-size:10px;" title="Next review in '+srsDaysUntilDue(word)+' day(s)">+'+srsDaysUntilDue(word)+'d</span>':'');
       const wordStr=entry?escapeHtml(entry.word):'<span style="color:var(--muted);font-style:italic;">—</span>';
       const phonStr=entry&&entry.phonetic?escapeHtml(entry.phonetic):'';
       const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
@@ -3029,7 +3659,7 @@ function renderDB() {
         ? escapeHtml((entry.meaning && entry.meaning.trim()) ? entry.meaning : word.meanings.slice(0,2).join(', '))
         : escapeHtml(word.meanings.slice(0,2).join(', '));
       return '<tr onclick="openEditModal('+word.id+')" title="Click to edit">'
-        +'<td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+'</td>'
+        +'<td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+leechChip+srsChip+'</td>'
         +'<td class="col-word">'+wordStr+'</td>'
         +'<td class="col-phon">'+phonStr+'</td>'
         +'<td class="col-type">'+typeStr+'</td>'
@@ -3056,9 +3686,11 @@ function checkMode1() {
   const userVal = normalize(input.value);
   if (!userVal) return;
 
+  // Save undo snapshot BEFORE modifying state
+  saveUndoSnapshot();
+
   let allAnswers = [];
   if (q.entry) {
-    // Accept all slash-separated variants
     q.entry.word.split('/').forEach(v => {
       const n = normalize(v.trim()); if (n) allAnswers.push(n);
     });
@@ -3085,6 +3717,7 @@ function checkMode1() {
     }
   });
   const isCorrect = allAnswers.some(a => a === userVal);
+  const nearMiss  = !isCorrect && isNearMiss(userVal, allAnswers);
 
   const fb = document.getElementById('m1-feedback');
   m1Revealed = true;
@@ -3097,14 +3730,24 @@ function checkMode1() {
     fb.textContent = '✓ Correct! Well done.' + (streakBonus ? ' 🔥 Streak bonus +' + streakBonus + ' XP!' : '');
     playSound('correct');
     addXP(xpAmt, input);
+    recordCorrect(q.word, m1Streak, q.entry);
+    if (m1LastSnapshot) m1LastSnapshot.wasWrong = false;
   } else {
     input.className='answer-input wrong'; m1Wrong++; m1Streak=0;
-    recordMistake(q.word);
-    fb.className='feedback-box wrong';
+    if (m1LastSnapshot) m1LastSnapshot.wasWrong = true;
+    recordMistake(q.word, q.entry);
     const correctWord = q.entry ? (q.entry.word + (q.entry.phonetic ? ' ' + q.entry.phonetic : '')) : q.word.root;
-    fb.textContent = '✗ Correct answer: ' + correctWord;
+    if (nearMiss) {
+      fb.className='feedback-box near-miss';
+      fb.textContent = '〜 Almost! Check your spelling. Correct: ' + correctWord;
+    } else {
+      fb.className='feedback-box wrong';
+      fb.textContent = '✗ Correct answer: ' + correctWord;
+    }
     playSound('wrong');
     shakeInput('m1-input');
+    // Show undo button after a wrong answer
+    document.getElementById('m1-undo-btn').classList.remove('hidden');
   }
   fb.style.display='block';
   input.disabled=true;
@@ -3133,6 +3776,12 @@ function finishMode1() {
   xpEl.textContent = '+' + xpTotal + ' XP earned this session!';
   xpEl.style.display = xpTotal ? 'block' : 'none';
   showPanel('m1','score'); saveDB(); updateSessionScore();
+  // Record session
+  if (total > 0) {
+    saveSessionToHistory('mode1', m1Correct, m1Wrong, timerSeconds);
+    markStudiedToday();
+    markHeatmapToday(total);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -3161,7 +3810,7 @@ function checkMode2() {
   });
 
   if (totalWrong>0) { recordMistake(m2Queue[m2Idx]); playSound('wrong'); }
-  else { playSound('correct'); addXP(10 * totalCorrect, document.getElementById('m2-submit-btn')); }
+  else { playSound('correct'); addXP(10 * totalCorrect, document.getElementById('m2-submit-btn')); recordCorrect(m2Queue[m2Idx], 0); }
   if (anyShake) {
     slots.forEach(slot => { if (slot.classList.contains('wrong')) slot.style.animation='none'; });
   }
@@ -3269,6 +3918,11 @@ function finishExam() {
   M1_PANELS.forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('exam-score').classList.remove('hidden');
   saveDB(); updateSessionScore();
+  if (total > 0) {
+    saveSessionToHistory('exam', examCorrect, examWrong, timerSeconds);
+    markStudiedToday();
+    markHeatmapToday(total);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -3420,6 +4074,11 @@ function finishAI() {
   document.getElementById('ai-time-stat').textContent=formatTime(timerSeconds);
   showAIPanel('score');
   saveDB(); updateSessionScore();
+  if (total > 0) {
+    saveSessionToHistory('ai', aiCorrect, aiWrong, timerSeconds);
+    markStudiedToday();
+    markHeatmapToday(total);
+  }
 }
 
 
@@ -3451,6 +4110,17 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && quizActive) {
     if (confirm('Exit current quiz? Progress will be lost.')) {
       exitQuiz();
+    }
+  }
+  // H key → reveal hint in Mode 1 quiz (only when input not focused)
+  if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.metaKey) {
+    const tag = document.activeElement && document.activeElement.tagName;
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      const hintBtn = document.getElementById('m1-hint-btn');
+      if (hintBtn && hintBtn.style.display !== 'none') {
+        e.preventDefault();
+        showM1Hint();
+      }
     }
   }
 });
@@ -3507,6 +4177,14 @@ function renderStats() {
   const xpForNext = currentLevel * 200;
   const xpProgress = Math.min(100, Math.round((totalXP % 200) / 200 * 100));
 
+  // SRS Stats
+  const now = srsToday();
+  const srsNew = db.filter(w => !w.srs || !w.srs.dueDate).length;
+  const srsDue = db.filter(w => srsIsDue(w)).length;
+  const srsLearning = db.filter(w => w.srs && w.srs.repetitions > 0 && w.srs.repetitions <= 2).length;
+  const srsReview   = db.filter(w => w.srs && w.srs.repetitions > 2 && !srsIsDue(w)).length;
+  const srsMature   = db.filter(w => w.srs && w.srs.interval >= 21 && !srsIsDue(w)).length;
+
   const statCard = (icon, label, value, color='var(--accent)') =>
     `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;display:flex;align-items:center;gap:14px;">
       <div style="font-size:26px;">${icon}</div>
@@ -3524,12 +4202,17 @@ function renderStats() {
         </div>`).join('')
     : '<div style="color:var(--muted);font-size:14px;padding:10px 0;">No mistakes recorded yet — keep it up!</div>';
 
+
+
+  const leechCount = db.filter(w => isLeech(w)).length;
+
   el.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
       ${statCard('📚', 'Total root words', totalWords)}
       ${statCard('📝', 'Total word forms', totalEntries)}
       ${statCard('✅', 'Mastered words', masteredWords, 'var(--success)')}
       ${statCard('⚠️', 'Words with mistakes', weakWords, 'var(--danger)')}
+      ${statCard('🐛', 'Leech words', leechCount, leechCount ? 'var(--danger)' : 'var(--muted)')}
       ${statCard('⚡', 'Total XP', totalXP, 'var(--accent2)')}
       ${statCard('🏅', 'Current level', currentLevel, 'var(--accent)')}
     </div>
@@ -3540,6 +4223,32 @@ function renderStats() {
         <div style="background:linear-gradient(90deg,var(--accent),#a78bfa);height:100%;width:${xpProgress}%;border-radius:999px;transition:width .5s;"></div>
       </div>
       <div style="font-size:12px;color:var(--muted2);">${totalXP % 200} / 200 XP to next level</div>
+    </div>
+
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;">
+      <div style="font-weight:700;margin-bottom:14px;">🧬 Spaced Repetition (SRS) Overview</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;">
+        <div style="background:var(--surface3);border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--danger);">${srsDue}</div>
+          <div style="font-size:11px;color:var(--muted2);margin-top:2px;">Due now</div>
+        </div>
+        <div style="background:var(--surface3);border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--muted2);">${srsNew}</div>
+          <div style="font-size:11px;color:var(--muted2);margin-top:2px;">New (unseen)</div>
+        </div>
+        <div style="background:var(--surface3);border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--accent2);">${srsLearning}</div>
+          <div style="font-size:11px;color:var(--muted2);margin-top:2px;">Learning</div>
+        </div>
+        <div style="background:var(--surface3);border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--accent);">${srsReview}</div>
+          <div style="font-size:11px;color:var(--muted2);margin-top:2px;">In review</div>
+        </div>
+        <div style="background:var(--surface3);border-radius:10px;padding:12px 14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--success);">${srsMature}</div>
+          <div style="font-size:11px;color:var(--muted2);margin-top:2px;">Mature (21+ days)</div>
+        </div>
+      </div>
     </div>
 
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;">
@@ -3563,6 +4272,9 @@ initializeDB().then(()=>{
   updateAdminUI();
   initNameModal();
   updateXPUI();
+  updateSRSBadge();
+  initFontSize();
+  updateStreakUI();
   if (db.length) showToast('✓ Loaded '+db.length+' words from book files');
 });
 </script>
