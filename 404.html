@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 · VocabHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0e0f13;
+            --surface: #16181f;
+            --surface2: #1e2029;
+            --border: #2a2d3a;
+            --accent: #7c6af7;
+            --accent2: #f7c26a;
+            --accent3: #6af7b8;
+            --text: #e8e9f0;
+            --muted: #6b6e82;
+            --danger: #f76a6a;
+            --success: #6af7b8;
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ── shared texture + glow (same as main page) ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 200px;
+            opacity: 0.4;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 720px;
+            height: 520px;
+            background: radial-gradient(ellipse at center, rgba(124, 106, 247, .11) 0%, transparent 68%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-404 {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 32px 24px;
+            max-width: 620px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        /* ── Logo ── */
+        .logo-link {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 64px;
+        }
+        .logo {
+            font-family: 'Instrument Serif', serif;
+            font-size: 22px;
+            letter-spacing: -0.4px;
+            color: var(--text);
+        }
+        .logo span {
+            color: var(--accent);
+        }
+
+        /* ── 404 graphic ── */
+        .error-code {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(72px, 16vw, 130px);
+            line-height: 1;
+            letter-spacing: -3px;
+            color: var(--text);
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .error-code .accent {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .error-divider {
+            width: 60px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--accent);
+            margin: 0 auto 24px;
+            opacity: 0.7;
+        }
+
+        .error-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 26px;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.8;
+            max-width: 420px;
+            margin: 0 auto 38px;
+        }
+
+        .error-message strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ── Button ── */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 999px;
+            padding: 10px 22px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.22s;
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border: 1px solid var(--accent);
+            box-shadow: 0 6px 22px rgba(124, 106, 247, 0.25);
+        }
+        .btn-primary:hover {
+            background: #917ef7;
+            border-color: #917ef7;
+            box-shadow: 0 10px 30px rgba(124, 106, 247, 0.35);
+            transform: translateY(-2px);
+        }
+        .btn-icon {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* ── Subtle hint ── */
+        .hint {
+            margin-top: 40px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            opacity: 0.65;
+        }
+        .hint span {
+            color: var(--accent3);
+        }
+
+        /* ── Animation ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-soft {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+        .pulse-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-left: 6px;
+            animation: pulse-soft 1.8s ease-in-out infinite;
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .page-404 {
+                padding: 28px 18px;
+            }
+            .error-code {
+                font-size: 68px;
+                letter-spacing: -2px;
+            }
+            .error-title {
+                font-size: 22px;
+            }
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-404">
+        <!-- Logo -->
+        <a href="index.html" class="logo-link" aria-label="VocabHub home">
+            <span class="logo">Vocab<span>Hub</span></span>
+        </a>
+
+        <!-- 404 code -->
+        <div class="error-code">4<span class="accent">0</span>4</div>
+        <div class="error-divider"></div>
+
+        <h1 class="error-title">Page not found</h1>
+        <p class="error-message">
+            The page you're looking for doesn't exist or has been moved. 
+            If you believe this is a mistake, please <strong>contact the website owner</strong>. 
+            Otherwise, you can return to the homepage.
+        </p>
+
+        <!-- Action button (now only Back to Home) -->
+        <div class="actions">
+            <a href="index.html" class="btn btn-primary">
+                <span class="btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </span>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Subtle terminal-style hint -->
+        <div class="hint">
+            <span>●</span> vocabhub · 404 · path not resolved <span class="pulse-dot"></span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const hint = document.querySelector('.hint span:first-child');
+            if (hint && window.location.pathname !== '/') {
+                // subtle: just keep the dot pulsing, no clutter.
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide – WordFamily</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080910;--surface:#0f1117;--surface2:#161820;--surface3:#1c1f2a;
+    --border:#232636;--border2:#2e3247;
+    --accent:#7b68ee;--accent-glow:rgba(123,104,238,.25);
+    --accent2:#f0b429;--accent3:#34d399;
+    --text:#ecedf5;--muted:#5c6080;--muted2:#8890b0;
+    --danger:#f06464;--success:#34d399;
+    --radius:16px;--radius-sm:10px;--glass-border:rgba(255,255,255,.07);
+  }
+  [data-theme="light"]{
+    --bg:#f5f7fb;--surface:#ffffff;--surface2:#f0f2f6;--surface3:#e8ebf2;
+    --border:#dde1ec;--border2:#c8cfe0;
+    --accent:#6655d9;--accent-glow:rgba(102,85,217,.2);--accent2:#d49c10;
+    --text:#1a1f2e;--muted:#8590b0;--muted2:#6070a0;--danger:#d94444;--success:#22b57a;
+    --glass-border:rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 600px 400px at 10% 20%,rgba(123,104,238,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 350px at 90% 80%,rgba(52,211,153,.05) 0%,transparent 70%);}
+  .page{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 20px 80px;}
+
+  .back-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--glass-border);border-radius:14px;backdrop-filter:blur(14px);}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted2);text-decoration:none;padding:6px 14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);transition:all .2s;font-family:'Manrope',sans-serif;}
+  .back-btn:hover{color:var(--text);border-color:var(--accent);}
+  .page-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-right:auto;}
+  .theme-btn{background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:10px;padding:6px 12px;cursor:pointer;font-size:15px;font-family:'Manrope',sans-serif;transition:all .2s;}
+  .theme-btn:hover{border-color:var(--accent);color:var(--text);}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;animation:fadeUp .35s cubic-bezier(.4,0,.2,1);box-shadow:0 14px 60px rgba(0,0,0,.30);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s cubic-bezier(.4,0,.2,1);font-family:'Manrope',sans-serif;white-space:nowrap;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:linear-gradient(135deg,var(--accent) 0%,#9370f5 100%);color:#fff;box-shadow:0 2px 16px var(--accent-glow);}
+  .btn-primary:hover{box-shadow:0 4px 24px rgba(123,104,238,.4);filter:brightness(1.1);transform:translateY(-1px);}
+  .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+  .btn-secondary:hover{border-color:var(--accent);background:var(--surface3);transform:translateY(-1px);}
+  .btn-sm{padding:7px 14px;font-size:12px;border-radius:9px;}
+  .btn-full{width:100%;}
+
+  .nav-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .nav-btn{padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted2);transition:all .2s;font-family:'Manrope',sans-serif;white-space:nowrap;}
+  .nav-btn:hover{color:var(--text);background:var(--surface2);}
+  .nav-btn.active{background:linear-gradient(135deg,var(--accent),#9d8df5);color:#fff;box-shadow:0 2px 16px var(--accent-glow);}
+
+  .form-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--text);outline:none;font-family:'Manrope',sans-serif;transition:border-color .2s,box-shadow .2s;}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+
+  /* CSV Builder */
+  .builder-root-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:0;}
+  .builder-root-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .builder-root-input{flex:1;min-width:100px;background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;font-weight:700;letter-spacing:1px;outline:none;text-transform:uppercase;padding:4px 0;}
+  .builder-root-input::placeholder{color:var(--muted);text-transform:none;font-weight:400;letter-spacing:0;font-size:14px;}
+  .builder-forms{padding:10px 12px;display:flex;flex-direction:column;gap:10px;}
+  .builder-form-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+  .builder-form-card-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .builder-form-field{display:flex;flex-direction:column;gap:4px;}
+  .builder-form-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+  .builder-form-field input,.builder-form-field select{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:9px 11px;outline:none;width:100%;transition:border-color .15s;}
+  .builder-form-field input:focus,.builder-form-field select:focus{border-color:var(--accent);}
+  .builder-form-field select{font-family:'Manrope',sans-serif;font-size:13px;cursor:pointer;}
+  .builder-form-field .bmeaning{color:#9dd49d;}
+  .builder-form-field .bmeaning::placeholder{color:#4a6a4a;}
+  .builder-form-card-footer{display:flex;justify-content:flex-end;padding-top:2px;}
+  .builder-del-btn{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:12px;padding:5px 12px;border-radius:8px;font-family:'Manrope',sans-serif;font-weight:600;transition:all .15s;}
+  .builder-del-btn:hover{border-color:var(--danger);color:var(--danger);background:rgba(240,100,100,.08);}
+
+  /* DB table re-used for doc */
+  .db-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .db-table thead th{background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+  .db-table tbody tr{border-bottom:1px solid var(--border);}
+  .db-table tbody tr:last-child{border-bottom:none;}
+  .db-table td{padding:12px 14px;vertical-align:middle;}
+
+  .type-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;text-transform:lowercase;letter-spacing:0.2px;}
+  .type-n{background:rgba(61,47,255,.6);color:#c8c0ff;}
+  .type-v{background:rgba(0,144,79,.6);color:#7debb2;}
+  .type-adj{background:rgba(179,94,0,.6);color:#f5c57a;}
+  .type-adv{background:rgba(181,32,32,.6);color:#f5a0a0;}
+  .type-phrv{background:rgba(0,112,184,.6);color:#7ec8f5;}
+
+  .settings-section{margin-bottom:28px;}
+  .settings-section h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+  .hidden{display:none !important;}
+  #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px 22px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+  #toast.show{opacity:1;}
+
+  @media(max-width:680px){
+    .page{padding:8px 12px 80px;}
+    .card{padding:14px;border-radius:14px;}
+    .builder-form-card-row{grid-template-columns:1fr;}
+    .btn{padding:12px 16px;font-size:14px;min-height:44px;}
+    .btn-sm{padding:10px 14px;font-size:13px;min-height:40px;}
+  }
+</style>
+</head>
+<body>
+<script>
+  const _theme=localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme',_theme);
+</script>
+
+<div class="page">
+  <div class="back-bar">
+    <a class="back-btn" href="../word_family.html">← WordFamily</a>
+    <span class="page-title">📄 Guide</span>
+    <button class="theme-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+  </div>
+
+  <!-- Sub nav -->
+  <div class="nav-tabs">
+    <button class="nav-btn active" id="guide-sub-builder-btn" onclick="switchGuideTab('builder')">🛠 CSV Builder</button>
+    <button class="nav-btn" id="guide-sub-docs-btn" onclick="switchGuideTab('docs')">📄 Format Guide</button>
+  </div>
+
+  <!-- ── CSV BUILDER ── -->
+  <div id="guide-sub-builder">
+    <div class="card" style="margin-bottom:16px;">
+      <h2 style="font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:4px;">🛠 CSV Builder</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Tạo danh sách từ của bạn và tải về dạng CSV — không cần text editor.</p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+        <input type="text" id="builder-filename" class="form-input btn-sm" placeholder="my_words" style="max-width:130px;flex:1;" value="my_words">
+        <button class="btn btn-secondary btn-sm" onclick="builderExportCSV()" style="flex:1;min-width:130px;justify-content:center;">⬇ Tải CSV</button>
+        <button class="btn btn-primary btn-sm" onclick="builderImportAndPractice()" style="flex:1;min-width:130px;justify-content:center;">▶ Luyện tập ngay</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);padding:8px 12px;background:rgba(124,106,247,.07);border-radius:8px;border:1px solid rgba(124,106,247,.2);">
+        💡 <strong style="color:var(--text)">Luyện tập ngay</strong> — load vào Mode 1 (mở tab mới). <strong style="color:var(--text)">Tải CSV</strong> — lưu file để dùng lại sau.
+      </div>
+    </div>
+
+    <div id="builder-word-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;"></div>
+
+    <button class="btn btn-secondary btn-full" onclick="builderAddRoot()" style="margin-bottom:16px;padding:16px;">＋ Thêm Root Word</button>
+
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:13px;color:var(--muted);">Root words: <b id="builder-stat-roots" style="color:var(--text);">0</b></span>
+      <span style="font-size:13px;color:var(--muted);">Word forms: <b id="builder-stat-forms" style="color:var(--text);">0</b></span>
+    </div>
+  </div>
+
+  <!-- ── FORMAT DOCS ── -->
+  <div id="guide-sub-docs" style="display:none;">
+    <div class="card">
+      <h2 style="font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:6px;">📄 CSV Format Guide</h2>
+      <p style="color:var(--muted2);font-size:14px;margin-bottom:24px;line-height:1.6;">How to create a CSV file manually and use it to practice.</p>
+
+      <div class="settings-section">
+        <h3>Columns</h3>
+        <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:20px;">
+          <table class="db-table">
+            <thead><tr><th>Column</th><th>Required?</th><th>Description</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--accent);font-weight:700;font-family:'DM Mono',monospace;">root</td><td><span style="color:var(--danger)">Required</span></td><td style="color:var(--muted2)">The base/root word (uppercased automatically)</td><td style="font-family:'DM Mono',monospace;color:var(--muted)">ABBREVIATE</td></tr>
+              <tr><td style="font-family:'DM Mono',monospace;">word</td><td><span style="color:var(--muted)">Optional</span></td><td style="color:var(--muted2)">A specific word form</td><td style="font-family:'DM Mono',monospace;color:var(--muted)">abbreviation</td></tr>
+              <tr><td style="font-family:'DM Mono',monospace;">phonetic</td><td><span style="color:var(--muted)">Optional</span></td><td style="color:var(--muted2)">Pronunciation in any format</td><td style="font-family:'DM Mono',monospace;color:var(--muted)">/əˌbriːviˈeɪʃən/</td></tr>
+              <tr><td style="font-family:'DM Mono',monospace;">type</td><td><span style="color:var(--muted)">Optional</span></td><td style="color:var(--muted2)">Word type: n, v, adj, adv, phr.v</td><td style="font-family:'DM Mono',monospace;color:var(--muted)">n</td></tr>
+              <tr><td style="font-family:'DM Mono',monospace;">vietnamese_meaning</td><td><span style="color:var(--muted)">Optional</span></td><td style="color:var(--muted2)">Vietnamese meaning shown during quiz</td><td style="font-family:'DM Mono',monospace;color:var(--muted)">Sự viết tắt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Example</h3>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:'DM Mono',monospace;font-size:13px;color:var(--text);overflow-x:auto;margin-bottom:20px;line-height:2;">
+          <span style="color:var(--muted)">root,word,phonetic,type,vietnamese_meaning</span><br>
+          ABBREVIATE,abbreviate,/əˈbriːvieɪt/,v,Viết tắt<br>
+          ABBREVIATE,abbreviation,/əˌbriːviˈeɪʃən/,n,Sự viết tắt<br>
+          ACCESS,access,/ˈækses/,v,Truy cập<br>
+          ACCESS,accessible,/əkˈsesɪbəl/,adj,Có thể truy cập<br>
+        </div>
+
+        <h3>Word Types</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <span class="type-badge type-n">n — Noun</span>
+          <span class="type-badge type-v">v — Verb</span>
+          <span class="type-badge type-adj">adj — Adjective</span>
+          <span class="type-badge type-adv">adv — Adverb</span>
+          <span class="type-badge type-phrv">phr.v — Phrasal Verb</span>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>How to Use Your File</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">Option A — Import into Database</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;">Go to <strong style="color:var(--text)">WordFamily main page → 🗂 Database → ⬆ Import CSV</strong>. Words merge into the main database with Weak Words tracking.</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">Option B — Session-only Practice</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;">Go to <strong style="color:var(--text)">📝 Mode 1 or 🧩 Mode 2 → 📂 My Files</strong>. Nothing is saved to the database.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" style="margin-bottom:0;">
+        <h3>Tips</h3>
+        <div style="font-size:14px;color:var(--muted);line-height:2.1;">
+          • Each root word can have <strong style="color:var(--text)">as many rows as needed</strong> — one per word form.<br>
+          • You can import <strong style="color:var(--text)">multiple CSV files</strong> at once — they merge automatically.<br>
+          • Column order doesn't matter — matched by header name.<br>
+          • Extra columns are safely ignored.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ══════════════════════════════════════════
+// GUIDE TAB SWITCHING
+// ══════════════════════════════════════════
+function switchGuideTab(tab) {
+  ['builder','docs'].forEach(t => {
+    document.getElementById('guide-sub-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('guide-sub-'+t+'-btn').classList.toggle('active', t===tab);
+  });
+}
+
+// ══════════════════════════════════════════
+// CSV BUILDER
+// ══════════════════════════════════════════
+let builderRoots=[], builderNextId=1;
+
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function csvEscape(s){s=String(s||'').replace(/"/g,'""');return(s.includes(',')||s.includes('"')||s.includes('\n'))?'"'+s+'"':s;}
+
+function builderAddRoot() {
+  const id=builderNextId++;
+  builderRoots.push({id,root:'',forms:[]});
+  builderRenderAll();
+  setTimeout(()=>{const el=document.getElementById('broot-'+id);if(el)el.focus();},50);
+}
+
+function builderDeleteRoot(id) {
+  builderRoots=builderRoots.filter(r=>r.id!==id);
+  builderRenderAll();
+}
+
+function builderAddForm(rootId) {
+  builderSync();
+  const root=builderRoots.find(r=>r.id===rootId);
+  if(!root) return;
+  root.forms.push({word:'',phonetic:'',type:'n',meaning:''});
+  builderRenderAll();
+  setTimeout(()=>{const rows=document.querySelectorAll('.bword-'+rootId);if(rows.length)rows[rows.length-1].focus();},50);
+}
+
+function builderDeleteForm(rootId,idx) {
+  builderSync();
+  const root=builderRoots.find(r=>r.id===rootId);
+  if(!root) return;
+  root.forms.splice(idx,1);
+  builderRenderAll();
+}
+
+function builderSync() {
+  builderRoots.forEach(root=>{
+    const re=document.getElementById('broot-'+root.id);
+    if(re) root.root=re.value.toUpperCase().trim();
+    root.forms.forEach((form,i)=>{
+      const w=document.getElementById('bform-'+root.id+'-'+i+'-w');
+      const p=document.getElementById('bform-'+root.id+'-'+i+'-p');
+      const t=document.getElementById('bform-'+root.id+'-'+i+'-t');
+      const m=document.getElementById('bform-'+root.id+'-'+i+'-m');
+      if(w) form.word=w.value.trim();
+      if(p) form.phonetic=p.value.trim();
+      if(t) form.type=t.value;
+      if(m) form.meaning=m.value.trim();
+    });
+  });
+}
+
+function builderRenderAll() {
+  const container=document.getElementById('builder-word-list');
+  if(!container) return;
+  builderSync();
+  container.innerHTML='';
+
+  builderRoots.forEach(root=>{
+    const card=document.createElement('div');
+    card.className='builder-root-card';
+    card.innerHTML=`
+      <div class="builder-root-header">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);flex-shrink:0;">Root Word</div>
+        <input id="broot-${root.id}" class="builder-root-input" type="text" placeholder="e.g. ABBREVIATE" value="${escapeHtml(root.root)}" oninput="this.value=this.value.toUpperCase()" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+        <button class="btn btn-secondary btn-sm" onclick="builderAddForm(${root.id})" style="flex-shrink:0;">＋ Add Form</button>
+        <button onclick="builderDeleteRoot(${root.id})" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:16px;padding:5px 9px;flex-shrink:0;" title="Delete root word">🗑</button>
+      </div>
+      <div class="builder-forms" id="bforms-${root.id}"></div>
+    `;
+    container.appendChild(card);
+
+    const formsDiv=document.getElementById('bforms-'+root.id);
+    if(root.forms.length===0){
+      formsDiv.innerHTML=`<div style="font-size:13px;color:var(--muted);padding:12px 4px;text-align:center;">Chưa có word form nào — nhấn <strong style="color:var(--text)">＋ Add Form</strong> để thêm</div>`;
+    }else{
+      root.forms.forEach((form,i)=>{
+        const fc=document.createElement('div');
+        fc.className='builder-form-card';
+        const typeOpts=['n','v','adj','adv','phr.v'].map(t=>
+          `<option value="${t}"${form.type===t?' selected':''}>${t} — ${{n:'Noun',v:'Verb',adj:'Adjective',adv:'Adverb','phr.v':'Phrasal Verb'}[t]}</option>`
+        ).join('');
+        fc.innerHTML=`
+          <div class="builder-form-card-row">
+            <div class="builder-form-field">
+              <label>Word</label>
+              <input id="bform-${root.id}-${i}-w" class="bword-${root.id}" type="text" placeholder="e.g. abbreviation" value="${escapeHtml(form.word)}" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+            </div>
+            <div class="builder-form-field">
+              <label>Type</label>
+              <select id="bform-${root.id}-${i}-t">${typeOpts}</select>
+            </div>
+          </div>
+          <div class="builder-form-field">
+            <label>Vietnamese Meaning</label>
+            <input id="bform-${root.id}-${i}-m" class="bmeaning" type="text" placeholder="Nhập nghĩa tiếng Việt…" value="${escapeHtml(form.meaning)}" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="builder-form-field">
+            <label>Phonetic <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <input id="bform-${root.id}-${i}-p" type="text" placeholder="/fəˈnetɪk/" value="${escapeHtml(form.phonetic)}" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="builder-form-card-footer">
+            <button class="builder-del-btn" onclick="builderDeleteForm(${root.id},${i})">✕ Remove this form</button>
+          </div>
+        `;
+        formsDiv.appendChild(fc);
+      });
+    }
+  });
+
+  document.getElementById('builder-stat-roots').textContent=builderRoots.length;
+  document.getElementById('builder-stat-forms').textContent=builderRoots.reduce((s,r)=>s+r.forms.length,0);
+}
+
+function builderGetWords() {
+  builderSync();
+  return builderRoots
+    .filter(r=>r.root.trim())
+    .map((r,i)=>({
+      id:-(i+1),
+      root:r.root.trim().toUpperCase(),
+      entries:r.forms.filter(f=>f.word.trim()).map(f=>({word:f.word.trim(),phonetic:f.phonetic.trim(),type:f.type,meaning:f.meaning.trim()})),
+      meanings:r.forms.filter(f=>f.meaning.trim()).map(f=>f.meaning.trim()),
+      mistakeCount:0
+    }));
+}
+
+function builderExportCSV() {
+  const words=builderGetWords();
+  if(!words.length){showToast('⚠️ Thêm ít nhất một root word trước.');return;}
+  const rows=['root,word,phonetic,type,vietnamese_meaning'];
+  words.forEach(word=>{
+    if(!word.entries.length){rows.push([word.root,'','','',''].map(csvEscape).join(','));}
+    else{word.entries.forEach(e=>{rows.push([word.root,e.word,e.phonetic,e.type,e.meaning].map(csvEscape).join(','));});}
+  });
+  const fname=(document.getElementById('builder-filename').value.trim()||'my_words').replace(/[^a-z0-9_\-]/gi,'_');
+  const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isIOS){window.open(url,'_blank');showToast('📂 Nhấn Share → Save to Files để lưu file');}
+  else{const a=document.createElement('a');a.href=url;a.download=fname+'.csv';a.click();showToast('✓ Đã tải '+fname+'.csv ('+words.length+' từ)');}
+}
+
+function builderImportAndPractice() {
+  const words=builderGetWords();
+  if(!words.length){showToast('⚠️ Add at least one root word first.');return;}
+  const withMeanings=words.filter(w=>w.entries.some(e=>e.meaning));
+  if(!withMeanings.length){showToast('⚠️ Add Vietnamese meanings so the quiz has something to ask.');return;}
+  // Save to localStorage for mode1 to pick up
+  localStorage.setItem('wf_builder_words',JSON.stringify(words));
+  showToast('✓ Loaded '+words.length+' word(s) — opening Mode 1…');
+  setTimeout(()=>{ window.location.href='mode1.html?source=builder'; },600);
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ══════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════
+(function initTheme(){
+  const saved=localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme',saved);
+  const btn=document.getElementById('theme-toggle');
+  if(btn)btn.textContent=saved==='light'?'☀️':'🌙';
+})();
+document.getElementById('theme-toggle').addEventListener('click',()=>{
+  const html=document.documentElement;
+  const current=html.getAttribute('data-theme')||'dark';
+  const next=current==='light'?'dark':'light';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+  document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';
+});
+
+// Check if we came from a builder import redirect
+(function checkBuilderSource(){
+  if(window.location.search.includes('source=builder')){
+    // Already handled — user arrived at mode1.html
+  }
+})();
+</script>
+</body>
+</html>

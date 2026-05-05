@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordFamily – Vocab Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080910; --surface: #0f1117; --surface2: #161820; --surface3: #1c1f2a;
+    --border: #232636; --border2: #2e3247;
+    --accent: #7b68ee; --accent-glow: rgba(123,104,238,.25);
+    --accent2: #f0b429; --accent3: #34d399;
+    --text: #ecedf5; --muted: #5c6080; --muted2: #8890b0;
+    --danger: #f06464; --success: #34d399;
+    --radius: 16px; --radius-sm: 10px;
+    --glass: rgba(255,255,255,.03); --glass-border: rgba(255,255,255,.07);
+  }
+  [data-theme="light"] {
+    --bg: #f5f7fb; --surface: #ffffff; --surface2: #f0f2f6; --surface3: #e8ebf2;
+    --border: #dde1ec; --border2: #c8cfe0;
+    --accent: #6655d9; --accent-glow: rgba(102,85,217,.2); --accent2: #d49c10; --accent3: #22b57a;
+    --text: #1a1f2e; --muted: #8590b0; --muted2: #6070a0; --danger: #d94444; --success: #22b57a;
+    --glass: rgba(0,0,0,.03); --glass-border: rgba(0,0,0,.08);
+  }
+  [data-theme="light"] body::before {
+    background: radial-gradient(ellipse 600px 400px at 10% 20%, rgba(102,85,217,.06) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 350px at 90% 80%, rgba(34,181,122,.04) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(212,156,16,.03) 0%, transparent 70%);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; overflow-x: hidden; max-width: 100vw; }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse 600px 400px at 10% 20%, rgba(123,104,238,.07) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 350px at 90% 80%, rgba(52,211,153,.05) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(240,180,41,.03) 0%, transparent 70%);
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    background-size: 200px; opacity: 0.5;
+  }
+  .app { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 22px 20px 100px; width: 100%; }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 14px; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    margin-bottom: 16px; padding: 12px 14px;
+    background: rgba(255,255,255,.02); border: 1px solid var(--glass-border);
+    border-radius: 18px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .logo { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
+  .logo span { background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-sub { font-size: 12px; color: var(--muted2); font-weight: 500; letter-spacing: .3px; }
+  .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .stats-pill {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: 999px; padding: 7px 18px; font-size: 13px; color: var(--muted2);
+    display: flex; gap: 18px;
+  }
+  .stats-pill b { color: var(--accent2); font-weight: 700; }
+
+  /* ── SHELL LAYOUT ── */
+  .shell { display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
+  .sidebar {
+    position: sticky; top: 96px;
+    background: rgba(255,255,255,.02); border: 1px solid var(--glass-border);
+    border-radius: 18px; padding: 10px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.22);
+  }
+  .sidebar-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 10px 10px 8px; }
+  .content { min-width: 0; }
+
+  /* ── MAIN NAV ── */
+  #main-nav { display: flex; flex-direction: column; gap: 6px; background: transparent; border: none; padding: 0; margin: 0; }
+  .nav-btn {
+    padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; background: transparent; color: var(--muted2);
+    transition: all .2s cubic-bezier(.4,0,.2,1); font-family: 'Manrope', sans-serif; white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--surface2); }
+  .nav-btn.active { background: linear-gradient(135deg, var(--accent), #9d8df5); color: #fff; box-shadow: 0 2px 16px var(--accent-glow); }
+  #main-nav .nav-btn {
+    width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: 14px; border: 1px solid transparent;
+    text-decoration: none;
+  }
+  #main-nav .nav-btn:hover { background: rgba(255,255,255,.03); border-color: var(--glass-border); }
+  #main-nav .nav-btn.active { background: linear-gradient(135deg, var(--accent), #9d8df5); border-color: transparent; color: #fff; }
+
+  /* ── CARDS ── */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; animation: fadeUp .35s cubic-bezier(.4,0,.2,1); box-shadow: 0 14px 60px rgba(0,0,0,.30); }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+  .section-title { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .section-sub { color: var(--muted2); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* ── HOME GREETING ── */
+  .home-greeting { margin-bottom: 28px; padding: 24px 28px; background: linear-gradient(135deg, rgba(123,104,238,.1) 0%, rgba(52,211,153,.06) 100%); border: 1px solid rgba(123,104,238,.2); border-radius: var(--radius); position: relative; overflow: hidden; }
+  .home-greeting::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(123,104,238,.15), transparent 70%); pointer-events: none; }
+  .home-greeting-time { font-size: 12px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .home-greeting-main { font-family: 'Instrument Serif', serif; font-size: 26px; line-height: 1.3; margin-bottom: 6px; }
+  .home-greeting-sub { font-size: 14px; color: var(--muted2); line-height: 1.6; }
+
+  /* ── MODE CARDS ── */
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  @media(max-width:520px) { .mode-grid { grid-template-columns: 1fr; } }
+  .mode-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 20px; cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1); background: var(--surface2); position: relative; overflow: hidden; text-decoration: none; display: block; }
+  .mode-card::before { content: ''; position: absolute; inset: 0; opacity: 0; background: linear-gradient(135deg, var(--accent-glow), transparent); transition: opacity .25s; }
+  .mode-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(123,104,238,.15); }
+  .mode-card:hover::before { opacity: 1; }
+  .mode-card:active { transform: translateY(-1px); }
+  .mode-card .icon { font-size: 30px; margin-bottom: 12px; display: block; }
+  .mode-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .mode-card p { font-size: 13px; color: var(--muted2); line-height: 1.55; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-top: 12px; text-transform: uppercase; letter-spacing: .6px; }
+  .badge-purple { background: rgba(123,104,238,.2); color: var(--accent); border: 1px solid rgba(123,104,238,.3); }
+  .badge-gold   { background: rgba(240,180,41,.15); color: var(--accent2); border: 1px solid rgba(240,180,41,.25); }
+  .badge-green  { background: rgba(52,211,153,.12); color: var(--accent3); border: 1px solid rgba(52,211,153,.2); }
+
+  /* ── BUTTONS ── */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all .2s cubic-bezier(.4,0,.2,1); font-family: 'Manrope', sans-serif; letter-spacing: .1px; white-space: nowrap; }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, #9370f5 100%); color: #fff; box-shadow: 0 2px 16px var(--accent-glow); }
+  .btn-primary:hover { box-shadow: 0 4px 24px rgba(123,104,238,.4); filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+  .btn-secondary:hover { border-color: var(--accent); background: var(--surface3); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+  .btn-danger { background: rgba(240,100,100,.12); color: var(--danger); border: 1px solid rgba(240,100,100,.25); }
+  .btn-danger:hover { background: rgba(240,100,100,.2); border-color: var(--danger); }
+  .btn-sm   { padding: 7px 14px; font-size: 12px; border-radius: 9px; }
+  .btn-full { width: 100%; }
+
+  /* ── DATABASE ── */
+  .db-toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-input { flex: 1; min-width: 180px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s, box-shadow .2s; }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .form-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border2); border-radius: 10px; padding: 11px 14px; font-size: 14px; color: var(--text); outline: none; font-family: 'Manrope', sans-serif; transition: border-color .2s, box-shadow .2s; }
+  .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .db-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  .db-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .db-table thead th { background: var(--surface2); color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+  .db-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer; }
+  .db-table tbody tr:last-child { border-bottom: none; }
+  .db-table tbody tr:hover { background: rgba(123,104,238,.06); }
+  .db-table td { padding: 12px 14px; vertical-align: middle; }
+  .db-table .col-root { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .db-table .col-root-inner { display: inline-block; background: rgba(123,104,238,.18); border: 1px solid rgba(123,104,238,.3); border-radius: 7px; padding: 3px 10px; }
+  .db-table .col-word { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+  .db-table .col-phon { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .db-table .col-mean { font-size: 12px; color: var(--muted2); }
+  .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 6px; text-transform: lowercase; letter-spacing: 0.2px; }
+  .type-n   { background: rgba(61,47,255,.6); color: #c8c0ff; }
+  .type-v   { background: rgba(0,144,79,.6); color: #7debb2; }
+  .type-adj { background: rgba(179,94,0,.6); color: #f5c57a; }
+  .type-adv { background: rgba(181,32,32,.6); color: #f5a0a0; }
+  .type-phrv { background: rgba(0,112,184,.6); color: #7ec8f5; }
+  .type-other { background: rgba(68,72,96,.6); color: #aab0cc; }
+  .sort-active { background: rgba(123,104,238,.18) !important; color: var(--accent) !important; border-color: rgba(123,104,238,.4) !important; }
+
+  /* ── PAGINATION ── */
+  .pagination { display: flex; gap: 6px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .page-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'Manrope', sans-serif; transition: all .15s; }
+  .page-btn:hover { border-color: var(--accent); color: var(--text); }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 10px var(--accent-glow); }
+  .empty { text-align: center; padding: 50px 20px; color: var(--muted); }
+  .empty .icon { font-size: 36px; margin-bottom: 12px; }
+
+  /* ── SETTINGS ── */
+  .settings-section { margin-bottom: 28px; }
+  .settings-section h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(42,45,58,.4); gap: 20px; }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-info { flex: 1; }
+  .settings-row-info strong { display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .settings-row-info span { font-size: 12px; color: var(--muted2); line-height: 1.5; }
+
+  /* ── MODAL ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn .2s; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; width: 100%; max-width: 660px; max-height: 90vh; overflow-y: auto; padding: 28px; animation: scaleUp .25s cubic-bezier(.4,0,.2,1); box-shadow: 0 24px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04); }
+  @keyframes scaleUp { from { opacity:0; transform: scale(.96) translateY(8px); } to { opacity:1; transform: scale(1) translateY(0); } }
+  .modal-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 11px; color: var(--muted2); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
+  textarea.form-input { resize: vertical; min-height: 72px; font-family: 'DM Mono', monospace; font-size: 13px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+  .combined-row { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
+  .combined-row input, .combined-row select { background: transparent; border: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; width: 100%; min-width: 0; }
+  .combined-row select { font-family: 'Manrope', sans-serif; font-size: 12px; }
+  .combined-row .meaning-input { color: #9dd49d; }
+  .combined-row .meaning-input::placeholder { color: #4a6a4a; }
+  .combined-row .del-entry { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; flex-shrink: 0; }
+  .combined-row .del-entry:hover { color: var(--danger); }
+  .combined-row-header { display: grid; grid-template-columns: 2fr 1.1fr 0.65fr 2fr auto; gap: 8px; padding: 0 12px; margin-bottom: 4px; }
+  .combined-row-header span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+  .entry-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border2); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 14px; padding: 12px 22px; font-size: 14px; color: var(--text); opacity: 0; transition: all .3s cubic-bezier(.4,0,.2,1); z-index: 999; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 8px 32px rgba(0,0,0,.4); }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── XP ── */
+  @keyframes xpPop { 0%{opacity:0;transform:translateY(0) scale(.8)} 30%{opacity:1;transform:translateY(-28px) scale(1.2)} 80%{opacity:1;transform:translateY(-48px) scale(1)} 100%{opacity:0;transform:translateY(-60px) scale(.9)} }
+  .xp-popup { position:fixed;font-size:18px;font-weight:800;color:var(--accent2);pointer-events:none;animation:xpPop .9s cubic-bezier(.4,0,.2,1) forwards;z-index:9999;font-family:'Manrope',sans-serif;text-shadow:0 0 16px rgba(240,180,41,.5); }
+  .level-up-banner { position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-80px);opacity:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:12px 28px;border-radius:999px;font-weight:800;font-size:15px;z-index:9999;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;box-shadow:0 8px 32px rgba(123,104,238,.4);white-space:nowrap;pointer-events:none; }
+  .level-up-banner.show { transform:translateX(-50%) translateY(0);opacity:1; }
+
+  /* ── MISC ── */
+  .hidden { display: none !important; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){ .shell { grid-template-columns: 180px 1fr; gap: 12px; } .logo { font-size: 24px; } .stats-pill { gap: 10px; padding: 6px 14px; font-size: 12px; } .card { padding: 20px; } }
+  @media(max-width:680px){
+    .app { padding: 8px 12px 100px; }
+    header { position: sticky; top: 6px; flex-wrap: nowrap; gap: 8px; padding: 8px 12px; border-radius: 14px; margin-bottom: 10px; }
+    .header-left { flex-shrink: 0; }
+    .logo { font-size: 20px; }
+    .header-sub { display: none; }
+    .stats-pill { display: none; }
+    .header-right { margin-left: auto; gap: 6px; flex-wrap: nowrap; flex-shrink: 0; }
+    .header-right .btn-sm { padding: 0; width: 36px; height: 36px; min-height: 36px; font-size: 16px; border-radius: 10px; overflow: hidden; }
+    #admin-login-btn { font-size: 18px; }
+    .shell { display: flex; flex-direction: column; gap: 8px; }
+    .sidebar { position: sticky; top: 60px; z-index: 15; padding: 4px 6px; border-radius: 12px; width: 100%; }
+    .sidebar-title { display: none; }
+    #main-nav { flex-direction: row; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 4px; padding: 2px 0; }
+    #main-nav::-webkit-scrollbar { display: none; }
+    #main-nav .nav-btn { width: auto; flex-shrink: 0; white-space: nowrap; padding: 8px 14px; border-radius: 999px; font-size: 13px; gap: 5px; }
+    .content { width: 100%; min-width: 0; overflow: hidden; }
+    .card { padding: 14px; border-radius: 14px; }
+    .section-title { font-size: 19px; }
+    .search-input { font-size: 16px !important; }
+    .db-table .col-phon, .db-table .col-mean { display: none; }
+    .db-toolbar { flex-wrap: wrap; gap: 6px; }
+    .search-input { min-width: 0; width: 100%; }
+    .settings-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .settings-section { margin-bottom: 20px; }
+    .btn { padding: 12px 16px; font-size: 14px; min-height: 44px; white-space: normal; }
+    .btn-sm { padding: 10px 14px; font-size: 13px; min-height: 40px; }
+    .combined-row { grid-template-columns: 1fr 1fr; }
+    .combined-row > *:nth-child(3) { display: none; }
+    .combined-row > *:nth-child(4) { grid-column: 1/-1; }
+    .combined-row-header { display: none; }
+    .home-greeting { padding: 14px 16px; margin-bottom: 16px; }
+    .home-greeting-main { font-size: 18px; }
+    .mode-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+    .mode-card { padding: 16px; }
+    .mode-card .icon { font-size: 24px; margin-bottom: 8px; }
+    .overlay { align-items: flex-end; padding: 0; }
+    .modal { width: 100%; max-width: 100%; border-radius: 22px 22px 0 0; max-height: 92vh; overflow-y: auto; padding: 20px 14px 40px; }
+    .modal-footer { flex-direction: column-reverse; }
+    .modal-footer .btn { width: 100%; }
+    #stats-content > div[style*="grid-template-columns"] { grid-template-columns: 1fr 1fr !important; }
+    #toast { bottom: 20px; font-size: 13px; padding: 10px 18px; }
+  }
+  @media(max-width:380px){ .logo { font-size: 18px; } .btn { padding: 11px 12px; font-size: 13px; } .card { padding: 12px; } #main-nav .nav-btn { padding: 7px 10px; font-size: 12px; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="logo">Word<span>Family</span></div>
+      <span id="header-greeting" class="header-sub">BETA</span>
+    </div>
+    <div class="header-right">
+      <div class="stats-pill">
+        <span>Words: <b id="total-count">0</b></span>
+        <span>⚡ <b id="xp-display">0</b> XP</span>
+        <span>Lv <b id="level-display">1</b></span>
+      </div>
+      <button id="admin-login-btn" class="btn btn-ghost btn-sm" onclick="showLoginModal()">🔓 Login</button>
+      <button id="mute-btn" class="btn btn-ghost btn-sm" aria-label="Toggle sound" title="Toggle sound">🔊</button>
+      <button id="theme-toggle" class="btn btn-ghost btn-sm" aria-label="Toggle theme" title="Toggle light/dark mode">🌙</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-title">Navigation</div>
+      <nav id="main-nav">
+        <!-- Nav buttons — mode pages live in wf mode/ folder -->
+        <button class="nav-btn active" onclick="showTab('home')">🏠 Home</button>
+        <a class="nav-btn" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">📝 Mode 1</a>
+        <a class="nav-btn" href="wf mode/mode2.html" onclick="return safeNav(event,this,'wf mode/mode2.html')">🧩 Mode 2</a>
+        <a class="nav-btn" href="wf mode/sentences.html" onclick="return safeNav(event,this,'wf mode/sentences.html')">📖 Sentences Mode</a>
+        <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
+        <button class="nav-btn" onclick="showTab('stats')">📊 Stats</button>
+        <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
+        <a class="nav-btn" href="wf mode/guide.html" onclick="return safeNav(event,this,'wf mode/guide.html')">📄 Guide</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <!-- HOME -->
+      <div id="tab-home" class="card">
+        <div class="home-greeting" id="home-greeting-block">
+          <div class="home-greeting-time" id="home-time-label">Good morning</div>
+          <div class="home-greeting-main" id="home-greeting-main">Welcome back! 👋</div>
+          <div class="home-greeting-sub" id="home-greeting-sub">Ready to level up your vocabulary today?</div>
+        </div>
+        <h2 class="section-title">How do you want to train?</h2>
+        <p class="section-sub">Pick a mode and start practising.</p>
+        <div class="mode-grid">
+          <a class="mode-card" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">
+            <span class="icon">📝</span><h3>Meaning → Word</h3>
+            <p>See a Vietnamese meaning + word type. Type the correct English word.</p>
+            <span class="badge badge-purple">Mode 1</span>
+          </a>
+          <a class="mode-card" href="wf mode/mode2.html" onclick="return safeNav(event,this,'wf mode/mode2.html')">
+            <span class="icon">🧩</span><h3>Word Family</h3>
+            <p>Given a root word, fill in all its forms: noun, verb, adjective, adverb.</p>
+            <span class="badge badge-gold">Mode 2</span>
+          </a>
+          <a class="mode-card" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">
+            <span class="icon">🔥</span><h3>Weak Words</h3>
+            <p>Practice only the words you've gotten wrong before. Crush your weaknesses.</p>
+            <span class="badge badge-green">Focus</span>
+          </a>
+          <a class="mode-card" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">
+            <span class="icon">⏱</span><h3>Exam Mode</h3>
+            <p>No hints, strict timer, score revealed only at the end. Real exam pressure.</p>
+            <span class="badge badge-gold">Hard</span>
+          </a>
+          <a class="mode-card" href="wf mode/sentences.html" onclick="return safeNav(event,this,'wf mode/sentences.html')">
+            <span class="icon">📖</span><h3>Sentences Mode</h3>
+            <p>Fill in the blank from a real sentence. Trains contextual word usage.</p>
+            <span class="badge badge-purple">Sentences</span>
+          </a>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="showTab('database')">🗂 Manage Database</button>
+          <button id="home-add-btn" class="btn btn-secondary" onclick="openAddModal()" style="display:none">＋ Add Word</button>
+        </div>
+      </div>
+
+      <!-- DATABASE -->
+      <div id="tab-database" class="hidden">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <h2 class="section-title" style="margin-bottom:4px">Database</h2>
+              <p style="color:var(--muted);font-size:14px"><span id="db-count">0</span> entries · <span id="db-root-count">0</span> root words</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="exportCSV()" id="export-btn">⬇ Export CSV</button>
+              <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFiles').click()" id="import-btn">⬆ Import CSV</button>
+              <input type="file" id="importFiles" accept=".csv" multiple class="hidden" onchange="importCSVFiles(event)">
+              <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>
+            </div>
+          </div>
+          <div class="db-toolbar">
+            <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…">
+            <select class="form-input btn-sm" id="db-filter-type" onchange="renderDB()" style="max-width:130px;padding:9px 12px;">
+              <option value="">All types</option>
+              <option value="n">Noun (n)</option>
+              <option value="v">Verb (v)</option>
+              <option value="adj">Adjective (adj)</option>
+              <option value="adv">Adverb (adv)</option>
+              <option value="phr.v">Phrasal Verb (phr.v)</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" id="sort-mistakes-btn" onclick="toggleSortByMistakes()">↓ Sort: Mistakes</button>
+            <button id="reset-all-btn" class="btn btn-secondary btn-sm" onclick="resetAllMistakes()" style="display:none">🔄 Reset All</button>
+            <button id="delete-all-btn" class="btn btn-danger btn-sm" onclick="deleteAllWords()" style="display:none">🗑 Delete All</button>
+          </div>
+          <div class="db-table-wrap">
+            <table class="db-table">
+              <thead>
+                <tr><th>Root Word</th><th>Word</th><th class="col-phon">Phonetic</th><th>Type</th><th class="col-mean">Vietnamese Meaning</th><th></th></tr>
+              </thead>
+              <tbody id="word-list"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="db-pagination"></div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div id="tab-stats" class="hidden">
+        <div class="card">
+          <h2 class="section-title" style="margin-bottom:6px">📊 Statistics</h2>
+          <p class="section-sub">Your learning progress at a glance.</p>
+          <div id="stats-content" style="display:flex;flex-direction:column;gap:20px;"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="tab-settings" class="hidden">
+        <div class="card">
+          <h2 class="section-title" style="margin-bottom:6px">Settings</h2>
+          <p class="section-sub">Manage your app preferences and data.</p>
+          <div class="settings-section">
+            <h3>Profile</h3>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <strong>Your Name</strong>
+                <span>Currently saved as: <b id="settings-name-display" style="color:var(--text);">—</b></span>
+              </div>
+              <button class="btn btn-secondary" onclick="openChangeName()">✏️ Change Name</button>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h3>Data</h3>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <strong>Clear Personal Data</strong>
+                <span>Removes all saved progress, mistake counts, and your database from this device. The app will reload fresh from the CSV files.</span>
+              </div>
+              <button class="btn btn-danger" onclick="clearAllData()">🗑 Clear Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL Add/Edit Word -->
+<div class="overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" style="max-width:820px;">
+    <div class="modal-title" id="modal-title">Add Word</div>
+    <input type="hidden" id="edit-root-key">
+    <div class="form-group">
+      <label>Root Word</label>
+      <input type="text" class="form-input" id="f-root" placeholder="e.g. ABBREVIATE" style="text-transform:uppercase;font-family:'DM Mono',monospace;font-size:16px;font-weight:700;letter-spacing:1px;">
+    </div>
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div>
+          <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Entries</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:10px;">Each row = one word form + its Vietnamese meaning</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addEntryRow()" id="add-entry-row-btn">＋ Add Row</button>
+      </div>
+      <div class="combined-row-header">
+        <span>Word</span><span>Phonetic</span><span>Type</span><span>Vietnamese Meaning</span><span></span>
+      </div>
+      <div class="entry-list" id="entry-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="delete-btn" onclick="deleteWord()" style="margin-right:auto;display:none">Delete</button>
+      <button class="btn btn-secondary btn-sm" id="reset-mistakes-btn" onclick="resetMistakeCount()" style="display:none">🔄 Reset Mistakes</button>
+      <button class="btn btn-primary" id="save-btn" onclick="saveWord()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Welcome Name -->
+<div class="overlay hidden" id="name-modal">
+  <div class="modal" style="max-width:420px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:12px;">👋</div>
+    <div class="modal-title" style="text-align:center;margin-bottom:8px;" id="name-modal-title">Welcome to WordFamily!</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;" id="name-modal-sub">What should we call you?</p>
+    <div class="form-group" style="text-align:left;">
+      <label>Your name</label>
+      <input type="text" class="form-input" id="name-input" placeholder="e.g. Minh, Linh, Alex…" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" maxlength="30" onkeydown="if(event.key==='Enter')saveName()">
+    </div>
+    <div class="modal-footer" style="justify-content:center;margin-top:16px;">
+      <button class="btn btn-primary" onclick="saveName()" id="name-modal-btn" style="min-width:140px;">Let's go! →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Login -->
+<div class="overlay hidden" id="login-modal" onclick="if(event.target===this)closeLoginModal()">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-title">🔐 Login</div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" class="form-input" id="login-username" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" class="form-input" id="login-password" autocomplete="new-password">
+    </div>
+    <div id="login-error" style="color:var(--danger);font-size:13px;margin-bottom:10px;display:none;padding:8px 12px;background:#2e0d0d;border-radius:8px;border:1px solid #5c1a1a;"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeLoginModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="attemptLogin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div class="level-up-banner" id="level-up-banner">🎉 Level Up!</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA / STORAGE
+// ══════════════════════════════════════════
+const STORAGE_KEY = 'wf_db_v2';
+const CSV_HASH_KEY = 'wf_csv_hash';
+const TSV_HASH_KEY = 'wf_tsv_hash';
+const TSV_STORAGE_KEY = 'wf_tsv_sentences';
+const XP_KEY = 'wf_xp';
+const XPperLevel = 100;
+
+const ACCOUNTS = {
+  '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918': { role:'admin', displayName:'Admin', passwordHash:'8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }
+};
+
+let isAdmin = false, currentRole = null;
+let db = [], nextId = 1;
+let _tatoebaRaw = [];
+let totalXP = parseInt(localStorage.getItem(XP_KEY) || '0');
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
+
+function updateStats() {
+  const totalEntries = db.reduce((s,w)=>s+w.entries.length, 0);
+  document.getElementById('total-count').textContent = totalEntries;
+  const dbCount = document.getElementById('db-count');
+  const dbRoot  = document.getElementById('db-root-count');
+  if (dbCount) dbCount.textContent = totalEntries;
+  if (dbRoot)  dbRoot.textContent  = db.length;
+}
+
+function updateXPUI() {
+  document.getElementById('xp-display').textContent = totalXP;
+  document.getElementById('level-display').textContent = Math.floor(totalXP/XPperLevel)+1;
+}
+
+function getCurrentLevel(xp) { return Math.floor(xp/XPperLevel)+1; }
+
+// ── CSV parse helpers ──
+function parseCSVLine(line) {
+  const result=[]; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(ch===','&&!inQ){result.push(cur.trim());cur='';}else cur+=ch;}
+  result.push(cur.trim()); return result;
+}
+
+function normalizeType(raw){const t=(raw||'').trim().toLowerCase().replace(/[.\s]/g,'');if(['n','noun','nouns'].includes(t))return'n';if(['v','verb','verbs','vb'].includes(t))return'v';if(['adj','adjective','adjectives','a','a.'].includes(t))return'adj';if(['adv','adverb','adverbs'].includes(t))return'adv';if(['phrv','phrasalverb','phrasalverbs','pv'].includes(t))return'phr.v';return raw.trim().toLowerCase()||'n';}
+
+function buildWordsFromCSVTexts(csvTexts) {
+  const allWords={};let idCounter=1;
+  (csvTexts||[]).forEach(text=>{
+    try{
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length<2)return;
+      const header=parseCSVLine(lines[0]).map(h=>h.toLowerCase().replace(/\s+/g,'_'));
+      const ci={root:header.findIndex(h=>h==='root'||h==='root_word'||h.includes('root')),word:header.indexOf('word'),phonetic:header.indexOf('phonetic'),type:header.indexOf('type'),meaning:header.findIndex(h=>h.includes('mean')||h.includes('viet'))};
+      if(ci.root===-1)return;
+      const groups={};
+      for(let i=1;i<lines.length;i++){
+        const cols=parseCSVLine(lines[i]);
+        const root=(ci.root!==-1?cols[ci.root]:'').trim().toUpperCase();if(!root)continue;
+        if(!groups[root])groups[root]={entries:[],meanings:new Set()};
+        const word=(ci.word!==-1?cols[ci.word]:'').trim();
+        const phonetic=(ci.phonetic!==-1?cols[ci.phonetic]:'').trim();
+        const type=(ci.type!==-1?(cols[ci.type]||'').trim().toLowerCase():'n');
+        const meaning=(ci.meaning!==-1?cols[ci.meaning]:'').trim();
+        if(word)groups[root].entries.push({word,phonetic,type:normalizeType(type),meaning:meaning||''});
+        if(meaning)groups[root].meanings.add(meaning);
+      }
+      Object.entries(groups).forEach(([root,data])=>{
+        if(!allWords[root]){allWords[root]={id:idCounter++,root,entries:[...data.entries],meanings:[...data.meanings],mistakeCount:0};}
+        else{data.entries.forEach(e=>{if(!allWords[root].entries.some(ex=>ex.word===e.word))allWords[root].entries.push(e);});data.meanings.forEach(m=>{if(!allWords[root].meanings.includes(m))allWords[root].meanings.push(m);});}
+      });
+    }catch(e){}
+  });
+  return Object.values(allWords);
+}
+
+async function initializeDB() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) { try { db = JSON.parse(stored); } catch(e) { db = []; } }
+
+    const csvTexts = [];
+    for (let u = 1; u <= 8; u++) {
+      for (let l = 1; l <= 3; l++) {
+        try { const res = await fetch(`database/ilearn/U${u}%20-%20${l}.csv`); if (res.ok) csvTexts.push(await res.text()); } catch(e) {}
+      }
+    }
+    const combined = csvTexts.join('|');
+    const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(combined));
+    const currentHash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    const savedHash = localStorage.getItem(CSV_HASH_KEY) || '';
+
+    if (!db.length || currentHash !== savedHash) {
+      const freshCSV = buildWordsFromCSVTexts(csvTexts);
+      const userWords = db.filter(w => w.userAdded === true);
+      const merged = {};
+      freshCSV.forEach(w => { merged[w.root] = w; });
+      userWords.forEach(w => {
+        if (merged[w.root]) { w.entries.forEach(e=>{ if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e); }); }
+        else { merged[w.root] = w; }
+      });
+      db = Object.values(merged);
+      localStorage.setItem(CSV_HASH_KEY, currentHash);
+      saveDB();
+    }
+
+    // TSV sentences
+    const tsvTexts = [];
+    for (let i = 1; i <= 11; i++) {
+      try { const res = await fetch(`database/sentences/main/${i}.tsv`); if (res.ok) tsvTexts.push(await res.text()); } catch(e) {}
+    }
+    const tsvCombined = tsvTexts.join('|');
+    const tsvHashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(tsvCombined));
+    const tsvCurrentHash = Array.from(new Uint8Array(tsvHashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    const tsvSavedHash = localStorage.getItem(TSV_HASH_KEY) || '';
+
+    if (!tsvSavedHash || tsvCurrentHash !== tsvSavedHash) {
+      const parsed = [];
+      tsvTexts.forEach(text=>{ text.split(/\r?\n/).forEach(line=>{ const parts=line.split('\t'); if(parts.length>=3){const sentence=parts.slice(2).join('\t').trim();if(sentence)parsed.push({id:parts[0],sentence});} }); });
+      localStorage.setItem(TSV_STORAGE_KEY, JSON.stringify(parsed));
+      localStorage.setItem(TSV_HASH_KEY, tsvCurrentHash);
+      _tatoebaRaw = parsed;
+    } else {
+      try { _tatoebaRaw = JSON.parse(localStorage.getItem(TSV_STORAGE_KEY) || '[]'); } catch(e) { _tatoebaRaw = []; }
+    }
+    if (_tatoebaRaw.length) showToast(`✓ Loaded ${_tatoebaRaw.length} sentences`);
+  } catch(e) { console.error('DB init error:', e); db = []; }
+
+  db.forEach(w => { if (w.mistakeCount === undefined) w.mistakeCount = 0; });
+  const ids = db.map(w => w.id).filter(id => typeof id === 'number' && !isNaN(id));
+  nextId = (ids.length ? Math.max(...ids) : 0) + 1;
+  updateStats();
+}
+
+// ══════════════════════════════════════════
+// TABS (only home, database, stats, settings stay in main)
+// ══════════════════════════════════════════
+const LOCAL_TABS = ['home','database','stats','settings'];
+
+function showTab(name) {
+  LOCAL_TABS.forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t!==name));
+  const navBtns = document.querySelectorAll('#main-nav .nav-btn');
+  navBtns.forEach(btn => {
+    const isActive = btn.tagName === 'BUTTON' && btn.textContent.trim().toLowerCase().includes(name);
+    // Simple match: home button for home, database for database, etc.
+    btn.classList.remove('active');
+  });
+  // Find and activate the right button
+  const map = { home:'🏠', database:'🗂', stats:'📊', settings:'⚙️' };
+  navBtns.forEach(btn => {
+    if (btn.tagName === 'BUTTON' && btn.textContent.includes(map[name])) btn.classList.add('active');
+  });
+  if (name === 'database') renderDB();
+  if (name === 'stats') renderStats();
+  if (name === 'settings') updateNameUI(getUserName());
+}
+
+function setActiveNav(el) {
+  document.querySelectorAll('#main-nav .nav-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Check if a mode file exists before navigating; redirect to 404 if missing
+async function safeNav(event, el, path) {
+  event.preventDefault();
+  setActiveNav(el);
+  try {
+    const res = await fetch(path, { method: 'HEAD' });
+    if (res.ok) {
+      window.location.href = path;
+    } else {
+      window.location.href = 'wf mode/404.html';
+    }
+  } catch(e) {
+    window.location.href = 'wf mode/404.html';
+  }
+  return false;
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+function setButtonVariant(btn,variant){if(!btn)return;['btn-primary','btn-secondary','btn-ghost','btn-danger','btn-success'].forEach(v=>btn.classList.remove(v));btn.classList.add(variant);}
+
+function updateAdminUI() {
+  const loginBtn=document.getElementById('admin-login-btn');
+  const homeAddBtn=document.getElementById('home-add-btn');
+  const dbAddBtn=document.getElementById('add-word-btn');
+  const resetAllBtn=document.getElementById('reset-all-btn');
+  const deleteAllBtn=document.getElementById('delete-all-btn');
+  const exportBtn=document.getElementById('export-btn');
+  const importBtn=document.getElementById('import-btn');
+  if(isAdmin){
+    loginBtn.textContent='👑 Admin';setButtonVariant(loginBtn,'btn-primary');
+    if(homeAddBtn)homeAddBtn.style.display='inline-flex';
+    if(dbAddBtn)dbAddBtn.style.display='inline-flex';
+    if(resetAllBtn)resetAllBtn.style.display='inline-flex';
+    if(deleteAllBtn)deleteAllBtn.style.display='inline-flex';
+    if(exportBtn)exportBtn.style.display='inline-flex';
+    if(importBtn)importBtn.style.display='inline-flex';
+  }else{
+    loginBtn.textContent='🔓 Login';setButtonVariant(loginBtn,'btn-ghost');
+    if(homeAddBtn)homeAddBtn.style.display='none';
+    if(dbAddBtn)dbAddBtn.style.display='none';
+    if(resetAllBtn)resetAllBtn.style.display='none';
+    if(deleteAllBtn)deleteAllBtn.style.display='none';
+    if(exportBtn)exportBtn.style.display='none';
+    if(importBtn)importBtn.style.display='inline-flex';
+  }
+  if(!document.getElementById('tab-database').classList.contains('hidden'))renderDB();
+}
+
+function showLoginModal(){if(isAdmin){if(confirm('Bạn muốn đăng xuất khỏi chế độ Admin?')){isAdmin=false;currentRole=null;updateAdminUI();showToast('Đã đăng xuất');}return;}['login-username','login-password'].forEach(id=>document.getElementById(id).value='');document.getElementById('login-error').style.display='none';document.getElementById('login-modal').classList.remove('hidden');setTimeout(()=>document.getElementById('login-username').focus(),60);}
+function closeLoginModal(){document.getElementById('login-modal').classList.add('hidden');}
+function shakeLoginModal(){const m=document.querySelector('#login-modal .modal');m.style.animation='none';requestAnimationFrame(()=>{m.style.animation='shake .3s ease';});}
+function showLoginError(msg){const el=document.getElementById('login-error');el.textContent=msg;el.style.display='block';shakeLoginModal();}
+async function attemptLogin(){const u=document.getElementById('login-username').value.trim();const p=document.getElementById('login-password').value;document.getElementById('login-error').style.display='none';if(!u){showLoginError('⚠️ Username is required.');return;}if(!p){showLoginError('⚠️ Password is required.');return;}const uHash=await sha256(u);const pHash=await sha256(p);const acct=ACCOUNTS[uHash];if(acct&&acct.passwordHash===pHash){closeLoginModal();isAdmin=true;currentRole='admin';updateAdminUI();showToast('✅ Welcome, '+acct.displayName+'!');}else{showLoginError('❌ Incorrect username or password.');document.getElementById('login-password').value='';}}
+
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ══════════════════════════════════════════
+// DATABASE VIEW
+// ══════════════════════════════════════════
+let dbPage=1;const PER_PAGE=20;let dbSortByMistakes=false;
+
+function toggleSortByMistakes(){dbSortByMistakes=!dbSortByMistakes;const btn=document.getElementById('sort-mistakes-btn');btn.classList.toggle('sort-active',dbSortByMistakes);btn.textContent=dbSortByMistakes?'↓ Sort: Mistakes ✓':'↓ Sort: Mistakes';renderDB();}
+
+function renderDB(){
+  const q=(document.getElementById('db-search').value||'').toLowerCase();
+  const filterType=document.getElementById('db-filter-type').value;
+  let rows=[];
+  db.forEach(word=>{
+    word.entries.forEach(entry=>{
+      if(filterType&&entry.type!==filterType)return;
+      if(q&&!(word.root.toLowerCase().includes(q)||entry.word.toLowerCase().includes(q)||(entry.phonetic||'').toLowerCase().includes(q)||(entry.meaning||'').toLowerCase().includes(q)||word.meanings.some(m=>m.toLowerCase().includes(q))))return;
+      rows.push({word,entry});
+    });
+    if(word.entries.length===0&&!filterType){if(!q||word.root.toLowerCase().includes(q)||word.meanings.some(m=>m.toLowerCase().includes(q)))rows.push({word,entry:null});}
+  });
+  if(dbSortByMistakes)rows.sort((a,b)=>(b.word.mistakeCount||0)-(a.word.mistakeCount||0));
+  updateStats();
+  const total=Math.ceil(rows.length/PER_PAGE);
+  if(dbPage>total)dbPage=Math.max(1,total);
+  const page=rows.slice((dbPage-1)*PER_PAGE,dbPage*PER_PAGE);
+  const typeClass={n:'type-n',v:'type-v',adj:'type-adj',adv:'type-adv','phr.v':'type-phrv'};
+  const typeLabel={n:'n',v:'v',adj:'adj',adv:'adv','phr.v':'phr.v'};
+  const tbody=document.getElementById('word-list');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty"><div class="icon">🔍</div>No words found</div></td></tr>';}
+  else{
+    tbody.innerHTML=page.map(({word,entry})=>{
+      const errChip=word.mistakeCount?'<span style="color:var(--danger);font-size:11px;font-weight:700;">❌'+word.mistakeCount+'</span>':'';
+      const wordStr=entry?escapeHtml(entry.word):'<span style="color:var(--muted);font-style:italic;">—</span>';
+      const phonStr=entry&&entry.phonetic?escapeHtml(entry.phonetic):'';
+      const typeStr=entry?'<span class="type-badge '+(typeClass[entry.type]||'type-other')+'">'+(typeLabel[entry.type]||entry.type)+'</span>':'';
+      const meanStr=entry?escapeHtml((entry.meaning&&entry.meaning.trim())?entry.meaning:word.meanings.slice(0,2).join(', ')):escapeHtml(word.meanings.slice(0,2).join(', '));
+      return'<tr onclick="openEditModal('+word.id+')" title="Click to edit"><td class="col-root"><span class="col-root-inner">'+escapeHtml(word.root)+'</span> '+errChip+'</td><td class="col-word">'+wordStr+'</td><td class="col-phon">'+phonStr+'</td><td class="col-type">'+typeStr+'</td><td class="col-mean">'+meanStr+'</td><td style="text-align:right;padding-right:10px;"><span style="color:var(--muted);font-size:16px;">›</span></td></tr>';
+    }).join('');
+  }
+  const pg=document.getElementById('db-pagination');pg.innerHTML='';
+  for(let i=1;i<=total;i++){const b=document.createElement('button');b.className='page-btn'+(i===dbPage?' active':'');b.textContent=i;b.onclick=()=>{dbPage=i;renderDB();};pg.appendChild(b);}
+}
+
+let dbSearchTimeout;
+document.getElementById('db-search').addEventListener('input',()=>{clearTimeout(dbSearchTimeout);dbSearchTimeout=setTimeout(()=>renderDB(),300);});
+
+// ══════════════════════════════════════════
+// MODAL – Add/Edit Word
+// ══════════════════════════════════════════
+let _editWordId=null;
+
+function addEntryRow(word='',phonetic='',type='n',meaning=''){
+  const list=document.getElementById('entry-list');
+  const row=document.createElement('div');row.className='combined-row';
+  row.innerHTML='<input type="text" placeholder="e.g. abbreviation" value="'+escapeHtml(word)+'">'+'<input type="text" placeholder="/əˌbriː…/" value="'+escapeHtml(phonetic)+'">'+'<select>'+'<option value="n"'+(type==='n'?' selected':'')+'>n</option>'+'<option value="v"'+(type==='v'?' selected':'')+'>v</option>'+'<option value="adj"'+(type==='adj'?' selected':'')+'>adj</option>'+'<option value="adv"'+(type==='adv'?' selected':'')+'>adv</option>'+'<option value="phr.v"'+(type==='phr.v'?' selected':'')+'>phr.v</option>'+'</select>'+'<input type="text" class="meaning-input" placeholder="Vietnamese meaning…" value="'+escapeHtml(meaning)+'">'+'<button class="del-entry" onclick="this.closest(\'.combined-row\').remove()" title="Remove">✕</button>';
+  list.appendChild(row);
+}
+
+function openAddModal(){if(!isAdmin){showToast('⚠️ Admin login required');return;}_editWordId=null;document.getElementById('modal-title').textContent='Add Word';document.getElementById('f-root').value='';document.getElementById('entry-list').innerHTML='';addEntryRow();document.getElementById('delete-btn').style.display='none';document.getElementById('reset-mistakes-btn').style.display='none';document.getElementById('save-btn').style.display='inline-flex';document.getElementById('f-root').disabled=false;document.getElementById('modal-overlay').classList.remove('hidden');setTimeout(()=>document.getElementById('f-root').focus(),60);}
+
+function openEditModal(id){
+  const word=db.find(w=>w.id===id);if(!word)return;
+  _editWordId=id;const readonly=!isAdmin;
+  document.getElementById('modal-title').textContent=(readonly?'View: ':'Edit: ')+word.root;
+  document.getElementById('edit-root-key').value=id;
+  document.getElementById('f-root').value=word.root;
+  document.getElementById('f-root').disabled=readonly;
+  const list=document.getElementById('entry-list');list.innerHTML='';
+  const meanings=word.meanings.length?word.meanings:[''];
+  if(word.entries.length){
+    word.entries.forEach((e,i)=>{const m=(e.meaning&&e.meaning.trim())?e.meaning:(meanings[i%meanings.length]||'');addEntryRow(e.word,e.phonetic||'',e.type,m);});
+    const coveredMeanings=new Set(word.entries.map(e=>e.meaning).filter(Boolean));
+    for(let i=word.entries.length;i<meanings.length;i++){if(!coveredMeanings.has(meanings[i]))addEntryRow('','','n',meanings[i]);}
+  }else{meanings.forEach(m=>addEntryRow('','','n',m));if(!meanings.length)addEntryRow();}
+  if(readonly){list.querySelectorAll('input,select,button.del-entry').forEach(el=>{el.disabled=true;});document.getElementById('add-entry-row-btn').disabled=true;document.getElementById('delete-btn').style.display='none';document.getElementById('reset-mistakes-btn').style.display='none';document.getElementById('save-btn').style.display='none';document.querySelector('#modal-overlay .btn-secondary').textContent='Close';}
+  else{list.querySelectorAll('input,select,button.del-entry').forEach(el=>{el.disabled=false;});document.getElementById('add-entry-row-btn').disabled=false;document.getElementById('delete-btn').style.display='inline-flex';document.getElementById('reset-mistakes-btn').style.display=word.mistakeCount>0?'inline-flex':'none';document.getElementById('save-btn').style.display='inline-flex';document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';}
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.add('hidden');document.getElementById('add-entry-row-btn').disabled=false;document.getElementById('save-btn').style.display='inline-flex';document.querySelector('#modal-overlay .btn-secondary').textContent='Cancel';_editWordId=null;}
+
+function saveWord(){
+  if(!isAdmin){showToast('⚠️ No permission');return;}
+  const root=document.getElementById('f-root').value.trim().toUpperCase();
+  if(!root){showToast('Root word is required!');return;}
+  const duplicate=db.some(w=>w.root===root&&w.id!==_editWordId);
+  if(duplicate){showToast('⚠️ Root word already exists!');return;}
+  const rows=document.querySelectorAll('#entry-list .combined-row');
+  const entries=[];const meaningsSet=new Set();
+  rows.forEach(row=>{const inputs=row.querySelectorAll('input');const sel=row.querySelector('select');const wordVal=inputs[0].value.trim();const phonetic=inputs[1].value.trim();const meaning=inputs[2]?inputs[2].value.trim():'';if(wordVal)entries.push({word:wordVal,phonetic,type:sel.value,meaning});if(meaning)meaningsSet.add(meaning);});
+  const meanings=[...meaningsSet];
+  const existing=_editWordId?db.find(w=>w.id===_editWordId):null;
+  const entry={root,entries,meanings,mistakeCount:existing?(existing.mistakeCount||0):0};
+  if(_editWordId){const idx=db.findIndex(w=>w.id===_editWordId);if(idx!==-1){entry.id=_editWordId;db[idx]=entry;}}
+  else{entry.id=nextId++;db.push(entry);}
+  saveDB();closeModal();renderDB();showToast(_editWordId?'✓ Word updated!':'✓ Word added!');
+}
+
+function deleteWord(){if(!isAdmin){showToast('⚠️ No permission');return;}if(!_editWordId)return;if(!confirm('Delete this word and all its entries?'))return;db=db.filter(w=>w.id!==_editWordId);saveDB();closeModal();renderDB();showToast('Word deleted.');}
+function resetMistakeCount(){if(!isAdmin||!_editWordId)return;const word=db.find(w=>w.id===_editWordId);if(!word)return;word.mistakeCount=0;saveDB();closeModal();renderDB();showToast('🔄 Mistake count reset!');}
+function resetAllMistakes(){if(!isAdmin)return;const count=db.filter(w=>w.mistakeCount>0).length;if(!count){showToast('No mistakes to reset.');return;}if(!confirm('Reset mistake counts for all '+count+' word(s)?'))return;db.forEach(w=>w.mistakeCount=0);saveDB();renderDB();showToast('🔄 All mistake counts reset!');}
+function deleteAllWords(){if(!isAdmin){showToast('⚠️ Admin login required');return;}if(!db.length){showToast('Database is already empty.');return;}if(!confirm('Delete ALL '+db.length+' word(s)? This cannot be undone.'))return;db=[];saveDB();renderDB();showToast('🗑 All words deleted.');}
+
+// ══════════════════════════════════════════
+// CSV EXPORT / IMPORT
+// ══════════════════════════════════════════
+function csvEscape(s){s=String(s||'').replace(/"/g,'""');return(s.includes(',')||s.includes('"')||s.includes('\n'))?'"'+s+'"':s;}
+
+function exportCSV(){
+  if(!isAdmin){showToast('⚠️ Admin login required');return;}
+  const rows=['root,word,phonetic,type,vietnamese_meaning'];
+  db.forEach(word=>{
+    if(!word.entries.length&&!word.meanings.length){rows.push([word.root,'','','',''].map(csvEscape).join(','));return;}
+    const meanings=word.meanings.length?word.meanings:[''];
+    if(word.entries.length){word.entries.forEach(entry=>{const entryMeaning=(entry.meaning&&entry.meaning.trim())?entry.meaning:'';const fallbackMeanings=entryMeaning?[entryMeaning]:(word.meanings.length?word.meanings:['']);fallbackMeanings.forEach(meaning=>{rows.push([word.root,entry.word,entry.phonetic||'',entry.type,meaning].map(csvEscape).join(','));});});}
+    else{meanings.forEach(meaning=>{rows.push([word.root,'','','',meaning].map(csvEscape).join(','));});}
+  });
+  const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='wordfamily_export.csv';a.click();
+  showToast('✓ CSV exported ('+db.length+' words)');
+}
+
+async function importCSVFiles(event){
+  const files=event.target.files;if(!files.length)return;
+  let imported=0,skippedDup=0,skippedBad=0;
+  for(const file of files){
+    try{
+      const text=await file.text();
+      const lines=text.split(/\r?\n/).filter(l=>l.trim());
+      if(lines.length<2){skippedBad++;continue;}
+      const header=parseCSVLine(lines[0]).map(h=>h.toLowerCase().replace(/\s+/g,'_'));
+      const ci={root:header.findIndex(h=>h==='root'||h==='root_word'||h.includes('root')),word:header.indexOf('word'),phonetic:header.indexOf('phonetic'),type:header.indexOf('type'),meaning:header.findIndex(h=>h.includes('mean')||h.includes('viet'))};
+      if(ci.root===-1){showToast(`❌ File "${file.name}" missing "root" column.`);skippedBad++;continue;}
+      const groups={};
+      for(let i=1;i<lines.length;i++){const cols=parseCSVLine(lines[i]);const root=(ci.root!==-1?cols[ci.root]:'').trim().toUpperCase();if(!root)continue;if(!groups[root])groups[root]={entries:[],meanings:new Set()};const word=(ci.word!==-1?cols[ci.word]:'').trim();const phonetic=(ci.phonetic!==-1?cols[ci.phonetic]:'').trim();const type=(ci.type!==-1?(cols[ci.type]||'').trim().toLowerCase():'n');const meaning=(ci.meaning!==-1?cols[ci.meaning]:'').trim();if(word)groups[root].entries.push({word,phonetic,type:normalizeType(type),meaning:meaning||''});if(meaning)groups[root].meanings.add(meaning);}
+      for(const[root,data]of Object.entries(groups)){const existing=db.find(w=>w.root===root);if(existing){data.entries.forEach(e=>{if(!existing.entries.some(ex=>ex.word===e.word&&ex.type===e.type)){existing.entries.push(e);imported++;}else skippedDup++;});data.meanings.forEach(m=>{if(!existing.meanings.includes(m))existing.meanings.push(m);});}else{const entries=[...new Map(data.entries.map(e=>[e.word+'|'+e.type,e])).values()];db.push({id:nextId++,root,entries,meanings:[...data.meanings],mistakeCount:0,userAdded:true});imported++;}}
+    }catch(e){console.warn('Error parsing',file.name,e);skippedBad++;}
+  }
+  saveDB();renderDB();
+  let msg='✓ Imported '+imported+' entries from '+files.length+' file(s)';
+  if(skippedDup)msg+=' · '+skippedDup+' duplicates skipped';
+  if(skippedBad)msg+=' · '+skippedBad+' invalid file(s)';
+  showToast(msg);event.target.value='';
+}
+
+function clearAllData(){if(!confirm('This will erase ALL saved data on this device. The page will reload.\n\nContinue?'))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('wf_db_v1');showToast('✓ Data cleared — reloading…');setTimeout(()=>location.reload(),1200);}
+
+// ══════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════
+function renderStats(){
+  const el=document.getElementById('stats-content');if(!el)return;
+  const totalWords=db.length;
+  const totalEntries=db.reduce((s,w)=>s+w.entries.length,0);
+  const masteredWords=db.filter(w=>(w.mistakeCount||0)===0&&w.entries.length>0).length;
+  const weakWords=db.filter(w=>(w.mistakeCount||0)>0).length;
+  const topMistakes=[...db].filter(w=>w.mistakeCount>0).sort((a,b)=>(b.mistakeCount||0)-(a.mistakeCount||0)).slice(0,5);
+  const totalMistakes=db.reduce((s,w)=>s+(w.mistakeCount||0),0);
+  const currentLevel=getCurrentLevel(totalXP);
+  const xpProgress=Math.min(100,Math.round((totalXP%200)/200*100));
+  const statCard=(icon,label,value,color='var(--accent)')=>
+    `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;display:flex;align-items:center;gap:14px;"><div style="font-size:26px;">${icon}</div><div><div style="font-size:22px;font-weight:700;color:${color};">${value}</div><div style="font-size:12px;color:var(--muted2);margin-top:2px;">${label}</div></div></div>`;
+  const topMistakesHTML=topMistakes.length?topMistakes.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);"><span style="font-family:'DM Mono',monospace;font-weight:700;">${escapeHtml(w.root)}</span><span style="color:var(--danger);font-size:13px;font-weight:700;">❌ ${w.mistakeCount} mistake${w.mistakeCount>1?'s':''}</span></div>`).join(''):'<div style="color:var(--muted);font-size:14px;padding:10px 0;">No mistakes recorded yet — keep it up!</div>';
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">${statCard('📚','Total root words',totalWords)}${statCard('📝','Total word forms',totalEntries)}${statCard('✅','Mastered words',masteredWords,'var(--success)')}${statCard('⚠️','Words with mistakes',weakWords,'var(--danger)')}${statCard('⚡','Total XP',totalXP,'var(--accent2)')}${statCard('🏅','Current level',currentLevel,'var(--accent)')}</div>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;"><div style="font-weight:700;margin-bottom:10px;">⚡ XP Progress to Level ${currentLevel+1}</div><div style="background:var(--surface3);border-radius:999px;height:10px;overflow:hidden;margin-bottom:6px;"><div style="background:linear-gradient(90deg,var(--accent),#a78bfa);height:100%;width:${xpProgress}%;border-radius:999px;transition:width .5s;"></div></div><div style="font-size:12px;color:var(--muted2);">${totalXP%200} / 200 XP to next level</div></div>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;"><div style="font-weight:700;margin-bottom:12px;">🔴 Top 5 Most Missed Words</div>${topMistakesHTML}</div>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;"><div style="font-weight:700;margin-bottom:6px;">📊 Overall Accuracy</div><div style="font-size:13px;color:var(--muted2);">Total mistakes recorded: <b style="color:var(--text);">${totalMistakes}</b><br>Mistake-free words: <b style="color:var(--success);">${masteredWords} / ${totalWords}</b> (${totalWords?Math.round(masteredWords/totalWords*100):0}%)</div></div>`;
+}
+
+// ══════════════════════════════════════════
+// USER NAME
+// ══════════════════════════════════════════
+const NAME_KEY='wf_username';
+function getUserName(){return localStorage.getItem(NAME_KEY)||'';}
+
+const FALLBACK_SUBS=["How are you doing today? Let's smash some words.","Hope you're having a great day — vocab time!","Consistency beats intensity. One session at a time.","Your future self will thank you for practising today.","Small progress every day adds up to big results. 🔥","Ready to level up your vocabulary?","Let's see how sharp your memory is today 🧠","Another day, another word family conquered. 💡"];
+let _greetingSubs=null;
+async function loadGreetingSubs(){if(_greetingSubs)return _greetingSubs;try{const res=await fetch('database/greetings.txt');if(!res.ok)throw new Error('not found');const text=await res.text();const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);_greetingSubs=lines.length?lines:FALLBACK_SUBS;}catch(e){_greetingSubs=FALLBACK_SUBS;}return _greetingSubs;}
+
+function getGreeting(name){const h=new Date().getHours();const timePart=h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';const mains=name?[`${timePart}, ${name}! 👋`,`Hey ${name}! Ready to grind? 💪`,`Welcome back, ${name}! ✨`,`${timePart}, ${name}! Let's go 🚀`]:[`${timePart}! 👋`,'Welcome back! ✨','Ready to learn? 🚀'];return{timePart,main:mains[Math.floor(Math.random()*mains.length)]};}
+
+async function updateNameUI(name){
+  const headerGreeting=document.getElementById('header-greeting');
+  const display=document.getElementById('settings-name-display');
+  if(name){headerGreeting.textContent='Hi, '+name+'! 👋';headerGreeting.style.color='var(--accent2)';if(display)display.textContent=name;}
+  else{headerGreeting.textContent='BETA';headerGreeting.style.color='var(--accent)';if(display)display.textContent='—';}
+  const g=getGreeting(name);
+  const timeEl=document.getElementById('home-time-label');const mainEl=document.getElementById('home-greeting-main');const subEl=document.getElementById('home-greeting-sub');
+  if(timeEl)timeEl.textContent=g.timePart;if(mainEl)mainEl.textContent=g.main;
+  if(subEl){const subs=await loadGreetingSubs();subEl.textContent=subs[Math.floor(Math.random()*subs.length)];}
+}
+
+function saveName(){const val=document.getElementById('name-input').value.trim();if(!val){document.getElementById('name-input').focus();return;}localStorage.setItem(NAME_KEY,val);updateNameUI(val);document.getElementById('name-modal').classList.add('hidden');showToast('✓ Welcome, '+val+'!');}
+function openChangeName(){const current=getUserName();document.getElementById('name-modal-title').textContent='Change your name';document.getElementById('name-modal-sub').textContent='What should we call you?';document.getElementById('name-modal-btn').textContent='✓ Save';const inp=document.getElementById('name-input');inp.value=current;document.getElementById('name-modal').classList.remove('hidden');setTimeout(()=>inp.focus(),60);}
+
+function initNameModal(){
+  const name=getUserName();
+  updateNameUI(name);
+  if(!name){setTimeout(()=>{document.getElementById('name-modal-title').textContent='Welcome to WordFamily!';document.getElementById('name-modal-sub').textContent='What should we call you?';document.getElementById('name-modal-btn').textContent="Let's go! →";document.getElementById('name-input').value='';document.getElementById('name-modal').classList.remove('hidden');setTimeout(()=>document.getElementById('name-input').focus(),80);},400);}
+}
+
+// ══════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════
+document.addEventListener('keydown',(e)=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();const s=document.getElementById('db-search');if(s&&!document.getElementById('tab-database').classList.contains('hidden')){s.focus();}else{showTab('database');setTimeout(()=>document.getElementById('db-search').focus(),200);}}
+});
+document.addEventListener('keydown',(e)=>{
+  if(e.key!=='Escape')return;
+  const modalIds=['login-modal','name-modal','modal-overlay'];
+  for(const id of modalIds){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){e.preventDefault();if(id==='login-modal')closeLoginModal();else if(id==='name-modal')el.classList.add('hidden');else closeModal();return;}}
+});
+
+// ══════════════════════════════════════════
+// THEME & MUTE
+// ══════════════════════════════════════════
+(function initTheme(){const saved=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',saved);const btn=document.getElementById('theme-toggle');if(btn)btn.textContent=saved==='light'?'☀️':'🌙';})();
+document.getElementById('theme-toggle').addEventListener('click',()=>{const html=document.documentElement;const current=html.getAttribute('data-theme')||'dark';const next=current==='light'?'dark':'light';html.setAttribute('data-theme',next);localStorage.setItem('theme',next);document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';});
+
+let soundMuted=localStorage.getItem('soundMuted')==='true';
+(function initMute(){const btn=document.getElementById('mute-btn');if(btn)btn.textContent=soundMuted?'🔇':'🔊';})();
+document.getElementById('mute-btn').addEventListener('click',()=>{soundMuted=!soundMuted;localStorage.setItem('soundMuted',soundMuted);document.getElementById('mute-btn').textContent=soundMuted?'🔇':'🔊';});
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+initializeDB().then(()=>{
+  updateAdminUI();
+  initNameModal();
+  updateXPUI();
+  if(db.length) showToast('✓ Loaded '+db.length+' words from book files');
+});
+</script>
+</body>
+</html>

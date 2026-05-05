@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentences Mode – WordFamily</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080910;--surface:#0f1117;--surface2:#161820;--surface3:#1c1f2a;
+    --border:#232636;--border2:#2e3247;
+    --accent:#7b68ee;--accent-glow:rgba(123,104,238,.25);
+    --accent2:#f0b429;--accent3:#34d399;
+    --text:#ecedf5;--muted:#5c6080;--muted2:#8890b0;
+    --danger:#f06464;--success:#34d399;
+    --radius:16px;--radius-sm:10px;--glass-border:rgba(255,255,255,.07);
+  }
+  [data-theme="light"]{
+    --bg:#f5f7fb;--surface:#ffffff;--surface2:#f0f2f6;--surface3:#e8ebf2;
+    --border:#dde1ec;--border2:#c8cfe0;
+    --accent:#6655d9;--accent-glow:rgba(102,85,217,.2);--accent2:#d49c10;
+    --text:#1a1f2e;--muted:#8590b0;--muted2:#6070a0;--danger:#d94444;--success:#22b57a;
+    --glass-border:rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 600px 400px at 10% 20%,rgba(123,104,238,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 350px at 90% 80%,rgba(52,211,153,.05) 0%,transparent 70%);}
+  .page{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 20px 80px;}
+
+  .back-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--glass-border);border-radius:14px;backdrop-filter:blur(14px);}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted2);text-decoration:none;padding:6px 14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);transition:all .2s;font-family:'Manrope',sans-serif;}
+  .back-btn:hover{color:var(--text);border-color:var(--accent);}
+  .page-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-right:auto;}
+  .theme-btn{background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:10px;padding:6px 12px;cursor:pointer;font-size:15px;font-family:'Manrope',sans-serif;transition:all .2s;}
+  .theme-btn:hover{border-color:var(--accent);color:var(--text);}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;animation:fadeUp .35s cubic-bezier(.4,0,.2,1);box-shadow:0 14px 60px rgba(0,0,0,.30);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .section-title{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:6px;}
+  .section-sub{color:var(--muted2);font-size:14px;margin-bottom:24px;line-height:1.6;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s cubic-bezier(.4,0,.2,1);font-family:'Manrope',sans-serif;white-space:nowrap;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:linear-gradient(135deg,var(--accent) 0%,#9370f5 100%);color:#fff;box-shadow:0 2px 16px var(--accent-glow);}
+  .btn-primary:hover{box-shadow:0 4px 24px rgba(123,104,238,.4);filter:brightness(1.1);transform:translateY(-1px);}
+  .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+  .btn-secondary:hover{border-color:var(--accent);background:var(--surface3);transform:translateY(-1px);}
+  .btn-ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);}
+  .btn-ghost:hover{color:var(--text);border-color:var(--border2);background:var(--surface2);}
+  .btn-sm{padding:7px 14px;font-size:12px;border-radius:9px;}
+
+  .quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:10px;}
+  .progress-wrap{flex:1;margin:0 10px;}
+  .progress-bar{height:5px;background:var(--surface3);border-radius:999px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+  .progress-label{font-size:11px;color:var(--muted);margin-top:5px;text-align:right;font-weight:600;}
+
+  .timer-pill{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:13px;color:var(--text);flex-shrink:0;}
+  .timer-pill.warning{border-color:var(--accent2);color:var(--accent2);}
+  .timer-pill.danger{border-color:var(--danger);color:var(--danger);animation:pulse .6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  .question-box{background:linear-gradient(135deg,var(--surface2) 0%,var(--surface3) 100%);border:1px solid var(--border2);border-radius:var(--radius);padding:32px 24px;margin-bottom:18px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);}
+  .question-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-weight:700;}
+  .question-text{font-family:'Instrument Serif',serif;font-size:30px;line-height:1.4;}
+  .question-type-tag{display:inline-flex;align-items:center;margin-top:12px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;background:rgba(123,104,238,.15);color:var(--accent);border:1px solid rgba(123,104,238,.25);letter-spacing:.5px;}
+
+
+  .answer-input{width:100%;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:16px 20px;font-size:18px;color:var(--text);font-family:'DM Mono',monospace;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:14px;text-align:center;}
+  .answer-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+  .answer-input.correct{border-color:var(--success);background:rgba(52,211,153,.06);box-shadow:0 0 0 3px rgba(52,211,153,.1);}
+  .answer-input.wrong{border-color:var(--danger);background:rgba(240,100,100,.06);box-shadow:0 0 0 3px rgba(240,100,100,.1);}
+
+  .feedback-box{border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:16px;font-size:14px;display:none;animation:fadeUp .2s;line-height:1.6;font-weight:500;}
+  .feedback-box.correct{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);color:var(--success);}
+  .feedback-box.wrong{background:rgba(240,100,100,.08);border:1px solid rgba(240,100,100,.2);color:var(--danger);}
+  .action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+  .score-card{text-align:center;padding:40px 28px;}
+  .score-big{font-family:'Instrument Serif',serif;font-size:80px;line-height:1;margin-bottom:8px;}
+  .score-big span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .score-label{color:var(--muted2);font-size:16px;margin-bottom:32px;}
+  .score-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;}
+  .score-stat{background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px 22px;min-width:90px;}
+  .score-stat .val{font-size:24px;font-weight:700;}
+  .score-stat .key{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px;}
+
+  .form-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;color:var(--text);font-family:'Manrope',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+  .form-group{margin-bottom:16px;}
+  .form-group label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted2);margin-bottom:6px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+  .hidden{display:none !important;}
+  .color-success{color:var(--success);}
+  .color-danger{color:var(--danger);}
+  @keyframes xpPop{0%{opacity:0;transform:translateY(0) scale(.8)}30%{opacity:1;transform:translateY(-28px) scale(1.2)}80%{opacity:1;transform:translateY(-48px) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(.9)}}
+  .xp-popup{position:fixed;font-size:18px;font-weight:800;color:var(--accent2);pointer-events:none;animation:xpPop .9s cubic-bezier(.4,0,.2,1) forwards;z-index:9999;font-family:'Manrope',sans-serif;text-shadow:0 0 16px rgba(240,180,41,.5);}
+  .answer-input.shake{animation:shake .3s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+  .level-up-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-80px);opacity:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:12px 28px;border-radius:999px;font-weight:800;font-size:15px;z-index:9999;transition:transform .4s cubic-bezier(.4,0,.2,1),opacity .4s;box-shadow:0 8px 32px rgba(123,104,238,.4);white-space:nowrap;pointer-events:none;}
+  .level-up-banner.show{transform:translateX(-50%) translateY(0);opacity:1;}
+  #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px 22px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+  #toast.show{opacity:1;}
+
+  @media(max-width:680px){
+    .page{padding:8px 12px 80px;}
+    .card{padding:14px;border-radius:14px;}
+    .question-box{padding:16px 12px;}
+    .question-text{font-size:20px;}
+    .answer-input{font-size:16px !important;padding:13px 14px;}
+    .btn{padding:12px 16px;font-size:14px;min-height:44px;}
+    .btn-sm{padding:10px 14px;font-size:13px;min-height:40px;}
+    .score-big{font-size:60px;}
+    .quiz-header{flex-wrap:wrap;gap:8px;}
+    .progress-wrap{order:3;flex:0 0 100%;margin:0;}
+    .form-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<script>
+  const _theme=localStorage.getItem('theme')||'dark';
+  document.documentElement.setAttribute('data-theme',_theme);
+</script>
+
+<div class="page">
+  <div class="back-bar">
+    <a class="back-btn" href="../word_family.html">← WordFamily</a>
+    <span class="page-title">📖 Sentences Mode</span>
+    <button class="theme-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+  </div>
+
+  <!-- SETUP -->
+  <div id="ai-setup" class="card">
+    <p class="section-sub" style="margin-bottom:6px">Sentences Mode</p>
+    <h2 class="section-title">Sentence Cloze (Apply Knowledge)</h2>
+    <p class="section-sub">Use context to choose the right word form. You'll see a Vietnamese meaning and a sentence with a blank.</p>
+
+    <div style="background:rgba(123,104,238,.07);border:1px solid rgba(123,104,238,.2);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:18px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text);">📂 Tatoeba Sentence Files <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;">Optional — select TSV files from your sentences folder</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('tatoeba-files-input').click()">📁 Choose TSV Files…</button>
+        <span id="tatoeba-files-label" style="font-size:13px;color:var(--muted);">Auto-loaded from sentences/ folder</span>
+        <button class="btn btn-ghost btn-sm" id="tatoeba-clear-btn" onclick="clearTatoebaFiles()" style="display:none;">✕ Clear</button>
+      </div>
+      <input type="file" id="tatoeba-files-input" accept=".tsv,.txt" multiple class="hidden" onchange="handleTatoebaFiles(event)">
+      <div id="tatoeba-status" style="font-size:12px;color:var(--muted2);"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px;">Sentences are auto-loaded from <code style="background:var(--surface3);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;">sentences/1.tsv</code> → <code style="background:var(--surface3);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;">11.tsv</code>. Format: <code style="background:var(--surface3);padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;">id⇥lang⇥sentence</code>.</div>
+    </div>
+
+    <div class="form-row" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Question count</label>
+        <select id="ai-count" class="form-input" style="max-width:180px">
+          <option value="10" selected>10 questions</option>
+          <option value="20">20 questions</option>
+          <option value="30">30 questions</option>
+          <option value="999">All possible</option>
+        </select>
+      </div>
+
+    </div>
+    <button class="btn btn-primary" id="ai-start-btn" onclick="startAIMode()">Start Sentences Mode →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="ai-quiz" class="card hidden">
+    <div class="quiz-header">
+      <button class="btn btn-secondary btn-sm" onclick="exitAIMode()">← Exit</button>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="ai-progress" style="width:0%"></div></div>
+        <div class="progress-label" id="ai-prog-label">0 / 0</div>
+      </div>
+      <div class="timer-pill" id="ai-timer">⏱ 0:00</div>
+    </div>
+
+    <div class="question-box">
+      <div class="question-label">Vietnamese Meaning</div>
+      <div class="question-text" id="ai-meaning" style="font-size:22px;line-height:1.7;">—</div>
+      <div class="question-type-tag" id="ai-type-tag" style="display:none"></div>
+    </div>
+
+    <div class="question-box" style="padding:22px 22px;margin-bottom:14px;">
+      <div class="question-label">Sentence</div>
+      <div class="question-text" id="ai-sentence" style="font-size:20px;line-height:1.75;">—</div>
+    </div>
+
+    <div id="ai-loading" style="text-align:center;color:var(--muted);font-size:13px;padding:8px;display:none;">Preparing…</div>
+    <input type="text" class="answer-input" id="ai-input" placeholder="Type the missing word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkAI()">
+    <div class="feedback-box" id="ai-feedback" role="status" aria-live="polite"></div>
+    <div class="action-row">
+      <button class="btn btn-primary" id="ai-submit-btn" onclick="checkAI()">Check Answer</button>
+      <button class="btn btn-secondary hidden" id="ai-next-btn" onclick="nextAI()">Next →</button>
+      <button class="btn btn-secondary" id="ai-skip-btn" onclick="skipAI()">Skip</button>
+    </div>
+  </div>
+
+  <!-- SCORE -->
+  <div id="ai-score" class="card score-card hidden">
+    <div style="font-size:36px;margin-bottom:8px">🧠</div>
+    <div class="score-big"><span id="ai-pct">0</span>%</div>
+    <div class="score-label">Sentences Mode Complete!</div>
+    <div class="score-stats">
+      <div class="score-stat"><div class="val color-success" id="ai-correct">0</div><div class="key">Correct</div></div>
+      <div class="score-stat"><div class="val color-danger" id="ai-wrong-count">0</div><div class="key">Wrong</div></div>
+      <div class="score-stat"><div class="val" id="ai-total-q">0</div><div class="key">Total</div></div>
+      <div class="score-stat"><div class="val" id="ai-time-stat" style="color:var(--accent2)">—</div><div class="key">Time</div></div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="startAIMode()">Try Again</button>
+      <button class="btn btn-secondary" onclick="backToSetup()">← Setup</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div class="level-up-banner" id="level-up-banner">🎉 Level Up!</div>
+
+<script>
+const STORAGE_KEY='wf_db_v2',TSV_HASH_KEY='wf_tsv_hash',TSV_STORAGE_KEY='wf_tsv_sentences',XP_KEY='wf_xp',XPperLevel=100;
+let db=[],totalXP=parseInt(localStorage.getItem(XP_KEY)||'0'),quizActive=false;
+let _tatoebaRaw=[];
+
+function loadDB(){try{const s=localStorage.getItem(STORAGE_KEY);if(s)db=JSON.parse(s);}catch(e){db=[];}}
+function saveDB(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db));}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function normalize(str){return str.toLowerCase().trim().replace(/[^\w\s]/g,'').replace(/\s+/g,' ');}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let toastTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2800);}
+
+let timerInterval=null,timerSeconds=0,timerEl=null;
+function startTimer(elId){stopTimer();timerSeconds=0;timerEl=document.getElementById(elId);updateTimerDisplay();timerInterval=setInterval(()=>{timerSeconds++;updateTimerDisplay();},1000);}
+function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+function updateTimerDisplay(){if(!timerEl)return;const m=Math.floor(timerSeconds/60),s=timerSeconds%60;timerEl.textContent='⏱ '+m+':'+(s<10?'0':'')+s;timerEl.className='timer-pill'+(timerSeconds>=120?' warning':'')+(timerSeconds>=300?' danger':'');}
+function formatTime(sec){const m=Math.floor(sec/60),s=sec%60;return m>0?m+'m '+s+'s':s+'s';}
+
+function getCurrentLevel(xp){return Math.floor(xp/XPperLevel)+1;}
+function addXP(amount,sourceEl){const oldLevel=getCurrentLevel(totalXP);totalXP+=amount;localStorage.setItem(XP_KEY,totalXP);const newLevel=getCurrentLevel(totalXP);if(sourceEl){const rect=sourceEl.getBoundingClientRect();const pop=document.createElement('div');pop.className='xp-popup';pop.textContent='+'+amount+' XP';let left=rect.left+rect.width/2-30;left=Math.min(window.innerWidth-60,Math.max(10,left));pop.style.left=left+'px';pop.style.top=(rect.top+window.scrollY-10)+'px';document.body.appendChild(pop);setTimeout(()=>pop.remove(),950);}if(newLevel>oldLevel){const banner=document.getElementById('level-up-banner');banner.textContent='🎉 Level Up! You\'re now Level '+newLevel;banner.classList.add('show');setTimeout(()=>banner.classList.remove('show'),3500);playSound('levelup');}}
+
+let audioCtx=null;
+function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+let soundMuted=localStorage.getItem('soundMuted')==='true';
+function playSound(type){if(soundMuted)return;try{const ctx=getAudioCtx(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);if(type==='correct'){o.frequency.setValueAtTime(523,ctx.currentTime);o.frequency.setValueAtTime(659,ctx.currentTime+0.07);g.gain.setValueAtTime(0.15,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);o.start();o.stop(ctx.currentTime+0.3);}else if(type==='wrong'){o.type='sawtooth';o.frequency.setValueAtTime(200,ctx.currentTime);o.frequency.setValueAtTime(150,ctx.currentTime+0.05);g.gain.setValueAtTime(0.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.25);o.start();o.stop(ctx.currentTime+0.25);}else if(type==='levelup'){[523,659,784,1047].forEach((freq,i)=>{const oo=ctx.createOscillator(),gg=ctx.createGain();oo.connect(gg);gg.connect(ctx.destination);oo.frequency.value=freq;gg.gain.setValueAtTime(0.15,ctx.currentTime+i*0.1);gg.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.2);oo.start(ctx.currentTime+i*0.1);oo.stop(ctx.currentTime+i*0.1+0.2);});}}catch(e){}}
+function shakeInput(id){const el=document.getElementById(id);el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),320);}
+function recordMistake(quizWord){quizWord.mistakeCount=(quizWord.mistakeCount||0)+1;const dbWord=db.find(w=>w.root===quizWord.root);if(dbWord){dbWord.mistakeCount=(dbWord.mistakeCount||0)+1;saveDB();}}
+
+// ── TATOEBA TSV ──
+function handleTatoebaFiles(event){
+  const files=Array.from(event.target.files);
+  if(!files.length)return;
+  _tatoebaRaw=[];
+  const label=document.getElementById('tatoeba-files-label');
+  const status=document.getElementById('tatoeba-status');
+  const clearBtn=document.getElementById('tatoeba-clear-btn');
+  label.textContent=`Loading ${files.length} file(s)…`;
+  let loaded=0,totalLines=0;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const text=e.target.result||'';
+      text.split(/\r?\n/).forEach(line=>{
+        const parts=line.split('\t');
+        if(parts.length>=3){const sentence=parts.slice(2).join('\t').trim();if(sentence){_tatoebaRaw.push({id:parts[0],sentence});totalLines++;}}
+      });
+      loaded++;
+      if(loaded===files.length){
+        label.textContent=`${files.length} file(s) — ${totalLines.toLocaleString()} sentences loaded`;
+        clearBtn.style.display='inline-flex';
+        status.textContent='✓ Ready.';status.style.color='var(--success)';
+      }
+    };
+    reader.readAsText(file,'utf-8');
+  });
+}
+
+function clearTatoebaFiles(){
+  _tatoebaRaw=[];
+  document.getElementById('tatoeba-files-input').value='';
+  document.getElementById('tatoeba-files-label').textContent='No files — using built-in templates';
+  document.getElementById('tatoeba-status').textContent='';
+  document.getElementById('tatoeba-clear-btn').style.display='none';
+}
+
+function buildTatoebaPool(){
+  if(!_tatoebaRaw.length||!db.length)return[];
+  const wordMap=new Map();
+  db.forEach(wordObj=>{
+    wordObj.entries.forEach(entry=>{
+      const meaning=(entry.meaning||'').trim();
+      if(!entry.word||!entry.type||!meaning)return;
+      entry.word.split('/').forEach(v=>{
+        const key=v.trim().toLowerCase();
+        if(!key)return;
+        if(!wordMap.has(key))wordMap.set(key,[]);
+        wordMap.get(key).push({wordObj,entry,variant:v.trim()});
+      });
+    });
+  });
+  const pool=[],usedIds=new Set();
+  _tatoebaRaw.forEach(({id,sentence})=>{
+    if(usedIds.has(id))return;
+    const tokens=sentence.match(/[A-Za-z'-]+/g)||[];
+    for(const token of tokens){
+      const key=token.toLowerCase();
+      const matches=wordMap.get(key);
+      if(!matches)continue;
+      const match=matches[0];
+      const regex=new RegExp('\\b'+token.replace(/[-']/g,'\\$&')+'\\b','i');
+      const cloze=sentence.replace(regex,'_____');
+      if(cloze===sentence)continue;
+      const typeLabels={n:'Noun (n)',v:'Verb (v)',adj:'Adjective (adj)',adv:'Adverb (adv)','phr.v':'Phrasal Verb (phr.v)'};
+      pool.push({sentence:cloze,answer:match.variant,wordObj:match.wordObj,entry:match.entry,meaning:match.entry.meaning||match.wordObj.meanings[0]||'',hint:'Root: '+match.wordObj.root+(match.entry.phonetic?' · '+match.entry.phonetic:'')+(match.entry.type?' · '+(typeLabels[match.entry.type]||match.entry.type):'')});
+      usedIds.add(id);break;
+    }
+  });
+  return pool;
+}
+
+// Template sentences fallback
+const _templateCache=new Map();
+function _templateFilenameForType(type){const t=(type||'').toLowerCase();if(t==='n')return'../database/sentences/backup/noun.txt';if(t==='v')return'../database/sentences/backup/verb.txt';if(t==='adj')return'../database/sentences/backup/adjective.txt';if(t==='adv')return'../database/sentences/backup/adverb.txt';if(t==='phr.v')return'../database/sentences/backup/phrasal_verb.txt';return'../database/sentences/backup/noun.txt';}
+async function loadTemplateSentences(type){const filename=_templateFilenameForType(type);if(_templateCache.has(filename))return _templateCache.get(filename);try{const res=await fetch(filename,{cache:'no-cache'});if(!res.ok)throw new Error('HTTP '+res.status);const text=await res.text();const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!l.startsWith('#')&&!l.startsWith('//'));const usable=lines.filter(l=>l.includes('_____'));_templateCache.set(filename,usable.length?usable:lines);}catch(e){_templateCache.set(filename,[]);}return _templateCache.get(filename);}
+async function pickTemplateSentence(type){const arr=await loadTemplateSentences(type);if(arr&&arr.length)return arr[Math.floor(Math.random()*arr.length)];return'Use the meaning to choose the right word: "_____" .';}
+
+// ── AI MODE STATE ──
+let aiQuestions=[],aiIdx=0,aiCorrect=0,aiWrong=0,aiRevealed=false,aiJustRevealed=false;
+
+const ALL_PANELS=['ai-setup','ai-quiz','ai-score'];
+function showAIPanel(panel){ALL_PANELS.forEach(p=>document.getElementById('ai-'+p).classList.toggle('hidden',p!==panel.replace('ai-','')));}
+function backToSetup(){quizActive=false;stopTimer();document.getElementById('ai-setup').classList.remove('hidden');document.getElementById('ai-quiz').classList.add('hidden');document.getElementById('ai-score').classList.add('hidden');}
+function exitAIMode(){if(quizActive&&!confirm('Exit quiz? Progress will be lost.'))return;quizActive=false;stopTimer();backToSetup();}
+
+function _showPanel(name){['ai-setup','ai-quiz','ai-score'].forEach(p=>document.getElementById(p).classList.toggle('hidden',p!==name));}
+
+async function startAIMode(){
+  if(!db.length){showToast('⚠️ Database is empty!');return;}
+  const countEl=document.getElementById('ai-count');
+  const n=countEl?parseInt(countEl.value):10;
+  let pool=[];
+  if(_tatoebaRaw.length){
+    const status=document.getElementById('tatoeba-status');
+    if(status){status.textContent='Matching sentences to your words…';status.style.color='var(--muted2)';}
+    pool=buildTatoebaPool();
+    if(status){
+      if(pool.length){status.textContent='✓ '+pool.length+' matched sentence(s) ready.';status.style.color='var(--success)';}
+      else{status.textContent='⚠️ No sentences matched — falling back to templates.';status.style.color='var(--accent2)';}
+    }
+  }
+  if(!pool.length){
+    const typeLabels={n:'Noun (n)',v:'Verb (v)',adj:'Adjective (adj)',adv:'Adverb (adv)','phr.v':'Phrasal Verb (phr.v)'};
+    db.forEach(wordObj=>{
+      wordObj.entries.forEach(entry=>{
+        const meaning=(entry.meaning||'').trim();
+        if(entry.word&&entry.type&&meaning){
+          pool.push({sentence:null,answer:entry.word.split('/')[0].trim(),wordObj,entry,meaning,hint:'Root: '+wordObj.root+(entry.phonetic?' · '+entry.phonetic:'')+(entry.type?' · '+(typeLabels[entry.type]||entry.type):'')});
+        }
+      });
+    });
+    if(!pool.length){showToast('⚠️ No words with Vietnamese meanings found.');return;}
+  }
+  shuffle(pool);
+  aiQuestions=pool.slice(0,Math.min(n===999?pool.length:n,pool.length));
+  aiIdx=0;aiCorrect=0;aiWrong=0;aiRevealed=false;
+  quizActive=true;
+  _showPanel('ai-quiz');
+  startTimer('ai-timer');
+  await renderAI();
+}
+
+async function renderAI(){
+  if(aiIdx>=aiQuestions.length){finishAI();return;}
+  const pct=((aiIdx+1)/aiQuestions.length)*100;
+  document.getElementById('ai-progress').style.width=pct+'%';
+  document.getElementById('ai-prog-label').textContent=(aiIdx+1)+' / '+aiQuestions.length;
+  document.getElementById('ai-loading').style.display='none';
+  const inp=document.getElementById('ai-input');
+  inp.value='';inp.className='answer-input';inp.disabled=false;
+  document.getElementById('ai-feedback').style.display='none';
+  document.getElementById('ai-submit-btn').classList.remove('hidden');
+  document.getElementById('ai-next-btn').classList.add('hidden');
+  document.getElementById('ai-skip-btn').classList.remove('hidden');
+  aiRevealed=false;
+  const q=aiQuestions[aiIdx];
+  const typeLabels={n:'Noun (n)',v:'Verb (v)',adj:'Adjective (adj)',adv:'Adverb (adv)','phr.v':'Phrasal Verb (phr.v)'};
+  document.getElementById('ai-meaning').textContent=q.meaning;
+  const typeTag=document.getElementById('ai-type-tag');
+  if(typeTag&&q.entry&&q.entry.type){typeTag.textContent=typeLabels[q.entry.type]||q.entry.type;typeTag.style.display='inline-flex';}
+  else if(typeTag)typeTag.style.display='none';
+  if(q.sentence){aiCurrentSentence=q.sentence;}
+  else{aiCurrentSentence=await pickTemplateSentence(q.entry.type||'n');}
+  document.getElementById('ai-sentence').textContent=aiCurrentSentence;
+  inp.focus();
+}
+
+function checkAI(){
+  if(aiRevealed){nextAI();return;}
+  const inp=document.getElementById('ai-input');
+  const userVal=normalize(inp.value);
+  if(!userVal)return;
+  const q=aiQuestions[aiIdx];
+  const variants=q.entry.word.split('/').map(v=>normalize(v.trim())).filter(Boolean);
+  const isCorrect=variants.includes(userVal);
+  const fb=document.getElementById('ai-feedback');
+  aiRevealed=true;
+  if(isCorrect){inp.className='answer-input correct';aiCorrect++;fb.className='feedback-box correct';fb.textContent='✓ Correct! Well done.';playSound('correct');addXP(12,inp);}
+  else{inp.className='answer-input wrong';aiWrong++;recordMistake(q.wordObj);fb.className='feedback-box wrong';fb.textContent='✗ Correct: '+q.entry.word;playSound('wrong');shakeInput('ai-input');}
+  fb.style.display='block';inp.disabled=true;
+  document.getElementById('ai-submit-btn').classList.add('hidden');
+  document.getElementById('ai-next-btn').classList.remove('hidden');
+  document.getElementById('ai-skip-btn').classList.add('hidden');
+  aiJustRevealed=true;setTimeout(()=>{aiJustRevealed=false;},50);
+}
+
+function skipAI(){
+  if(aiRevealed)return;
+  const q=aiQuestions[aiIdx];
+  aiWrong++;recordMistake(q.wordObj);
+  const fb=document.getElementById('ai-feedback');
+  fb.className='feedback-box wrong';fb.textContent='Skipped. Answer: '+q.entry.word;
+  fb.style.display='block';aiRevealed=true;
+  document.getElementById('ai-input').disabled=true;
+  document.getElementById('ai-submit-btn').classList.add('hidden');
+  document.getElementById('ai-next-btn').classList.remove('hidden');
+  document.getElementById('ai-skip-btn').classList.add('hidden');
+  aiJustRevealed=true;setTimeout(()=>{aiJustRevealed=false;},50);
+}
+
+async function nextAI(){aiIdx++;await renderAI();}
+
+function finishAI(){
+  quizActive=false;stopTimer();
+  const total=aiCorrect+aiWrong;
+  const pct=total?Math.round((aiCorrect/total)*100):0;
+  document.getElementById('ai-pct').textContent=pct;
+  document.getElementById('ai-correct').textContent=aiCorrect;
+  document.getElementById('ai-wrong-count').textContent=aiWrong;
+  document.getElementById('ai-total-q').textContent=total;
+  document.getElementById('ai-time-stat').textContent=formatTime(timerSeconds);
+  _showPanel('ai-score');saveDB();
+}
+
+// Load cached TSV sentences
+function loadCachedTSV(){
+  try{_tatoebaRaw=JSON.parse(localStorage.getItem(TSV_STORAGE_KEY)||'[]');}catch(e){_tatoebaRaw=[];}
+  if(_tatoebaRaw.length){
+    const label=document.getElementById('tatoeba-files-label');
+    if(label)label.textContent='Auto-loaded — '+_tatoebaRaw.length.toLocaleString()+' sentences from sentences/ folder';
+  }
+}
+
+(function initTheme(){const saved=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',saved);const btn=document.getElementById('theme-toggle');if(btn)btn.textContent=saved==='light'?'☀️':'🌙';})();
+document.getElementById('theme-toggle').addEventListener('click',()=>{const html=document.documentElement;const current=html.getAttribute('data-theme')||'dark';const next=current==='light'?'dark':'light';html.setAttribute('data-theme',next);localStorage.setItem('theme',next);document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';});
+
+document.addEventListener('keydown',(e)=>{
+  if(e.key!=='Enter')return;
+  if(aiJustRevealed){e.preventDefault();return;}
+  const tag=document.activeElement&&document.activeElement.tagName;
+  const isEnabled=document.activeElement&&!document.activeElement.disabled;
+  if(isEnabled&&(tag==='TEXTAREA'||tag==='SELECT'||tag==='INPUT'))return;
+  const nextBtn=document.getElementById('ai-next-btn');
+  if(nextBtn&&!nextBtn.classList.contains('hidden')){e.preventDefault();nextAI();}
+});
+
+loadDB();
+loadCachedTSV();
+if(!db.length)showToast('⚠️ Database empty — open WordFamily main page first.');
+else showToast('✓ Loaded '+db.length+' words');
+</script>
+</body>
+</html>

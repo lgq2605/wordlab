@@ -215,9 +215,7 @@
     color: #fff;
     letter-spacing: -.5px;
     flex-shrink: 0;
-    /* Replace background with an img if you have one */
   }
-  /* To use a photo: add style="background-image:url('photo.jpg'); background-size:cover;" to .contrib-avatar */
 
   .contrib-info {}
   .contrib-name {
@@ -233,7 +231,6 @@
     text-transform: uppercase;
     color: var(--accent);
   }
-  /* remove contrib-note style */
 
   .contrib-links {
     display: flex; gap: 6px; flex-wrap: wrap;
@@ -284,9 +281,7 @@
     overflow: hidden;
     position: relative;
   }
-  /* To add your QR code image, replace the placeholder div with:
-     <img src="your-qr.png" style="width:80px;height:80px;border-radius:10px;object-fit:cover;">
-     OR add style="background-image:url('qr.png');background-size:cover;" to .qr-placeholder */
+
   .qr-label {
     font-size: 9px;
     font-family: 'DM Mono', monospace;
@@ -337,7 +332,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    /* Replace the placeholder text below with your actual wallet address */
   }
   .copy-btn {
     background: rgba(106,247,184,.08);
@@ -573,7 +567,7 @@
 
   <!-- Cards -->
   <div class="tools-grid">
-    <a class="tool-card" href="word family.html">
+    <a class="tool-card" href="word_family.html" onclick="return handleWordFamily(event)">
       <div class="card-glow"></div>
       <div class="card-icon">📝</div>
       <div class="card-label">Vocabulary</div>
@@ -607,7 +601,6 @@
   <div class="credit-sub">vocabhub · 2025</div>
 </footer>
 
-
 <!-- ══════════════════════════════════════
      MODAL: Contributors
 ════════════════════════════════════════ -->
@@ -619,25 +612,8 @@
 
     <div class="contrib-grid">
 
-      <!-- ── ROW 1 (Lead / Founder) ── -->
       <div class="contrib-row">
 
-        <!--
-          ════════════════════════════════════════
-          HOW TO ADD A CONTRIBUTOR
-          ════════════════════════════════════════
-          1. Copy one <div class="contrib-card">…</div> block below.
-          2. Paste it inside a <div class="contrib-row"> — put 2–3 cards per row.
-          3. Change the initials in .contrib-avatar (or swap for an <img>).
-          4. Update name, role, note, and links.
-
-          To use a photo instead of initials:
-            Replace the text inside .contrib-avatar with:
-            <img src="photo.jpg" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
-          ════════════════════════════════════════
-        -->
-
-        <!-- CONTRIBUTOR CARD — Gia Quân (you) -->
         <div class="contrib-card">
           <div class="contrib-avatar">GQ</div>
           <div class="contrib-info">
@@ -647,17 +623,17 @@
         </div>
 
         <div class="contrib-card">
-          <div class="contrib-avatar">TA</div>
-          <div class="contrib-info">
-            <div class="contrib-name">Trần Thị Thanh Ngân</div>
-            <div class="contrib-role">Tester & Reviewer</div>
-          </div>
-        </div>
-        
-        <div class="contrib-card">
           <div class="contrib-avatar">MA</div>
           <div class="contrib-info">
             <div class="contrib-name">Trần Nguyễn Minh Anh</div>
+            <div class="contrib-role">Tester</div>
+          </div>
+        </div>
+
+        <div class="contrib-card">
+          <div class="contrib-avatar">TA</div>
+          <div class="contrib-info">
+            <div class="contrib-name">Trần Thị Thanh Ngân</div>
             <div class="contrib-role">Tester</div>
           </div>
         </div>
@@ -685,45 +661,11 @@
             <div class="contrib-role">Tester</div>
           </div>
         </div>
-      </div><!-- /row 1 -->
-
-        
-
-      <!--
-        ════════════════════════════════════════
-        ADD MORE ROWS BELOW AS YOUR TEAM GROWS
-        Example of a 2-person row:
-
-        <div class="contrib-row">
-          <div class="contrib-card">
-            <div class="contrib-avatar">AB</div>
-            <div class="contrib-info">
-              <div class="contrib-name">Alice B.</div>
-              <div class="contrib-role">UI Designer</div>
-              <div class="contrib-links">
-                <a class="contrib-link" href="#" target="_blank">Dribbble</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="contrib-card">
-            <div class="contrib-avatar">CK</div>
-            <div class="contrib-info">
-              <div class="contrib-name">Charlie K.</div>
-              <div class="contrib-role">Content Lead</div>
-              <div class="contrib-links">
-                <a class="contrib-link" href="#" target="_blank">Twitter</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        ════════════════════════════════════════
-      -->
+      </div>
 
     </div><!-- /contrib-grid -->
   </div>
 </div>
-
 
 <!-- ══════════════════════════════════════
      MODAL: Buy Me a Coffee
@@ -736,17 +678,11 @@
 
     <div class="crypto-section">
 
-      <!-- Single wallet — accepts ETC, BTC, and VRSC -->
       <div class="crypto-coin">
 
-        <!--
-          QR CODE — replace this placeholder div with your actual QR image:
-          <img src="image/qr code.png" style="width:100px;height:100px;border-radius:10px;object-fit:cover;">
-        -->
-        <div class="qr-placeholder" style="width:100px;height:100px;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3" rx=".5"/><rect x="18" y="18" width="3" height="3" rx=".5"/><rect x="14" y="18" width="1" height="1"/><rect x="18" y="14" width="1" height="1"/></svg>
-          <span class="qr-label">Your QR here</span>
-        </div>
+        <img src="image/qr%20code.png"
+             style="width:100px; height:100px; border-radius:10px; object-fit:cover;"
+             alt="Donation QR code">
 
         <div class="crypto-details">
           <div class="crypto-header" style="flex-wrap:wrap; gap: 6px;">
@@ -757,10 +693,7 @@
           </div>
           <div class="crypto-network">One address — accepts all three coins</div>
           <div class="crypto-address-wrap">
-            <!--
-              Replace the text below with your actual wallet address.
-            -->
-            <span class="crypto-address" id="addr-wallet">RUeKxumoDbnVMUeYcRWenDhsg3DhXdsgC4</span>
+            <span class="crypto-address" id="addr-wallet">YOUR_WALLET_ADDRESS_HERE</span>
             <button class="copy-btn" onclick="copyAddr('addr-wallet', this)">Copy</button>
           </div>
         </div>
@@ -775,7 +708,6 @@
 
   </div>
 </div>
-
 
 <script>
   function openModal(id) {
@@ -806,6 +738,21 @@
       }, 2000);
     });
   }
+
+	function handleWordFamily(e) {
+  e.preventDefault(); // Stop the link from opening immediately
+  fetch('word_family.html', { method: 'HEAD' })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = 'word_family.html'; // File exists, go there
+      } else {
+        window.location.href = '404.html';   // Not found, show custom 404
+      }
+    })
+    .catch(() => {
+      window.location.href = 'error 404.html';     // Network error or file missing
+    });
+}
 </script>
 
 </body>
