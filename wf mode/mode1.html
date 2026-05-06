@@ -437,7 +437,7 @@
     <div class="action-row">
       <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
       <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
-      <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip</button>
+      <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip / Show Answer</button>
     </div>
   </div>
 
@@ -639,7 +639,7 @@ function updateTimerDisplay() {
   if(!timerEl) return;
   const m=Math.floor(timerSeconds/60),s=timerSeconds%60;
   timerEl.textContent='⏱ '+m+':'+(s<10?'0':'')+s;
-  timerEl.className='timer-pill'+(timerSeconds>=120?' warning':'')+(timerSeconds>=300?' danger':'');
+  timerEl.className='timer-pill';
 }
 
 function formatTime(sec) {
@@ -725,7 +725,7 @@ function recordMistake(quizWord) {
 async function loadLessonCSV(unit, lesson) {
   // Legacy path builder — still used by By Unit and Pick Lessons
   try {
-    const res=await fetch(`../database/ilearn/U${unit} - ${lesson}.csv`);
+    const res=await fetch(`../database/ilearn/U${unit}%20-%20${lesson}.csv`);
     if(!res.ok) return [];
     return parseCSVToWords(await res.text());
   }catch(e){return [];}
@@ -970,7 +970,7 @@ function renderMode1() {
   fb.style.display='none';fb.className='feedback-box';
   document.getElementById('m1-submit-btn').classList.remove('hidden');
   document.getElementById('m1-next-btn').classList.add('hidden');
-  document.getElementById('m1-skip-btn').classList.remove('hidden');
+  const skipBtn=document.getElementById('m1-skip-btn');skipBtn.classList.remove('hidden');skipBtn.textContent='Skip / Show Answer';
   m1Revealed=false;
 }
 
@@ -1024,17 +1024,17 @@ function checkMode1() {
 }
 
 function skipMode1() {
-  if(m1Revealed) return;
+  if(m1Revealed){nextMode1();return;}
   const q=m1Questions[m1Idx];
   m1Wrong++;m1Streak=0;recordMistake(q.word);
   const fb=document.getElementById('m1-feedback');
   const correctWord=q.entry?q.entry.word:q.word.root;
-  fb.className='feedback-box wrong';fb.textContent='Skipped. Correct answer: '+correctWord;
+  fb.className='feedback-box wrong';fb.textContent='Answer: '+correctWord;
   fb.style.display='block';m1Revealed=true;
   document.getElementById('m1-input').disabled=true;
   document.getElementById('m1-submit-btn').classList.add('hidden');
-  document.getElementById('m1-next-btn').classList.remove('hidden');
-  document.getElementById('m1-skip-btn').classList.add('hidden');
+  const skipBtn=document.getElementById('m1-skip-btn');
+  skipBtn.textContent='Next →';
   m1JustRevealed=true;setTimeout(()=>{m1JustRevealed=false;},50);
 }
 
@@ -1207,7 +1207,8 @@ initLessonTabs();
 
 // Check if redirected from Guide builder
 (function checkBuilderSource(){
-  if(window.location.search.includes('source=builder')){
+  const src=new URLSearchParams(window.location.search).get('source');
+  if(src==='builder'){
     const stored=localStorage.getItem('wf_builder_words');
     if(stored){
       try{
@@ -1218,6 +1219,10 @@ initLessonTabs();
         showToast('✓ Builder words loaded — press Start Quiz!');
       }catch(e){}
     }
+  } else if(src==='weak'){
+    setTimeout(()=>startWeakWordsMode(),200);
+  } else if(src==='exam'){
+    setTimeout(()=>startExamMode(),200);
   } else {
     if(!db.length) showToast('⚠️ Database empty — open WordFamily main page first to load words.');
     else showToast('✓ Loaded '+db.length+' words');

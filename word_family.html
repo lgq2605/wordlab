@@ -236,7 +236,7 @@
     #main-nav { flex-direction: row; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 4px; padding: 2px 0; }
     #main-nav::-webkit-scrollbar { display: none; }
     #main-nav .nav-btn { width: auto; flex-shrink: 0; white-space: nowrap; padding: 8px 14px; border-radius: 999px; font-size: 13px; gap: 5px; }
-    .content { width: 100%; min-width: 0; overflow: hidden; }
+    .content { width: 100%; min-width: 0; overflow: visible; }
     .card { padding: 14px; border-radius: 14px; }
     .section-title { font-size: 19px; }
     .search-input { font-size: 16px !important; }
@@ -295,7 +295,6 @@
         <button class="nav-btn active" onclick="showTab('home')">🏠 Home</button>
         <a class="nav-btn" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">📝 Mode 1</a>
         <a class="nav-btn" href="wf mode/mode2.html" onclick="return safeNav(event,this,'wf mode/mode2.html')">🧩 Mode 2</a>
-        <a class="nav-btn" href="wf mode/sentences.html" onclick="return safeNav(event,this,'wf mode/sentences.html')">📖 Sentences Mode</a>
         <button class="nav-btn" onclick="showTab('database')">🗂 Database</button>
         <button class="nav-btn" onclick="showTab('stats')">📊 Stats</button>
         <button class="nav-btn" onclick="showTab('settings')">⚙️ Settings</button>
@@ -324,20 +323,15 @@
             <p>Given a root word, fill in all its forms: noun, verb, adjective, adverb.</p>
             <span class="badge badge-gold">Mode 2</span>
           </a>
-          <a class="mode-card" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">
+          <a class="mode-card" href="wf mode/mode1.html?source=weak" onclick="return safeNav(event,this,'wf mode/mode1.html?source=weak')">
             <span class="icon">🔥</span><h3>Weak Words</h3>
             <p>Practice only the words you've gotten wrong before. Crush your weaknesses.</p>
             <span class="badge badge-green">Focus</span>
           </a>
-          <a class="mode-card" href="wf mode/mode1.html" onclick="return safeNav(event,this,'wf mode/mode1.html')">
+          <a class="mode-card" href="wf mode/mode1.html?source=exam" onclick="return safeNav(event,this,'wf mode/mode1.html?source=exam')">
             <span class="icon">⏱</span><h3>Exam Mode</h3>
             <p>No hints, strict timer, score revealed only at the end. Real exam pressure.</p>
             <span class="badge badge-gold">Hard</span>
-          </a>
-          <a class="mode-card" href="wf mode/sentences.html" onclick="return safeNav(event,this,'wf mode/sentences.html')">
-            <span class="icon">📖</span><h3>Sentences Mode</h3>
-            <p>Fill in the blank from a real sentence. Trains contextual word usage.</p>
-            <span class="badge badge-purple">Sentences</span>
           </a>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -358,12 +352,13 @@
               <button class="btn btn-secondary btn-sm" onclick="exportCSV()" id="export-btn">⬇ Export CSV</button>
               <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFiles').click()" id="import-btn">⬆ Import CSV</button>
               <input type="file" id="importFiles" accept=".csv" multiple class="hidden" onchange="importCSVFiles(event)">
+              <button class="btn btn-secondary btn-sm" onclick="importAllSourceFiles()" id="import-all-btn" title="Import all CSV files from mode1 (ilearn U1–U8 + TNTT)">⬇ Import All</button>
               <button id="add-word-btn" class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none">＋ Add Word</button>
             </div>
           </div>
           <div class="db-toolbar">
             <input type="text" class="search-input" id="db-search" placeholder="🔍 Search word, meaning, phonetic…">
-            <select class="form-input btn-sm" id="db-filter-type" onchange="renderDB()" style="max-width:130px;padding:9px 12px;">
+            <select class="form-input btn-sm" id="db-filter-type" onchange="dbPage=1;renderDB()" style="max-width:130px;padding:9px 12px;">
               <option value="">All types</option>
               <option value="n">Noun (n)</option>
               <option value="v">Verb (v)</option>
@@ -503,8 +498,6 @@
 // ══════════════════════════════════════════
 const STORAGE_KEY = 'wf_db_v2';
 const CSV_HASH_KEY = 'wf_csv_hash';
-const TSV_HASH_KEY = 'wf_tsv_hash';
-const TSV_STORAGE_KEY = 'wf_tsv_sentences';
 const XP_KEY = 'wf_xp';
 const XPperLevel = 100;
 
@@ -514,7 +507,6 @@ const ACCOUNTS = {
 
 let isAdmin = false, currentRole = null;
 let db = [], nextId = 1;
-let _tatoebaRaw = [];
 let totalXP = parseInt(localStorage.getItem(XP_KEY) || '0');
 
 async function sha256(str) {
@@ -590,6 +582,8 @@ async function initializeDB() {
         try { const res = await fetch(`database/ilearn/U${u}%20-%20${l}.csv`); if (res.ok) csvTexts.push(await res.text()); } catch(e) {}
       }
     }
+    // Also load TNTT_PV.csv (phrasal verbs)
+    try { const res = await fetch('database/TNTT_PV.csv'); if (res.ok) csvTexts.push(await res.text()); } catch(e) {}
     const combined = csvTexts.join('|');
     const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(combined));
     const currentHash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -609,26 +603,6 @@ async function initializeDB() {
       saveDB();
     }
 
-    // TSV sentences
-    const tsvTexts = [];
-    for (let i = 1; i <= 11; i++) {
-      try { const res = await fetch(`database/sentences/main/${i}.tsv`); if (res.ok) tsvTexts.push(await res.text()); } catch(e) {}
-    }
-    const tsvCombined = tsvTexts.join('|');
-    const tsvHashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(tsvCombined));
-    const tsvCurrentHash = Array.from(new Uint8Array(tsvHashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-    const tsvSavedHash = localStorage.getItem(TSV_HASH_KEY) || '';
-
-    if (!tsvSavedHash || tsvCurrentHash !== tsvSavedHash) {
-      const parsed = [];
-      tsvTexts.forEach(text=>{ text.split(/\r?\n/).forEach(line=>{ const parts=line.split('\t'); if(parts.length>=3){const sentence=parts.slice(2).join('\t').trim();if(sentence)parsed.push({id:parts[0],sentence});} }); });
-      localStorage.setItem(TSV_STORAGE_KEY, JSON.stringify(parsed));
-      localStorage.setItem(TSV_HASH_KEY, tsvCurrentHash);
-      _tatoebaRaw = parsed;
-    } else {
-      try { _tatoebaRaw = JSON.parse(localStorage.getItem(TSV_STORAGE_KEY) || '[]'); } catch(e) { _tatoebaRaw = []; }
-    }
-    if (_tatoebaRaw.length) showToast(`✓ Loaded ${_tatoebaRaw.length} sentences`);
   } catch(e) { console.error('DB init error:', e); db = []; }
 
   db.forEach(w => { if (w.mistakeCount === undefined) w.mistakeCount = 0; });
@@ -669,15 +643,17 @@ function setActiveNav(el) {
 async function safeNav(event, el, path) {
   event.preventDefault();
   setActiveNav(el);
+  // Strip query string for the existence check — the file is what matters
+  const filePath = path.split('?')[0];
   try {
-    const res = await fetch(path, { method: 'HEAD' });
+    const res = await fetch(filePath, { method: 'HEAD' });
     if (res.ok) {
       window.location.href = path;
     } else {
-      window.location.href = 'wf mode/404.html';
+      window.location.href = '404.html';
     }
   } catch(e) {
-    window.location.href = 'wf mode/404.html';
+    window.location.href = '404.html';
   }
   return false;
 }
@@ -766,7 +742,7 @@ function renderDB(){
 }
 
 let dbSearchTimeout;
-document.getElementById('db-search').addEventListener('input',()=>{clearTimeout(dbSearchTimeout);dbSearchTimeout=setTimeout(()=>renderDB(),300);});
+document.getElementById('db-search').addEventListener('input',()=>{clearTimeout(dbSearchTimeout);dbSearchTimeout=setTimeout(()=>{dbPage=1;renderDB();},300);});
 
 // ══════════════════════════════════════════
 // MODAL – Add/Edit Word
@@ -867,7 +843,74 @@ async function importCSVFiles(event){
   showToast(msg);event.target.value='';
 }
 
-function clearAllData(){if(!confirm('This will erase ALL saved data on this device. The page will reload.\n\nContinue?'))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('wf_db_v1');showToast('✓ Data cleared — reloading…');setTimeout(()=>location.reload(),1200);}
+// ══════════════════════════════════════════
+// IMPORT ALL — fetches every mode1 CSV source and merges into db
+// ══════════════════════════════════════════
+async function importAllSourceFiles() {
+  const btn = document.getElementById('import-all-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Importing…'; }
+  // All paths relative to word_family.html (same folder)
+  const allFiles = [
+    ...Array.from({length:8},(_,u)=>Array.from({length:3},(_,l)=>`database/ilearn/U${u+1}%20-%20${l+1}.csv`)).flat(),
+    'database/TNTT_PV.csv'
+  ];
+  let imported = 0, skipped = 0, failed = 0;
+  for (const path of allFiles) {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) { failed++; continue; }
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      if (lines.length < 2) { failed++; continue; }
+      const header = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/\s+/g,'_'));
+      const ci = {
+        root: header.findIndex(h => h==='root'||h==='root_word'||h.includes('root')),
+        word: header.indexOf('word'),
+        phonetic: header.indexOf('phonetic'),
+        type: header.indexOf('type'),
+        meaning: header.findIndex(h => h.includes('mean')||h.includes('viet'))
+      };
+      if (ci.root === -1) { failed++; continue; }
+      const groups = {};
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        const root = (ci.root !== -1 ? cols[ci.root] : '').trim().toUpperCase();
+        if (!root) continue;
+        if (!groups[root]) groups[root] = { entries: [], meanings: new Set() };
+        const word     = (ci.word     !== -1 ? cols[ci.word]     : '').trim();
+        const phonetic = (ci.phonetic !== -1 ? cols[ci.phonetic] : '').trim();
+        const type     = (ci.type     !== -1 ? (cols[ci.type]||'').trim().toLowerCase() : 'n');
+        const meaning  = (ci.meaning  !== -1 ? cols[ci.meaning]  : '').trim();
+        if (word) groups[root].entries.push({ word, phonetic, type: normalizeType(type), meaning: meaning || '' });
+        if (meaning) groups[root].meanings.add(meaning);
+      }
+      for (const [root, data] of Object.entries(groups)) {
+        const existing = db.find(w => w.root === root);
+        if (existing) {
+          data.entries.forEach(e => {
+            if (!existing.entries.some(ex => ex.word === e.word && ex.type === e.type)) {
+              existing.entries.push(e); imported++;
+            } else skipped++;
+          });
+          data.meanings.forEach(m => { if (!existing.meanings.includes(m)) existing.meanings.push(m); });
+        } else {
+          db.push({ id: nextId++, root, entries: [...data.entries], meanings: [...data.meanings], mistakeCount: 0 });
+          imported += data.entries.length;
+        }
+      }
+    } catch(e) { failed++; }
+  }
+  // Force hash reset so auto-reload picks up any new CSVs next time
+  localStorage.removeItem(CSV_HASH_KEY);
+  saveDB(); dbPage = 1; renderDB();
+  if (btn) { btn.disabled = false; btn.textContent = '⬇ Import All'; }
+  let msg = '✓ Import All: ' + imported + ' new entries';
+  if (skipped) msg += ' · ' + skipped + ' duplicates skipped';
+  if (failed)  msg += ' · ' + failed + ' file(s) not found';
+  showToast(msg);
+}
+
+function clearAllData(){if(!confirm('This will erase ALL saved data on this device. The page will reload.\n\nContinue?'))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('wf_db_v1');localStorage.removeItem(CSV_HASH_KEY);localStorage.removeItem(XP_KEY);localStorage.removeItem(NAME_KEY);showToast('✓ Data cleared — reloading…');setTimeout(()=>location.reload(),1200);}
 
 // ══════════════════════════════════════════
 // STATS
@@ -959,6 +1002,8 @@ initializeDB().then(()=>{
   initNameModal();
   updateXPUI();
   if(db.length) showToast('✓ Loaded '+db.length+' words from book files');
+  // Re-render database tab in case it was opened before data finished loading
+  if(!document.getElementById('tab-database').classList.contains('hidden')) renderDB();
 });
 </script>
 </body>
