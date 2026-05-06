@@ -248,22 +248,113 @@
     </div>
 
     <div id="m1-src-lesson">
-      <div class="form-row" style="margin-bottom:14px;">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Unit</label>
-          <select id="m1-unit" class="form-input" onchange="updateM1LessonSelect()">
-            <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-            <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-            <option value="7">Unit 7</option><option value="8">Unit 8</option>
-          </select>
-        </div>
+      <!-- ================================================================
+           LESSON TABS — HOW TO EDIT THIS SECTION:
+
+           Each "tab" below is one group (e.g. a book or course).
+           Each tab has:
+             • a label shown on the tab button (e.g. "iLearn")
+             • a list of units, where each unit has a name and a list of lessons
+
+           TO ADD A NEW TAB:  copy one full block from ← TAB START to ← TAB END
+                              and paste it after the last one, then change the names.
+
+           TO ADD A NEW UNIT inside a tab: copy one <optgroup> block and paste inside that tab's <select>.
+
+           TO ADD A NEW LESSON inside a unit: copy one <option> line and add it inside the <optgroup>.
+
+           The "file" value must match the actual CSV filename in your database folder.
+           Format:  data-file="../database/FOLDER/FILENAME.csv"
+           ================================================================ -->
+
+      <!-- Tab buttons (one per group) -->
+      <div id="lesson-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;"></div>
+
+      <!-- ← TAB START ─── iLearn ─────────────────────────────── -->
+      <div class="lesson-tab-panel" data-tab="iLearn" style="display:none">
         <div class="form-group" style="margin-bottom:0">
           <label>Lesson</label>
-          <select id="m1-lesson" class="form-input">
-            <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
+          <select id="m1-lesson-select" class="form-input">
+
+            <optgroup label="── Unit 1 ──">
+              <option data-file="../database/ilearn/U1 - 1.csv">Unit 1 · Lesson 1</option>
+              <option data-file="../database/ilearn/U1 - 2.csv">Unit 1 · Lesson 2</option>
+              <option data-file="../database/ilearn/U1 - 3.csv">Unit 1 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 2 ──">
+              <option data-file="../database/ilearn/U2 - 1.csv">Unit 2 · Lesson 1</option>
+              <option data-file="../database/ilearn/U2 - 2.csv">Unit 2 · Lesson 2</option>
+              <option data-file="../database/ilearn/U2 - 3.csv">Unit 2 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 3 ──">
+              <option data-file="../database/ilearn/U3 - 1.csv">Unit 3 · Lesson 1</option>
+              <option data-file="../database/ilearn/U3 - 2.csv">Unit 3 · Lesson 2</option>
+              <option data-file="../database/ilearn/U3 - 3.csv">Unit 3 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 4 ──">
+              <option data-file="../database/ilearn/U4 - 1.csv">Unit 4 · Lesson 1</option>
+              <option data-file="../database/ilearn/U4 - 2.csv">Unit 4 · Lesson 2</option>
+              <option data-file="../database/ilearn/U4 - 3.csv">Unit 4 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 5 ──">
+              <option data-file="../database/ilearn/U5 - 1.csv">Unit 5 · Lesson 1</option>
+              <option data-file="../database/ilearn/U5 - 2.csv">Unit 5 · Lesson 2</option>
+              <option data-file="../database/ilearn/U5 - 3.csv">Unit 5 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 6 ──">
+              <option data-file="../database/ilearn/U6 - 1.csv">Unit 6 · Lesson 1</option>
+              <option data-file="../database/ilearn/U6 - 2.csv">Unit 6 · Lesson 2</option>
+              <option data-file="../database/ilearn/U6 - 3.csv">Unit 6 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 7 ──">
+              <option data-file="../database/ilearn/U7 - 1.csv">Unit 7 · Lesson 1</option>
+              <option data-file="../database/ilearn/U7 - 2.csv">Unit 7 · Lesson 2</option>
+              <option data-file="../database/ilearn/U7 - 3.csv">Unit 7 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── Unit 8 ──">
+              <option data-file="../database/ilearn/U8 - 1.csv">Unit 8 · Lesson 1</option>
+              <option data-file="../database/ilearn/U8 - 2.csv">Unit 8 · Lesson 2</option>
+              <option data-file="../database/ilearn/U8 - 3.csv">Unit 8 · Lesson 3</option>
+            </optgroup>
+
+            <optgroup label="── TNTT ──">
+              <option data-file="../database/TNTT_PV.csv">TNTT Pharsal verbs</option>
+            </optgroup>
+
           </select>
         </div>
       </div>
+      <!-- ← TAB END ─── iLearn ────────────────────────────────── -->
+
+      <!-- ← TAB START ─── Example: add your next book here ───── -->
+      <!-- To activate: remove the two comment lines around this block
+      <div class="lesson-tab-panel" data-tab="My Book 2" style="display:none">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Lesson</label>
+          <select id="m1-lesson-select" class="form-input">
+
+            <optgroup label="── Chapter 1 ──">
+              <option data-file="../database/mybook2/Ch1-L1.csv">Chapter 1 · Lesson 1</option>
+              <option data-file="../database/mybook2/Ch1-L2.csv">Chapter 1 · Lesson 2</option>
+            </optgroup>
+
+            <optgroup label="── Chapter 2 ──">
+              <option data-file="../database/mybook2/Ch2-L1.csv">Chapter 2 · Lesson 1</option>
+            </optgroup>
+
+          </select>
+        </div>
+      </div>
+      -->
+      <!-- ← TAB END ─── Example ───────────────────────────────── -->
+
     </div>
 
     <div id="m1-src-unit" style="display:none">
@@ -632,11 +723,27 @@ function recordMistake(quizWord) {
 // CSV LOADERS
 // ══════════════════════════════════════════
 async function loadLessonCSV(unit, lesson) {
+  // Legacy path builder — still used by By Unit and Pick Lessons
   try {
-    const res=await fetch(`../database/ilearn/U${unit}%20-%20${lesson}.csv`);
+    const res=await fetch(`../database/ilearn/U${unit} - ${lesson}.csv`);
     if(!res.ok) return [];
     return parseCSVToWords(await res.text());
   }catch(e){return [];}
+}
+
+async function loadLessonFromSelect() {
+  // Used by By Lesson tab — reads data-file from the selected <option>
+  const selects = document.querySelectorAll('#m1-src-lesson .lesson-tab-panel:not([style*="none"]) select');
+  const sel = selects[0];
+  if(!sel) return [];
+  const opt = sel.options[sel.selectedIndex];
+  const filePath = opt ? opt.getAttribute('data-file') : null;
+  if(!filePath) return [];
+  try {
+    const res = await fetch(filePath);
+    if(!res.ok) return [];
+    return parseCSVToWords(await res.text());
+  } catch(e) { return []; }
 }
 
 async function loadUnitCSV(unit) {
@@ -706,7 +813,30 @@ function switchM1Source(src) {
   });
 }
 
-function updateM1LessonSelect(){}
+function updateM1LessonSelect(){} // kept for compatibility
+
+// ── Build lesson tab buttons from the HTML panels ──
+function initLessonTabs() {
+  const panels = document.querySelectorAll('.lesson-tab-panel');
+  const btnWrap = document.getElementById('lesson-tab-btns');
+  if(!btnWrap || !panels.length) return;
+  panels.forEach((panel, i) => {
+    const tabName = panel.getAttribute('data-tab');
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn' + (i===0?' active':'');
+    btn.textContent = tabName;
+    btn.onclick = () => switchLessonTab(tabName);
+    btnWrap.appendChild(btn);
+    panel.style.display = i===0 ? '' : 'none';
+  });
+}
+
+function switchLessonTab(tabName) {
+  const panels = document.querySelectorAll('.lesson-tab-panel');
+  const btns   = document.querySelectorAll('#lesson-tab-btns .nav-btn');
+  panels.forEach(p => p.style.display = p.getAttribute('data-tab')===tabName ? '' : 'none');
+  btns.forEach(b => b.classList.toggle('active', b.textContent===tabName));
+}
 
 // ══════════════════════════════════════════
 // PANEL NAVIGATION (within this page)
@@ -745,10 +875,8 @@ async function beginMode1() {
   try{
     let words=[];
     if(m1Source==='lesson'){
-      const unit=document.getElementById('m1-unit').value;
-      const lesson=document.getElementById('m1-lesson').value;
-      words=await loadLessonCSV(unit,lesson);
-      if(!words.length){showToast('⚠️ No words found for that lesson.');return;}
+      words=await loadLessonFromSelect();
+      if(!words.length){showToast('⚠️ No words found for that lesson. Check the CSV file path.');return;}
     }else if(m1Source==='unit'){
       const unit=document.getElementById('m1-unit-only').value;
       words=await loadUnitCSV(unit);
@@ -1075,6 +1203,7 @@ document.getElementById('theme-toggle').addEventListener('click',()=>{
 // INIT
 // ══════════════════════════════════════════
 loadDB();
+initLessonTabs();
 
 // Check if redirected from Guide builder
 (function checkBuilderSource(){
