@@ -471,14 +471,17 @@
       <div class="question-label">Vietnamese Meaning</div>
       <div class="question-text" id="m1-meaning">—</div>
       <div id="m1-type-tag" class="question-type-tag" style="display:none"></div>
-
+      <div style="margin-top:10px;text-align:center">
+        <button id="m1-hint-btn" class="btn btn-ghost btn-sm" onclick="showM1Hint()" style="border-radius:999px;font-size:12px;padding:5px 14px;">💡 Hints</button>
+        <div id="m1-hint-text" style="display:none;margin-top:8px;font-size:13px;color:var(--muted2);font-style:italic;"></div>
+      </div>
     </div>
     <input type="text" class="answer-input" id="m1-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkMode1()">
     <div class="feedback-box" id="m1-feedback" role="status" aria-live="polite"></div>
     <div class="action-row">
-      <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Check Answer</button>
+      <button class="btn btn-primary" id="m1-submit-btn" onclick="checkMode1()">Answer</button>
       <button class="btn btn-secondary hidden" id="m1-next-btn" onclick="nextMode1()">Next →</button>
-      <button class="btn btn-secondary" id="m1-skip-btn" onclick="skipMode1()">Skip / Show Answer</button>
+      <button class="btn btn-secondary" id="m1-postpone-btn" onclick="postponeMode1()">Postpone</button>
     </div>
   </div>
 
@@ -519,8 +522,8 @@
     </div>
     <input type="text" class="answer-input" id="exam-input" placeholder="Type the English word…" autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkExam()">
     <div class="action-row">
-      <button class="btn btn-primary" id="exam-submit-btn" onclick="checkExam()">Next →</button>
-      <button class="btn btn-secondary" id="exam-skip-btn" onclick="skipExam()">Skip</button>
+      <button class="btn btn-primary" id="exam-submit-btn" onclick="checkExam()">Answer</button>
+      <button class="btn btn-secondary" id="exam-postpone-btn" onclick="postponeExam()">Postpone</button>
     </div>
   </div>
 
@@ -1084,7 +1087,12 @@ function renderMode1() {
   fb.style.display='none';fb.className='feedback-box';
   document.getElementById('m1-submit-btn').classList.remove('hidden');
   document.getElementById('m1-next-btn').classList.add('hidden');
-  const skipBtn=document.getElementById('m1-skip-btn');skipBtn.classList.remove('hidden');skipBtn.textContent='Skip / Show Answer';
+  document.getElementById('m1-postpone-btn').classList.remove('hidden');
+  // Reset hint
+  const hintBtn=document.getElementById('m1-hint-btn');
+  const hintText=document.getElementById('m1-hint-text');
+  if(hintBtn) hintBtn.style.display='';
+  if(hintText){hintText.style.display='none';hintText.textContent='';}
   m1Revealed=false;
 }
 
@@ -1093,7 +1101,21 @@ function checkMode1() {
   const q=m1Questions[m1Idx];
   const input=document.getElementById('m1-input');
   const userVal=normalize(input.value);
-  if(!userVal) return;
+  // blank answer counts as wrong (show answer)
+  if(!userVal){
+    m1Wrong++;m1Streak=0;recordMistake(q.word);
+    const fb=document.getElementById('m1-feedback');
+    const correctWord=q.entry?(q.entry.word+(q.entry.phonetic?' '+q.entry.phonetic:'')):q.word.root;
+    fb.className='feedback-box wrong';fb.textContent='✗ Correct answer: '+correctWord;
+    fb.style.display='block';
+    input.disabled=true;input.className='answer-input wrong';
+    document.getElementById('m1-submit-btn').classList.add('hidden');
+    document.getElementById('m1-next-btn').classList.remove('hidden');
+    document.getElementById('m1-postpone-btn').classList.add('hidden');
+    m1Revealed=true;playSound('wrong');shakeInput('m1-input');
+    m1JustRevealed=true;setTimeout(()=>{m1JustRevealed=false;},50);
+    return;
+  }
   let allAnswers=[];
   if(q.entry){
     q.entry.word.split('/').forEach(v=>{const n=normalize(v.trim());if(n)allAnswers.push(n);});
@@ -1133,23 +1155,51 @@ function checkMode1() {
   input.disabled=true;
   document.getElementById('m1-submit-btn').classList.add('hidden');
   document.getElementById('m1-next-btn').classList.remove('hidden');
-  document.getElementById('m1-skip-btn').classList.add('hidden');
+  document.getElementById('m1-postpone-btn').classList.add('hidden');
+  document.getElementById('m1-hint-btn').style.display='none';
   m1JustRevealed=true;setTimeout(()=>{m1JustRevealed=false;},50);
 }
 
-function skipMode1() {
-  if(m1Revealed){nextMode1();return;}
+function postponeMode1() {
+  if(m1Revealed) return;
+  // Move current question to end of queue
+  const q=m1Questions.splice(m1Idx,1)[0];
+  m1Questions.push(q);
+  // Don't increment idx, just re-render (next question is now at same idx)
+  renderMode1();
+  showToast('⏭ Moved to end of queue');
+}
+
+function showM1Hint() {
   const q=m1Questions[m1Idx];
-  m1Wrong++;m1Streak=0;recordMistake(q.word);
-  const fb=document.getElementById('m1-feedback');
-  const correctWord=q.entry?q.entry.word:q.word.root;
-  fb.className='feedback-box wrong';fb.textContent='Answer: '+correctWord;
-  fb.style.display='block';m1Revealed=true;
-  document.getElementById('m1-input').disabled=true;
-  document.getElementById('m1-submit-btn').classList.add('hidden');
-  const skipBtn=document.getElementById('m1-skip-btn');
-  skipBtn.textContent='Next →';
-  m1JustRevealed=true;setTimeout(()=>{m1JustRevealed=false;},50);
+  if(!q) return;
+  // Find related words in db (same word family group = same root word object)
+  const hintText=document.getElementById('m1-hint-text');
+  const hintBtn=document.getElementById('m1-hint-btn');
+  // q.word is the db word object; q.meaning is the current meaning shown
+  // Show other meanings from same word (siblings in same root group)
+  // but exclude the current meaning and exclude types phr.v and np
+  const excluded=['phr.v','np'];
+  let hints=[];
+  if(q.word && q.word.entries){
+    q.word.entries.forEach(entry=>{
+      if(excluded.includes(entry.type)) return;
+      // exclude the exact answer word
+      if(q.entry && entry.word===q.entry.word && entry.type===q.entry.type) return;
+      if(entry.word && entry.word.trim()) hints.push(entry.word.trim());
+    });
+  }
+  // Remove duplicates
+  hints=[...new Set(hints)];
+  if(!hints.length){
+    hintText.textContent='No hints available.';
+  } else {
+    // Pick 1 random hint
+    shuffle(hints);
+    hintText.textContent='Related: '+hints[0];
+  }
+  hintText.style.display='block';
+  hintBtn.style.display='none';
 }
 
 function nextMode1(){m1Idx++;renderMode1();}
@@ -1242,7 +1292,13 @@ function checkExam() {
   const q=examQuestions[examIdx];
   const input=document.getElementById('exam-input');
   const userVal=normalize(input.value);
-  if(!userVal&&examIdx<examQuestions.length-1){skipExam();return;}
+  if(!userVal){
+    // blank = wrong, move on
+    examWrong++;playSound('wrong');shakeInput('exam-input');recordMistake(q.word);
+    examReview.push({meaning:q.meaning,correct:false,userAnswer:'',realAnswer:q.entry.word});
+    examIdx++;setTimeout(renderExam,100);
+    return;
+  }
   const variants=q.entry.word.split('/').map(v=>normalize(v.trim())).filter(Boolean);
   const isCorrect=variants.includes(userVal);
   if(isCorrect){examCorrect++;playSound('correct');}
@@ -1251,11 +1307,11 @@ function checkExam() {
   examIdx++;setTimeout(renderExam,100);
 }
 
-function skipExam() {
-  const q=examQuestions[examIdx];
-  examWrong++;recordMistake(q.word);
-  examReview.push({meaning:q.meaning,correct:false,userAnswer:'(skipped)',realAnswer:q.entry.word});
-  examIdx++;renderExam();
+function postponeExam() {
+  const q=examQuestions.splice(examIdx,1)[0];
+  examQuestions.push(q);
+  renderExam();
+  showToast('⏭ Moved to end of queue');
 }
 
 function finishExam() {

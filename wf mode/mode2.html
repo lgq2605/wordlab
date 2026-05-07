@@ -218,8 +218,9 @@
     <div class="family-grid" id="m2-slots"></div>
     <div class="feedback-box" id="m2-feedback" role="status" aria-live="polite"></div>
     <div class="action-row" style="margin-top:16px">
-      <button class="btn btn-primary" id="m2-submit-btn" onclick="checkMode2()">Check Answers</button>
+      <button class="btn btn-primary" id="m2-submit-btn" onclick="checkMode2()">Answer</button>
       <button class="btn btn-secondary hidden" id="m2-next-btn" onclick="nextMode2()">Next Word →</button>
+      <button class="btn btn-secondary" id="m2-postpone-btn" onclick="postponeMode2()">Postpone</button>
     </div>
   </div>
 
@@ -420,6 +421,7 @@ function renderMode2(){
   document.getElementById('m2-feedback').style.display='none';
   document.getElementById('m2-submit-btn').classList.remove('hidden');
   document.getElementById('m2-next-btn').classList.add('hidden');
+  document.getElementById('m2-postpone-btn').classList.remove('hidden');
   const typeLabels={n:'Noun',v:'Verb',adj:'Adjective',adv:'Adverb','phr.v':'Phrasal Verb'};
   const grid=document.getElementById('m2-slots');
   grid.innerHTML='';
@@ -457,7 +459,16 @@ function checkMode2(){
   else{fb.className='feedback-box wrong';fb.textContent=totalCorrect+'/'+slots.length+' correct. Review the highlighted fields.';}
   document.getElementById('m2-submit-btn').classList.add('hidden');
   document.getElementById('m2-next-btn').classList.remove('hidden');
+  document.getElementById('m2-postpone-btn').classList.add('hidden');
   m2JustChecked=true;setTimeout(()=>{m2JustChecked=false;},50);
+}
+
+function postponeMode2() {
+  if(m2CurrentWordChecked) return;
+  const q=m2Queue.splice(m2Idx,1)[0];
+  m2Queue.push(q);
+  renderMode2();
+  showToast('⏭ Moved to end of queue');
 }
 
 function nextMode2(){m2Idx++;m2CurrentWordChecked=false;renderMode2();}
