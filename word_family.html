@@ -585,7 +585,7 @@ async function getWFSourcePaths() {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const paths = [];
     doc.querySelectorAll('.lesson-tab-panel option[data-file]').forEach(opt => {
-      // data-file is relative to "wf mode/" (e.g. ../database/ilearn/U1 - 1.csv)
+      // data-file is relative to "wf mode/" (e.g. ../database/iLearn/Curriculum/U1 - 1.csv)
       // Strip leading "../" to make it relative to project root
       const p = opt.getAttribute('data-file').replace(/^\.\.\//, '');
       if (!paths.includes(p)) paths.push(p);
@@ -964,7 +964,7 @@ function getUserName(){return localStorage.getItem(NAME_KEY)||'';}
 
 const FALLBACK_SUBS=["How are you doing today? Let's smash some words.","Hope you're having a great day — vocab time!","Consistency beats intensity. One session at a time.","Your future self will thank you for practising today.","Small progress every day adds up to big results. 🔥","Ready to level up your vocabulary?","Let's see how sharp your memory is today 🧠","Another day, another word family conquered. 💡"];
 let _greetingSubs=null;
-async function loadGreetingSubs(){if(_greetingSubs)return _greetingSubs;try{const res=await fetch('database/greetings.txt');if(!res.ok)throw new Error('not found');const text=await res.text();const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);_greetingSubs=lines.length?lines:FALLBACK_SUBS;}catch(e){_greetingSubs=FALLBACK_SUBS;}return _greetingSubs;}
+async function loadGreetingSubs(){if(_greetingSubs)return _greetingSubs;try{const res=await fetch('database/Greetings.txt');if(!res.ok)throw new Error('not found');const text=await res.text();const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);_greetingSubs=lines.length?lines:FALLBACK_SUBS;}catch(e){_greetingSubs=FALLBACK_SUBS;}return _greetingSubs;}
 
 function getGreeting(name){const h=new Date().getHours();const timePart=h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night';const mains=name?[`${timePart}, ${name}! 👋`,`Hey ${name}! Ready to grind? 💪`,`Welcome back, ${name}! ✨`,`${timePart}, ${name}! Let's go 🚀`]:[`${timePart}! 👋`,'Welcome back! ✨','Ready to learn? 🚀'];return{timePart,main:mains[Math.floor(Math.random()*mains.length)]};}
 

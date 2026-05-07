@@ -11,7 +11,7 @@
  * All other pages will automatically pick up the change.
  *
  * Returned entries look like:
- *   { file: "../database/ilearn/U1 - 1.csv",   label: "Unit 1 · Lesson 1",   tab: "iLearn",   group: "── Unit 1 ──" }
+ *   { file: "../database/iLearn/Curriculum/U1 - 1.csv",   label: "Unit 1 · Lesson 1",   tab: "iLearn",   group: "── Unit 1 ──" }
  *
  * resolvePath(entry, fromDir) converts a data-file path (relative to
  * "wf mode/") to a path relative to a different directory:
@@ -80,7 +80,7 @@ async function getSources() {
  * Convert a data-file path (always relative to "wf mode/") to a path
  * usable from a different directory.
  *
- * @param {string} dataFile   - e.g. "../database/ilearn/U1 - 1.csv"
+ * @param {string} dataFile   - e.g. "../database/iLearn/Curriculum/U1 - 1.csv"
  * @param {'wf'|'root'} from  - 'wf'   = caller is inside "wf mode/"
  *                              'root' = caller is at project root
  */
