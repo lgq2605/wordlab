@@ -400,11 +400,8 @@
     <div id="m1-src-unit" style="display:none">
       <div class="form-group">
         <label>Unit</label>
-        <select id="m1-unit-only" class="form-input" style="max-width:160px">
-          <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-          <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-          <option value="7">Unit 7</option><option value="8">Unit 8</option>
-        </select>
+        <!-- Populated dynamically from the active lesson tab's optgroups — see populateUnitSelect() -->
+        <select id="m1-unit-only" class="form-input" style="max-width:160px"></select>
       </div>
     </div>
 
@@ -760,15 +757,37 @@ function recordMistake(quizWord) {
 }
 
 // ══════════════════════════════════════════
-// CSV LOADERS
+// CSV LOADERS  (all paths come from mode1.html data-file attributes)
 // ══════════════════════════════════════════
-async function loadLessonCSV(unit, lesson) {
-  // Legacy path builder — still used by By Unit and Pick Lessons
+
+/**
+ * Return all source entries by reading THIS page's own DOM —
+ * no fetch needed since we ARE mode1.html.
+ */
+function getSourcesFromDOM() {
+  const entries = [];
+  document.querySelectorAll('#m1-src-lesson .lesson-tab-panel').forEach(panel => {
+    const tab = panel.getAttribute('data-tab') || '';
+    panel.querySelectorAll('optgroup').forEach(og => {
+      const group = og.getAttribute('label') || '';
+      og.querySelectorAll('option[data-file]').forEach(opt => {
+        entries.push({
+          file:  opt.getAttribute('data-file'),
+          label: opt.textContent.trim(),
+          tab, group,
+        });
+      });
+    });
+  });
+  return entries;
+}
+
+async function loadCSVFromPath(path) {
   try {
-    const res=await fetch(`../database/ilearn/U${unit}%20-%20${lesson}.csv`);
-    if(!res.ok) return [];
+    const res = await fetch(path);
+    if (!res.ok) return [];
     return parseCSVToWords(await res.text());
-  }catch(e){return [];}
+  } catch(e) { return []; }
 }
 
 async function loadLessonFromSelect() {
@@ -779,15 +798,32 @@ async function loadLessonFromSelect() {
   const opt = sel.options[sel.selectedIndex];
   const filePath = opt ? opt.getAttribute('data-file') : null;
   if(!filePath) return [];
-  try {
-    const res = await fetch(filePath);
-    if(!res.ok) return [];
-    return parseCSVToWords(await res.text());
-  } catch(e) { return []; }
+  return loadCSVFromPath(filePath);
 }
 
 async function loadUnitCSV(unit) {
-  const results=await Promise.all([1,2,3].map(l=>loadLessonCSV(unit,l)));
+  // Finds all sources in the active tab whose label matches "Unit N"
+  const activeTab = document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
+  let paths = [];
+  if (activeTab) {
+    activeTab.querySelectorAll('optgroup').forEach(og => {
+      og.querySelectorAll('option[data-file]').forEach(opt => {
+        const f = opt.getAttribute('data-file');
+        // Match optgroup whose label contains "Unit N" as a whole word
+        const ogLabel = og.getAttribute('label') || '';
+        if (ogLabel && new RegExp(`Unit\\s*${unit}\\b`).test(ogLabel)) {
+          paths.push(f);
+        }
+      });
+    });
+  }
+  // Fallback: collect all files for this unit across all tabs
+  if (!paths.length) {
+    getSourcesFromDOM().forEach(e => {
+      if (new RegExp(`Unit\\s*${unit}\\b`).test(e.group)) paths.push(e.file);
+    });
+  }
+  const results = await Promise.all(paths.map(p => loadCSVFromPath(p)));
   const merged={};
   results.flat().forEach(w=>{
     if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}
@@ -876,6 +912,30 @@ function switchLessonTab(tabName) {
   const btns   = document.querySelectorAll('#lesson-tab-btns .nav-btn');
   panels.forEach(p => p.style.display = p.getAttribute('data-tab')===tabName ? '' : 'none');
   btns.forEach(b => b.classList.toggle('active', b.textContent===tabName));
+  // Refresh By Unit select whenever the tab changes
+  populateUnitSelect();
+}
+
+/**
+ * Build the "By Unit" <select> from the currently-visible lesson tab.
+ * Called on tab switch and on page init — never hardcodes unit count.
+ */
+function populateUnitSelect() {
+  const sel = document.getElementById('m1-unit-only');
+  if (!sel) return;
+  const activeTab = document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
+  const prevVal = sel.value;
+  sel.innerHTML = '';
+  if (!activeTab) return;
+  activeTab.querySelectorAll('optgroup').forEach((og, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i + 1);
+    // Use label like "── Unit 3 ──" → display "Unit 3"
+    opt.textContent = og.getAttribute('label').replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + (i + 1));
+    sel.appendChild(opt);
+  });
+  // Restore previous selection if still valid
+  if ([...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
 }
 
 // ══════════════════════════════════════════
@@ -924,17 +984,27 @@ async function beginMode1() {
     }else if(m1Source==='pick'){
       const raw=document.getElementById('m1-pick-lessons').value.trim();
       if(!raw){showToast('⚠️ Please enter at least one lesson.');return;}
-      const pairs=[],seen=new Set();
-      raw.split(/\n/).forEach(line=>{
-        const m=line.trim().match(/^(\d+)\s*[-–]\s*(\d+)$/);
-        if(!m) return;
-        const u=parseInt(m[1]),l=parseInt(m[2]);
-        if(u<1||u>8||l<1||l>3) return;
-        const key=u+'-'+l;
-        if(!seen.has(key)){seen.add(key);pairs.push([u,l]);}
-      });
-      if(!pairs.length){showToast('⚠️ No valid lessons found. Use format: 1 - 1');return;}
-      const results=await Promise.all(pairs.map(([u,l])=>loadLessonCSV(u,l)));
+      // Build path list from the active lesson tab's DOM — no hardcoded paths
+      const activeTab=document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
+      const pickPaths=[],seen=new Set();
+      if(activeTab){
+        const allOpts=[];
+        activeTab.querySelectorAll('optgroup').forEach((og,ui)=>{
+          og.querySelectorAll('option[data-file]').forEach((opt,li)=>{
+            allOpts.push({u:ui+1,l:li+1,file:opt.getAttribute('data-file')});
+          });
+        });
+        raw.split(/\n/).forEach(line=>{
+          const m=line.trim().match(/^(\d+)\s*[-–]\s*(\d+)$/);
+          if(!m) return;
+          const u=parseInt(m[1]),l=parseInt(m[2]);
+          const entry=allOpts.find(o=>o.u===u&&o.l===l);
+          if(!entry) return;
+          if(!seen.has(entry.file)){seen.add(entry.file);pickPaths.push(entry.file);}
+        });
+      }
+      if(!pickPaths.length){showToast('⚠️ No valid lessons found. Use format: 1 - 1');return;}
+      const results=await Promise.all(pickPaths.map(p=>loadCSVFromPath(p)));
       const merged={};
       results.flat().forEach(w=>{
         if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}
@@ -1244,6 +1314,7 @@ document.getElementById('theme-toggle').addEventListener('click',()=>{
 // ══════════════════════════════════════════
 loadDB();
 initLessonTabs();
+populateUnitSelect();
 
 // Check if redirected from Guide builder
 (function checkBuilderSource(){

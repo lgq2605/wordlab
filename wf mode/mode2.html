@@ -156,17 +156,12 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
         <div class="form-group" style="margin-bottom:0">
           <label>Unit</label>
-          <select id="m2-unit" class="form-input">
-            <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-            <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-            <option value="7">Unit 7</option><option value="8">Unit 8</option>
-          </select>
+          <!-- Populated dynamically from mode1.html sources -->
+          <select id="m2-unit" class="form-input" onchange="populateM2LessonSelect()"></select>
         </div>
         <div class="form-group" style="margin-bottom:0">
           <label>Lesson</label>
-          <select id="m2-lesson" class="form-input">
-            <option value="1">Lesson 1</option><option value="2">Lesson 2</option><option value="3">Lesson 3</option>
-          </select>
+          <select id="m2-lesson" class="form-input"></select>
         </div>
       </div>
     </div>
@@ -174,11 +169,8 @@
     <div id="m2-src-unit" style="display:none">
       <div class="form-group">
         <label>Unit</label>
-        <select id="m2-unit-only" class="form-input" style="max-width:160px">
-          <option value="1">Unit 1</option><option value="2">Unit 2</option><option value="3">Unit 3</option>
-          <option value="4">Unit 4</option><option value="5">Unit 5</option><option value="6">Unit 6</option>
-          <option value="7">Unit 7</option><option value="8">Unit 8</option>
-        </select>
+        <!-- Populated dynamically from mode1.html sources -->
+        <select id="m2-unit-only" class="form-input" style="max-width:160px"></select>
       </div>
     </div>
 
@@ -287,8 +279,91 @@ function playSound(type){if(soundMuted)return;try{const ctx=getAudioCtx(),o=ctx.
 
 function recordMistake(quizWord){quizWord.mistakeCount=(quizWord.mistakeCount||0)+1;const dbWord=db.find(w=>w.root===quizWord.root);if(dbWord){dbWord.mistakeCount=(dbWord.mistakeCount||0)+1;saveDB();}}
 
-async function loadLessonCSV(unit,lesson){try{const res=await fetch(`../database/ilearn/U${unit}%20-%20${lesson}.csv`);if(!res.ok)return[];return parseCSVToWords(await res.text());}catch(e){return[];}}
-async function loadUnitCSV(unit){const results=await Promise.all([1,2,3].map(l=>loadLessonCSV(unit,l)));const merged={};results.flat().forEach(w=>{if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}else{w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});}});return Object.values(merged);}
+// ══════════════════════════════════════════
+// SOURCES  —  all paths read from mode1.html, never hardcoded
+// ══════════════════════════════════════════
+let _m2Sources = null;
+async function getM2Sources() {
+  if (_m2Sources) return _m2Sources;
+  try {
+    const res = await fetch('mode1.html');
+    if (!res.ok) throw new Error('not found');
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const entries = [];
+    doc.querySelectorAll('.lesson-tab-panel').forEach(panel => {
+      const tab = panel.getAttribute('data-tab') || '';
+      panel.querySelectorAll('optgroup').forEach((og, ui) => {
+        const group = og.getAttribute('label') || '';
+        og.querySelectorAll('option[data-file]').forEach((opt, li) => {
+          entries.push({ file: opt.getAttribute('data-file'), label: opt.textContent.trim(), tab, group, unitIdx: ui + 1, lessonIdx: li + 1 });
+        });
+      });
+    });
+    _m2Sources = entries;
+  } catch(e) { _m2Sources = []; }
+  return _m2Sources;
+}
+
+/** Populate the Unit <select> from mode1 sources (first tab only) */
+async function populateM2Selects() {
+  const sources = await getM2Sources();
+  // Group by tab → unit; use first tab's units for By Lesson and By Unit
+  const firstTab = sources[0]?.tab || '';
+  const tabSources = sources.filter(e => e.tab === firstTab);
+  const units = [...new Map(tabSources.map(e => [e.unitIdx, e.group])).entries()];
+
+  ['m2-unit', 'm2-unit-only'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '';
+    units.forEach(([ui, groupLabel]) => {
+      const opt = document.createElement('option');
+      opt.value = String(ui);
+      opt.textContent = groupLabel.replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + ui);
+      sel.appendChild(opt);
+    });
+  });
+  populateM2LessonSelect();
+}
+
+/** Populate the Lesson <select> based on chosen unit */
+async function populateM2LessonSelect() {
+  const sources = await getM2Sources();
+  const unitSel = document.getElementById('m2-unit');
+  const lessonSel = document.getElementById('m2-lesson');
+  if (!unitSel || !lessonSel) return;
+  const unitIdx = parseInt(unitSel.value);
+  const firstTab = sources[0]?.tab || '';
+  const lessons = sources.filter(e => e.tab === firstTab && e.unitIdx === unitIdx);
+  lessonSel.innerHTML = '';
+  lessons.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = String(e.lessonIdx);
+    opt.textContent = e.label;
+    lessonSel.appendChild(opt);
+  });
+}
+
+async function loadCSVFromPath(path) {
+  try { const res=await fetch(path); if(!res.ok)return[]; return parseCSVToWords(await res.text()); } catch(e){return[];}
+}
+
+async function loadLessonCSV(unit, lesson) {
+  const sources = await getM2Sources();
+  const firstTab = sources[0]?.tab || '';
+  const entry = sources.find(e => e.tab === firstTab && e.unitIdx === unit && e.lessonIdx === lesson);
+  if (!entry) return [];
+  return loadCSVFromPath(entry.file);
+}
+async function loadUnitCSV(unit){
+  // Get all lesson indices for this unit from sources (no hardcoded [1,2,3])
+  const sources = await getM2Sources();
+  const firstTab = sources[0]?.tab || '';
+  const lessonIndices = sources.filter(e=>e.tab===firstTab&&e.unitIdx===unit).map(e=>e.lessonIdx);
+  const results=await Promise.all(lessonIndices.map(l=>loadLessonCSV(unit,l)));
+  const merged={};results.flat().forEach(w=>{if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}else{w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});}});return Object.values(merged);
+}
 
 let m2Source='lesson', m2MyFilesWords=[], m2JustChecked=false;
 async function handleM2MyFiles(event){const files=event.target.files;if(!files.length)return;const label=document.getElementById('m2-myfiles-label');label.textContent='Loading…';const merged={};for(const file of files){try{const words=parseCSVToWords(await file.text());words.forEach(w=>{if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}else{w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});}});}catch(e){}}m2MyFilesWords=Object.values(merged);label.textContent=files.length+' file(s) — '+m2MyFilesWords.length+' root word(s) loaded';if(!m2MyFilesWords.length)showToast('⚠️ No valid words found.');else showToast('✓ Loaded '+m2MyFilesWords.length+' root word(s)');}
@@ -309,12 +384,12 @@ async function beginMode2(){
   let words=[];
   try{
     if(m2Source==='lesson'){
-      const unit=document.getElementById('m2-unit').value;
-      const lesson=document.getElementById('m2-lesson').value;
+      const unit=parseInt(document.getElementById('m2-unit').value);
+      const lesson=parseInt(document.getElementById('m2-lesson').value);
       words=await loadLessonCSV(unit,lesson);
       if(!words.length){showToast('⚠️ No words found for that lesson.');return;}
     }else if(m2Source==='unit'){
-      const unit=document.getElementById('m2-unit-only').value;
+      const unit=parseInt(document.getElementById('m2-unit-only').value);
       words=await loadUnitCSV(unit);
       if(!words.length){showToast('⚠️ No words found for that unit.');return;}
     }else if(m2Source==='myfiles'){
@@ -412,6 +487,7 @@ document.addEventListener('keydown',(e)=>{
 document.getElementById('theme-toggle').addEventListener('click',()=>{const html=document.documentElement;const current=html.getAttribute('data-theme')||'dark';const next=current==='light'?'dark':'light';html.setAttribute('data-theme',next);localStorage.setItem('theme',next);document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';});
 
 loadDB();
+populateM2Selects();
 if(!db.length) showToast('⚠️ Database empty — open WordFamily main page first.');
 else showToast('✓ Loaded '+db.length+' words');
 </script>
