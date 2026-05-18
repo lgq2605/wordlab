@@ -1128,19 +1128,6 @@ function checkMode1() {
   if(q.entry){
     q.entry.word.split('/').forEach(v=>{const n=normalize(v.trim());if(n)allAnswers.push(n);});
   }else{allAnswers.push(normalize(q.word.root));}
-  const qMeaning=q.meaning.trim().toLowerCase();
-  db.forEach(word=>{
-    word.entries.forEach(entry=>{
-      if(entry.meaning&&entry.meaning.trim().toLowerCase()===qMeaning){
-        entry.word.split('/').forEach(v=>{const norm=normalize(v.trim());if(norm&&!allAnswers.includes(norm))allAnswers.push(norm);});
-      }
-    });
-    if(word.meanings.some(m=>m.trim().toLowerCase()===qMeaning)){
-      word.entries.forEach(entry=>{
-        entry.word.split('/').forEach(v=>{const norm=normalize(v.trim());if(norm&&!allAnswers.includes(norm))allAnswers.push(norm);});
-      });
-    }
-  });
   const isCorrect=allAnswers.some(a=>a===userVal);
   const fb=document.getElementById('m1-feedback');
   m1Revealed=true;

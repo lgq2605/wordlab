@@ -515,7 +515,7 @@ async function sha256(str) {
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
+function saveDB() { db.sort((a,b)=>a.root.localeCompare(b.root,'en',{sensitivity:'base'})); localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); updateStats(); }
 
 function updateStats() {
   const totalEntries = db.reduce((s,w)=>s+w.entries.length, 0);
@@ -602,7 +602,7 @@ async function getWFSourcePaths() {
 async function initializeDB() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) { try { db = JSON.parse(stored); } catch(e) { db = []; } }
+    if (stored) { try { db = JSON.parse(stored); db.sort((a,b)=>a.root.localeCompare(b.root,'en',{sensitivity:'base'})); } catch(e) { db = []; } }
 
     // Load all CSV paths from mode1.html — no hardcoded paths here
     const sourcePaths = await getWFSourcePaths();
@@ -745,6 +745,7 @@ function renderDB(){
     if(word.entries.length===0&&!filterType){if(!q||word.root.toLowerCase().includes(q)||word.meanings.some(m=>m.toLowerCase().includes(q)))rows.push({word,entry:null});}
   });
   if(dbSortByMistakes)rows.sort((a,b)=>(b.word.mistakeCount||0)-(a.word.mistakeCount||0));
+  else rows.sort((a,b)=>a.word.root.localeCompare(b.word.root,'en',{sensitivity:'base'}));
   updateStats();
   const total=Math.ceil(rows.length/PER_PAGE);
   if(dbPage>total)dbPage=Math.max(1,total);
