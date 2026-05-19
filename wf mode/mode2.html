@@ -6,6 +6,7 @@
 <title>Mode 2 – WordFamily</title>
 <link rel="icon" type="image/png" href="image/wordfamily logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link id="love-theme-css" rel="stylesheet" href="../theme/love.css" disabled>
 <style>
   :root {
     --bg: #080910; --surface: #0f1117; --surface2: #161820; --surface3: #1c1f2a;
@@ -125,12 +126,39 @@
     .action-row { gap:8px;flex-wrap:wrap; }
     .action-row .btn { flex:1 1 auto;min-width:100px; }
   }
+  /* ── Checkbox lesson picker ── */
+  .lesson-picker-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .lesson-picker-body { border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .lesson-picker-tab-panel { display:none; }
+  .lesson-picker-tab-panel.active { display:block; }
+  .lesson-group-label { padding:7px 14px 4px; font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--muted); text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+  .lesson-check-list { display:flex; flex-direction:column; }
+  .lesson-check-item { display:flex; align-items:center; gap:10px; padding:8px 14px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .15s; }
+  .lesson-check-item:last-child { border-bottom:none; }
+  .lesson-check-item:hover { background:var(--surface2); }
+  .lesson-check-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
+  .lesson-check-item span { font-size:13px; color:var(--text); }
+  .lesson-pick-actions { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; align-items:center; }
+  .lesson-pick-count { font-size:12px; color:var(--muted); margin-left:auto; }
+  /* Love theme petals */
+  .love-petal { position:fixed; top:-40px; border-radius:150% 0 150% 0; pointer-events:none; z-index:0; opacity:0; animation:petalFall linear infinite; }
+  @keyframes petalFall {
+    0%   { transform:translateY(0) translateX(0) rotate(0deg) scale(1); opacity:0; }
+    5%   { opacity:.85; }
+    85%  { opacity:.65; }
+    100% { transform:translateY(108vh) translateX(70px) rotate(520deg) scale(.5); opacity:0; }
+  }
+  .love-sparkle { position:fixed; pointer-events:none; z-index:9999; font-size:18px; }
 </style>
 </head>
 <body>
 <script>
   const _theme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', _theme);
+  if (_theme === 'love') {
+    const _lc = document.getElementById('love-theme-css');
+    if (_lc) _lc.disabled = false;
+  }
 </script>
 
 <div class="page">
@@ -154,16 +182,12 @@
     </div>
 
     <div id="m2-src-lesson">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Unit</label>
-          <!-- Populated dynamically from mode1.html sources -->
-          <select id="m2-unit" class="form-input" onchange="populateM2LessonSelect()"></select>
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m2-lesson" class="form-input"></select>
-        </div>
+      <div class="lesson-picker-tabs" id="m2-lesson-tab-btns"></div>
+      <div class="lesson-picker-body" id="m2-lesson-picker-body"></div>
+      <div class="lesson-pick-actions">
+        <button class="btn btn-ghost btn-sm" onclick="m2LessonPickerSelectAll(true)">Select all</button>
+        <button class="btn btn-ghost btn-sm" onclick="m2LessonPickerSelectAll(false)">Clear all</button>
+        <span class="lesson-pick-count" id="m2-lesson-pick-count">0 selected</span>
       </div>
     </div>
 
@@ -282,7 +306,7 @@ function playSound(type){if(soundMuted)return;try{const ctx=getAudioCtx(),o=ctx.
 function recordMistake(quizWord){quizWord.mistakeCount=(quizWord.mistakeCount||0)+1;const dbWord=db.find(w=>w.root===quizWord.root);if(dbWord){dbWord.mistakeCount=(dbWord.mistakeCount||0)+1;saveDB();}}
 
 // ══════════════════════════════════════════
-// SOURCES  —  all paths read from mode1.html, never hardcoded
+// SOURCES  —  checkbox picker, reads from mode1.html
 // ══════════════════════════════════════════
 let _m2Sources = null;
 async function getM2Sources() {
@@ -293,9 +317,9 @@ async function getM2Sources() {
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const entries = [];
-    doc.querySelectorAll('.lesson-tab-panel').forEach(panel => {
-      const tab = panel.getAttribute('data-tab') || '';
-      panel.querySelectorAll('optgroup').forEach((og, ui) => {
+    doc.querySelectorAll('#lesson-data-source select[data-tab]').forEach(sel => {
+      const tab = sel.getAttribute('data-tab') || '';
+      sel.querySelectorAll('optgroup').forEach((og, ui) => {
         const group = og.getAttribute('label') || '';
         og.querySelectorAll('option[data-file]').forEach((opt, li) => {
           entries.push({ file: opt.getAttribute('data-file'), label: opt.textContent.trim(), tab, group, unitIdx: ui + 1, lessonIdx: li + 1 });
@@ -307,64 +331,152 @@ async function getM2Sources() {
   return _m2Sources;
 }
 
-/** Populate the Unit <select> from mode1 sources (first tab only) */
-async function populateM2Selects() {
-  const sources = await getM2Sources();
-  // Group by tab → unit; use first tab's units for By Lesson and By Unit
-  const firstTab = sources[0]?.tab || '';
-  const tabSources = sources.filter(e => e.tab === firstTab);
-  const units = [...new Map(tabSources.map(e => [e.unitIdx, e.group])).entries()];
+let _m2PickerActiveTab = null;
 
-  ['m2-unit', 'm2-unit-only'].forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    sel.innerHTML = '';
-    units.forEach(([ui, groupLabel]) => {
-      const opt = document.createElement('option');
-      opt.value = String(ui);
-      opt.textContent = groupLabel.replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + ui);
-      sel.appendChild(opt);
+async function initM2LessonPicker() {
+  const sources = await getM2Sources();
+  const tabs = [...new Set(sources.map(e => e.tab))];
+  if (!tabs.length) return;
+  _m2PickerActiveTab = tabs[0];
+
+  const btnWrap = document.getElementById('m2-lesson-tab-btns');
+  if (btnWrap) {
+    btnWrap.innerHTML = '';
+    tabs.forEach((tab, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-btn' + (i === 0 ? ' active' : '');
+      btn.textContent = tab;
+      btn.onclick = () => switchM2PickerTab(tab);
+      btnWrap.appendChild(btn);
     });
-  });
-  populateM2LessonSelect();
+  }
+  renderM2PickerBody(sources);
+  updateM2PickerCount();
+
+  // Also populate By Unit select
+  const unitSel = document.getElementById('m2-unit-only');
+  if (unitSel) {
+    unitSel.innerHTML = '';
+    const tabSources = sources.filter(e => e.tab === _m2PickerActiveTab);
+    const seen = new Set();
+    tabSources.forEach(e => {
+      if (seen.has(e.unitIdx)) return;
+      seen.add(e.unitIdx);
+      const opt = document.createElement('option');
+      opt.value = String(e.unitIdx);
+      opt.textContent = e.group.replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + e.unitIdx);
+      unitSel.appendChild(opt);
+    });
+  }
 }
 
-/** Populate the Lesson <select> based on chosen unit */
-async function populateM2LessonSelect() {
-  const sources = await getM2Sources();
-  const unitSel = document.getElementById('m2-unit');
-  const lessonSel = document.getElementById('m2-lesson');
-  if (!unitSel || !lessonSel) return;
-  const unitIdx = parseInt(unitSel.value);
-  const firstTab = sources[0]?.tab || '';
-  const lessons = sources.filter(e => e.tab === firstTab && e.unitIdx === unitIdx);
-  lessonSel.innerHTML = '';
-  lessons.forEach(e => {
-    const opt = document.createElement('option');
-    opt.value = String(e.lessonIdx);
-    opt.textContent = e.label;
-    lessonSel.appendChild(opt);
+function renderM2PickerBody(sources) {
+  const body = document.getElementById('m2-lesson-picker-body');
+  if (!body) return;
+  body.innerHTML = '';
+  const tabs = [...new Set(sources.map(e => e.tab))];
+  tabs.forEach(tab => {
+    const panel = document.createElement('div');
+    panel.className = 'lesson-picker-tab-panel' + (tab === _m2PickerActiveTab ? ' active' : '');
+    panel.setAttribute('data-picker-tab', tab);
+    const tabSources = sources.filter(e => e.tab === tab);
+    const groups = [...new Set(tabSources.map(e => e.group))];
+    groups.forEach(group => {
+      if (group) {
+        const gl = document.createElement('div');
+        gl.className = 'lesson-group-label';
+        const glCheck = document.createElement('input');
+        glCheck.type = 'checkbox';
+        glCheck.style.cssText = 'width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0';
+        glCheck.title = 'Select all in this group';
+        glCheck.addEventListener('change', () => {
+          panel.querySelectorAll(`.lesson-check-item[data-group="${CSS.escape(group)}"] input`).forEach(cb => cb.checked = glCheck.checked);
+          updateM2PickerCount();
+        });
+        gl.appendChild(glCheck);
+        const glText = document.createElement('span');
+        glText.textContent = group.replace(/^[─\s]+|[─\s]+$/g, '').trim();
+        gl.appendChild(glText);
+        panel.appendChild(gl);
+      }
+      const list = document.createElement('div');
+      list.className = 'lesson-check-list';
+      tabSources.filter(e => e.group === group).forEach(entry => {
+        const item = document.createElement('label');
+        item.className = 'lesson-check-item';
+        item.setAttribute('data-group', group);
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = entry.file;
+        cb.addEventListener('change', updateM2PickerCount);
+        const lbl = document.createElement('span');
+        lbl.textContent = entry.label;
+        item.appendChild(cb);
+        item.appendChild(lbl);
+        list.appendChild(item);
+      });
+      panel.appendChild(list);
+    });
+    body.appendChild(panel);
   });
 }
+
+function switchM2PickerTab(tab) {
+  _m2PickerActiveTab = tab;
+  document.querySelectorAll('#m2-lesson-picker-body .lesson-picker-tab-panel').forEach(p => {
+    p.classList.toggle('active', p.getAttribute('data-picker-tab') === tab);
+  });
+  document.querySelectorAll('#m2-lesson-tab-btns .nav-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === tab);
+  });
+}
+
+function getM2CheckedFiles() {
+  return [...document.querySelectorAll('#m2-lesson-picker-body input[type=checkbox]:checked')].map(cb => cb.value).filter(Boolean);
+}
+
+function updateM2PickerCount() {
+  const n = getM2CheckedFiles().length;
+  const el = document.getElementById('m2-lesson-pick-count');
+  if (el) el.textContent = n + ' lesson' + (n !== 1 ? 's' : '') + ' selected';
+}
+
+function m2LessonPickerSelectAll(checked) {
+  const activePanel = document.querySelector('#m2-lesson-picker-body .lesson-picker-tab-panel.active');
+  if (!activePanel) return;
+  activePanel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = checked);
+  updateM2PickerCount();
+}
+
+/** Kept for By Unit tab — not used by lesson picker */
+async function populateM2Selects() { await initM2LessonPicker(); }
+async function populateM2LessonSelect() {}
 
 async function loadCSVFromPath(path) {
   try { const res=await fetch(path); if(!res.ok)return[]; return parseCSVToWords(await res.text()); } catch(e){return[];}
 }
 
+function mergeWordArrays(words) {
+  const merged={};
+  words.forEach(w=>{
+    if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}
+    else{w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});}
+  });
+  return Object.values(merged);
+}
+
 async function loadLessonCSV(unit, lesson) {
   const sources = await getM2Sources();
-  const firstTab = sources[0]?.tab || '';
-  const entry = sources.find(e => e.tab === firstTab && e.unitIdx === unit && e.lessonIdx === lesson);
+  const entry = sources.find(e => e.tab === (_m2PickerActiveTab||'') && e.unitIdx === unit && e.lessonIdx === lesson);
   if (!entry) return [];
   return loadCSVFromPath(entry.file);
 }
+
 async function loadUnitCSV(unit){
-  // Get all lesson indices for this unit from sources (no hardcoded [1,2,3])
   const sources = await getM2Sources();
-  const firstTab = sources[0]?.tab || '';
-  const lessonIndices = sources.filter(e=>e.tab===firstTab&&e.unitIdx===unit).map(e=>e.lessonIdx);
-  const results=await Promise.all(lessonIndices.map(l=>loadLessonCSV(unit,l)));
-  const merged={};results.flat().forEach(w=>{if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}else{w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});}});return Object.values(merged);
+  const lessonFiles = sources.filter(e=>e.tab===(_m2PickerActiveTab||'')&&e.unitIdx===unit).map(e=>e.file);
+  const results=await Promise.all(lessonFiles.map(f=>loadCSVFromPath(f)));
+  return mergeWordArrays(results.flat());
 }
 
 let m2Source='lesson', m2MyFilesWords=[], m2JustChecked=false;
@@ -386,10 +498,11 @@ async function beginMode2(){
   let words=[];
   try{
     if(m2Source==='lesson'){
-      const unit=parseInt(document.getElementById('m2-unit').value);
-      const lesson=parseInt(document.getElementById('m2-lesson').value);
-      words=await loadLessonCSV(unit,lesson);
-      if(!words.length){showToast('⚠️ No words found for that lesson.');return;}
+      const files=getM2CheckedFiles();
+      if(!files.length){showToast('⚠️ Please select at least one lesson.');return;}
+      const results=await Promise.all(files.map(f=>loadCSVFromPath(f)));
+      words=mergeWordArrays(results.flat());
+      if(!words.length){showToast('⚠️ No words found. Check CSV file paths.');return;}
     }else if(m2Source==='unit'){
       const unit=parseInt(document.getElementById('m2-unit-only').value);
       words=await loadUnitCSV(unit);
@@ -495,8 +608,91 @@ document.addEventListener('keydown',(e)=>{
   if(m2Next&&!m2Next.classList.contains('hidden')){e.preventDefault();nextMode2();}
 });
 
-(function initTheme(){const saved=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',saved);const btn=document.getElementById('theme-toggle');if(btn)btn.textContent=saved==='light'?'☀️':'🌙';})();
-document.getElementById('theme-toggle').addEventListener('click',()=>{const html=document.documentElement;const current=html.getAttribute('data-theme')||'dark';const next=current==='light'?'dark':'light';html.setAttribute('data-theme',next);localStorage.setItem('theme',next);document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';});
+// ══════════════════════════════════════════
+// THEME  (dark → light → love💗 secret)
+// ══════════════════════════════════════════
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
+})();
+
+let _petalInterval = null;
+
+function spawnPetal() {
+  const petal = document.createElement('div');
+  petal.className = 'love-petal';
+  const size   = 8 + Math.random() * 14;
+  const colors = ['#f9a8d4','#f472b6','#fbcfe8','#fda4af','#fce7f3','#f9c0d8'];
+  const color  = colors[Math.floor(Math.random() * colors.length)];
+  const dur    = 6 + Math.random() * 8;
+  const delay  = Math.random() * 4;
+  petal.style.cssText = `width:${size}px;height:${size*.7}px;left:${Math.random()*100}vw;background:${color};animation-duration:${dur}s;animation-delay:${delay}s;box-shadow:inset 0 1px 2px rgba(255,255,255,.5);opacity:0;`;
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), (dur + delay + .5) * 1000);
+}
+
+function startPetals() {
+  stopPetals();
+  for (let i = 0; i < 18; i++) setTimeout(spawnPetal, i * 130);
+  _petalInterval = setInterval(() => { if (Math.random() > .35) spawnPetal(); }, 700);
+}
+
+function stopPetals() {
+  if (_petalInterval) { clearInterval(_petalInterval); _petalInterval = null; }
+  document.querySelectorAll('.love-petal').forEach(p => p.remove());
+}
+
+function onSparkleClick(e) {
+  const emojis = ['💗','💕','🌸','✨','💖','🌷','💝','⭐','🩷','🌺'];
+  const count  = 4 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('span');
+    s.className = 'love-sparkle';
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.cssText = `left:${e.clientX-10}px;top:${e.clientY-10}px;position:fixed;pointer-events:none;z-index:9999;font-size:18px;`;
+    const angle = (Math.PI * 2 / count) * i + Math.random() * .5;
+    const dist  = 30 + Math.random() * 45;
+    document.body.appendChild(s);
+    s.animate([
+      { transform: 'translate(0,0) scale(0)', opacity: 1 },
+      { transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(1.3)`, opacity: 1, offset: .5 },
+      { transform: `translate(${Math.cos(angle)*dist*1.7}px,${Math.sin(angle)*dist*1.7}px) scale(0)`, opacity: 0 }
+    ], { duration: 600 + Math.random() * 250, easing: 'ease-out', fill: 'forwards' });
+    setTimeout(() => s.remove(), 900);
+  }
+}
+
+function enableSparkles()  { document.addEventListener('click', onSparkleClick); }
+function disableSparkles() { document.removeEventListener('click', onSparkleClick); }
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const css = document.getElementById('love-theme-css');
+  if (css) css.disabled = (theme !== 'love');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = theme === 'light' ? '☀️' : theme === 'love' ? '💗' : '🌙';
+  localStorage.setItem('theme', theme);
+  if (theme === 'love') { startPetals(); enableSparkles(); }
+  else                  { stopPetals();  disableSparkles(); }
+}
+
+let _themeClickTimes = [];
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const now = Date.now();
+  _themeClickTimes = _themeClickTimes.filter(t => now - t < 1500);
+  _themeClickTimes.push(now);
+  if (_themeClickTimes.length >= 5) {
+    _themeClickTimes = [];
+    if ((document.documentElement.getAttribute('data-theme')||'dark') !== 'love') {
+      applyTheme('love'); showToast('💗 Love theme unlocked!'); return;
+    }
+  }
+  if (_themeClickTimes.length < 5) {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    if (cur === 'love') return;
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+});
 
 loadDB();
 populateM2Selects();

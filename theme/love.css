@@ -1,0 +1,501 @@
+/* ═══════════════════════════════════════════════════════
+   WordFamily · Love Theme 💗
+   "A love letter in every word."
+   Unlock: click the theme button 5 times quickly
+   ═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* ══════════════════════════════════════════
+   VARIABLES
+══════════════════════════════════════════ */
+[data-theme="love"] {
+  --bg:           #fff0f6;
+  --surface:      #fff5f9;
+  --surface2:     #ffe8f2;
+  --surface3:     #fdd5e8;
+  --border:       #f8bdd8;
+  --border2:      #f093c0;
+
+  --accent:       #e8357a;
+  --accent-glow:  rgba(232, 53, 122, .30);
+  --accent2:      #ff7eb3;
+  --accent3:      #b5179e;
+
+  --text:         #2d0a1e;
+  --muted:        #b06080;
+  --muted2:       #8a3f64;
+  --danger:       #c92050;
+  --success:      #c0399a;
+
+  --glass:        rgba(255, 192, 220, .20);
+  --glass-border: rgba(248, 130, 185, .35);
+
+  --radius:       20px;
+  --radius-sm:    14px;
+
+  --love-rose:    #e8357a;
+  --love-blush:   #f9c0d8;
+  --love-petal:   #fde8f2;
+  --love-deep:    #8b1a4a;
+  --love-gold:    #f5a623;
+}
+
+/* ══════════════════════════════════════════
+   BODY & BACKGROUND
+══════════════════════════════════════════ */
+[data-theme="love"] body {
+  font-family: 'Nunito', sans-serif;
+  background: #fff0f6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+[data-theme="love"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 0%,   rgba(255,182,212,.55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 5%,   rgba(255,150,200,.40) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 50% 100%,  rgba(248,130,185,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 40% at 0%  60%,   rgba(255,220,235,.30) 0%, transparent 55%),
+    linear-gradient(160deg, #fff0f6 0%, #fce4ef 35%, #fdf0f7 65%, #fce8f3 100%);
+}
+
+/* ══════════════════════════════════════════
+   PETAL ANIMATIONS
+══════════════════════════════════════════ */
+[data-theme="love"] .love-petal {
+  position: fixed;
+  top: -40px;
+  border-radius: 150% 0 150% 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  animation: petalFall linear infinite;
+}
+
+@keyframes petalFall {
+  0%   { transform: translateY(0)     translateX(0)    rotate(0deg)   scale(1);   opacity: 0; }
+  5%   { opacity: .85; }
+  85%  { opacity: .65; }
+  100% { transform: translateY(108vh) translateX(70px) rotate(520deg) scale(.5); opacity: 0; }
+}
+
+[data-theme="love"] .love-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  animation: sparklePop ease-out forwards;
+  font-size: 16px;
+}
+@keyframes sparklePop {
+  0%   { transform: scale(0) rotate(0deg);    opacity: 1; }
+  55%  { transform: scale(1.5) rotate(20deg); opacity: 1; }
+  100% { transform: scale(0) rotate(45deg);   opacity: 0; }
+}
+
+/* ══════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════ */
+[data-theme="love"] .section-title,
+[data-theme="love"] .score-label,
+[data-theme="love"] .question-text {
+  font-family: 'Playfair Display', 'Instrument Serif', serif;
+}
+
+[data-theme="love"] .logo {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic;
+}
+
+[data-theme="love"] .logo span {
+  background: linear-gradient(135deg, #e8357a 0%, #f472b6 50%, #b5179e 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+[data-theme="love"] .section-title {
+  font-style: italic;
+  background: linear-gradient(135deg, #e8357a, #b5179e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ══════════════════════════════════════════
+   CARD
+══════════════════════════════════════════ */
+[data-theme="love"] .card {
+  background: rgba(255, 248, 252, .90);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 40px rgba(232, 53, 122, .12),
+    0 2px 12px rgba(232, 53, 122, .07),
+    inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  position: relative;
+  z-index: 1;
+  animation: loveEnter .45s cubic-bezier(.4,0,.2,1) both;
+}
+
+/* Shimmer top accent line */
+[data-theme="love"] .card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8%; right: 8%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(232,53,122,.4) 20%,
+    rgba(255,126,179,.9) 50%,
+    rgba(232,53,122,.4) 80%,
+    transparent 100%);
+  animation: shimmerLine 3s ease-in-out infinite;
+}
+
+@keyframes shimmerLine {
+  0%, 100% { opacity: .35; transform: scaleX(.5); }
+  50%       { opacity: 1;   transform: scaleX(1); }
+}
+
+@keyframes loveEnter {
+  0%   { opacity: 0; transform: scale(.97) translateY(10px); }
+  100% { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+/* ══════════════════════════════════════════
+   BACK BAR
+══════════════════════════════════════════ */
+[data-theme="love"] .back-bar {
+  background: rgba(255, 240, 248, .82);
+  border-color: var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 2px 16px rgba(232,53,122,.09);
+  animation: loveEnter .3s cubic-bezier(.4,0,.2,1) both;
+}
+
+[data-theme="love"] .back-btn {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--muted2);
+}
+[data-theme="love"] .back-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(232,53,122,.07);
+}
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+[data-theme="love"] .btn-primary {
+  background: linear-gradient(135deg, #e8357a 0%, #f06ba5 50%, #e8478a 100%);
+  color: #fff;
+  box-shadow: 0 4px 22px rgba(232,53,122,.45), inset 0 1px 0 rgba(255,255,255,.25);
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  letter-spacing: .3px;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="love"] .btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -80%;
+  width: 50%; height: 200%;
+  background: rgba(255,255,255,.22);
+  transform: skewX(-20deg);
+  animation: btnShine 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes btnShine {
+  0%, 100% { left: -80%; opacity: 0; }
+  40%       { left: 130%;  opacity: 1; }
+  41%       { opacity: 0; }
+}
+[data-theme="love"] .btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(232,53,122,.55), inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+[data-theme="love"] .btn-secondary {
+  background: var(--surface2);
+  color: var(--love-deep);
+  border: 1.5px solid var(--border2);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+[data-theme="love"] .btn-secondary:hover {
+  border-color: var(--accent);
+  background: rgba(232,53,122,.07);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(232,53,122,.15);
+}
+
+[data-theme="love"] .btn-ghost {
+  color: var(--muted2);
+  border-color: var(--border);
+  font-family: 'Nunito', sans-serif;
+}
+[data-theme="love"] .btn-ghost:hover {
+  color: var(--accent);
+  border-color: var(--accent2);
+  background: rgba(232,53,122,.06);
+}
+
+/* ══════════════════════════════════════════
+   THEME TOGGLE — heartbeat pulse
+══════════════════════════════════════════ */
+[data-theme="love"] #theme-toggle {
+  animation: heartbeat 1.4s ease-in-out infinite !important;
+  border-color: rgba(232,53,122,.45) !important;
+  color: var(--accent) !important;
+}
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); }
+  14%     { transform: scale(1.28); }
+  28%     { transform: scale(1); }
+  42%     { transform: scale(1.18); }
+  56%     { transform: scale(1); }
+}
+
+/* ══════════════════════════════════════════
+   NAV TABS
+══════════════════════════════════════════ */
+[data-theme="love"] .nav-btn {
+  color: var(--muted2);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+[data-theme="love"] .nav-btn:hover {
+  color: var(--accent);
+  background: rgba(232,53,122,.07);
+}
+[data-theme="love"] .nav-btn.active {
+  background: linear-gradient(135deg, #e8357a, #f472b6);
+  color: #fff;
+  box-shadow: 0 3px 16px rgba(232,53,122,.4);
+}
+
+/* ══════════════════════════════════════════
+   QUESTION BOX
+══════════════════════════════════════════ */
+[data-theme="love"] .question-box {
+  background: linear-gradient(135deg, rgba(255,240,248,.9), rgba(253,213,232,.8));
+  border: 1.5px solid var(--border2);
+  border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 4px 18px rgba(232,53,122,.09);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="love"] .question-box::before {
+  content: '💗';
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 18px;
+  opacity: .22;
+  pointer-events: none;
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+[data-theme="love"] .question-box::after {
+  content: '🌸';
+  position: absolute;
+  bottom: 8px; left: 12px;
+  font-size: 15px;
+  opacity: .20;
+  pointer-events: none;
+  animation: heartbeat 2.3s ease-in-out infinite .5s;
+}
+
+[data-theme="love"] .question-label {
+  color: var(--accent);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+[data-theme="love"] .question-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--text);
+}
+
+/* ══════════════════════════════════════════
+   ANSWER INPUT
+══════════════════════════════════════════ */
+[data-theme="love"] .answer-input {
+  background: rgba(255,248,252,.96);
+  border: 2px solid var(--border2);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+[data-theme="love"] .answer-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(232,53,122,.18), 0 2px 12px rgba(232,53,122,.12);
+  background: #fff;
+}
+[data-theme="love"] .answer-input::placeholder {
+  color: rgba(176,96,128,.5);
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════
+   FORM INPUTS
+══════════════════════════════════════════ */
+[data-theme="love"] .form-input {
+  background: rgba(255,248,252,.96);
+  border: 1.5px solid var(--border2);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+}
+[data-theme="love"] .form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,53,122,.18);
+  background: #fff;
+}
+
+/* ══════════════════════════════════════════
+   PROGRESS
+══════════════════════════════════════════ */
+[data-theme="love"] .progress-bar { background: var(--surface3); }
+[data-theme="love"] .progress-fill {
+  background: linear-gradient(90deg, #e8357a, #f472b6, #ff7eb3, #f472b6, #e8357a);
+  background-size: 300% 100%;
+  animation: progressShimmer 2.5s linear infinite;
+}
+@keyframes progressShimmer {
+  0%   { background-position: 100% center; }
+  100% { background-position: -100% center; }
+}
+
+/* ══════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════ */
+[data-theme="love"] .timer-pill {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--muted2);
+}
+[data-theme="love"] .timer-pill.warning {
+  border-color: var(--accent);
+  color: var(--accent);
+  animation: heartbeat .9s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════
+   FEEDBACK
+══════════════════════════════════════════ */
+[data-theme="love"] .feedback-box.correct {
+  background: linear-gradient(135deg, rgba(232,53,122,.10), rgba(255,126,179,.07));
+  border: 1.5px solid rgba(232,53,122,.32);
+  color: var(--love-rose);
+  border-radius: 14px;
+}
+[data-theme="love"] .feedback-box.wrong {
+  background: rgba(181,23,158,.07);
+  border: 1.5px solid rgba(181,23,158,.25);
+  color: var(--accent3);
+  border-radius: 14px;
+}
+
+/* ══════════════════════════════════════════
+   SCORE CARD
+══════════════════════════════════════════ */
+[data-theme="love"] .score-big span {
+  background: linear-gradient(135deg, #e8357a, #f472b6, #b5179e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(232,53,122,.3));
+}
+[data-theme="love"] .score-stat {
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 16px;
+}
+[data-theme="love"] .score-label {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════
+   LESSON PICKER
+══════════════════════════════════════════ */
+[data-theme="love"] .lesson-picker-body {
+  border: 1.5px solid var(--border2);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(232,53,122,.07);
+}
+[data-theme="love"] .lesson-group-label {
+  background: linear-gradient(90deg, var(--surface2), var(--surface3));
+  border-bottom-color: var(--border);
+  color: var(--accent);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+}
+[data-theme="love"] .lesson-check-item { border-bottom-color: var(--border); }
+[data-theme="love"] .lesson-check-item:hover { background: rgba(232,53,122,.06); }
+[data-theme="love"] .lesson-check-item input[type=checkbox] { accent-color: var(--accent); }
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+[data-theme="love"] #toast {
+  background: linear-gradient(135deg, #fff0f6, #ffe0ef);
+  border: 1.5px solid var(--border2);
+  color: var(--love-deep);
+  box-shadow: 0 8px 30px rgba(232,53,122,.2);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════
+   XP & LEVEL UP
+══════════════════════════════════════════ */
+[data-theme="love"] .xp-popup {
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(232,53,122,.7);
+}
+[data-theme="love"] .level-up-banner {
+  background: linear-gradient(135deg, #e8357a, #f472b6);
+  box-shadow: 0 8px 32px rgba(232,53,122,.5);
+}
+
+/* ══════════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════════ */
+[data-theme="love"] ::-webkit-scrollbar { width: 7px; }
+[data-theme="love"] ::-webkit-scrollbar-track { background: var(--surface2); }
+[data-theme="love"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f472b6, #e8357a);
+  border-radius: 999px;
+}
+
+/* ══════════════════════════════════════════
+   MISC
+══════════════════════════════════════════ */
+[data-theme="love"] .question-type-tag {
+  background: rgba(232,53,122,.12);
+  color: var(--accent);
+  border-color: rgba(232,53,122,.28);
+}
+[data-theme="love"] .section-sub { color: var(--muted2); }
+[data-theme="love"] .db-row:hover { background: rgba(232,53,122,.05) !important; }
+[data-theme="love"] .entry-chip {
+  background: var(--surface3);
+  border-color: var(--border2);
+  color: var(--love-deep);
+}

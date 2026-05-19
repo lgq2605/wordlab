@@ -6,6 +6,7 @@
 <title>Mode 1 – WordFamily</title>
 <link rel="icon" type="image/png" href="image/wordfamily logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link id="love-theme-css" rel="stylesheet" href="../theme/love.css" disabled>
 <style>
   :root {
     --bg: #080910; --surface: #0f1117; --surface2: #161820; --surface3: #1c1f2a;
@@ -216,13 +217,40 @@
     .question-text { font-size: 18px; }
     .score-big { font-size: 50px; }
   }
+  /* ── Checkbox lesson picker ── */
+  .lesson-picker-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .lesson-picker-body { border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .lesson-picker-tab-panel { display:none; }
+  .lesson-picker-tab-panel.active { display:block; }
+  .lesson-group-label { padding:7px 14px 4px; font-size:11px; font-weight:700; letter-spacing:.06em; color:var(--muted); text-transform:uppercase; background:var(--surface2); border-bottom:1px solid var(--border); }
+  .lesson-check-list { display:flex; flex-direction:column; }
+  .lesson-check-item { display:flex; align-items:center; gap:10px; padding:8px 14px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .15s; }
+  .lesson-check-item:last-child { border-bottom:none; }
+  .lesson-check-item:hover { background:var(--surface2); }
+  .lesson-check-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
+  .lesson-check-item span { font-size:13px; color:var(--text); }
+  .lesson-pick-actions { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; align-items:center; }
+  .lesson-pick-count { font-size:12px; color:var(--muted); margin-left:auto; }
+  /* Love theme petals */
+  .love-petal { position:fixed; top:-40px; border-radius:150% 0 150% 0; pointer-events:none; z-index:0; opacity:0; animation:petalFall linear infinite; }
+  @keyframes petalFall {
+    0%   { transform:translateY(0) translateX(0) rotate(0deg) scale(1); opacity:0; }
+    5%   { opacity:.85; }
+    85%  { opacity:.65; }
+    100% { transform:translateY(108vh) translateX(70px) rotate(520deg) scale(.5); opacity:0; }
+  }
+  .love-sparkle { position:fixed; pointer-events:none; z-index:9999; font-size:18px; }
 </style>
 </head>
 <body>
 <script>
-  // Sync theme
+  // Sync theme before paint
   const _theme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', _theme);
+  if (_theme === 'love') {
+    const _lc = document.getElementById('love-theme-css');
+    if (_lc) _lc.disabled = false;
+  }
 </script>
 
 <div class="page">
@@ -254,163 +282,121 @@
 
            Each "tab" below is one group (e.g. a book or course).
            Each tab has:
-             • a label shown on the tab button (e.g. "iLearn")
-             • a list of units, where each unit has a name and a list of lessons
+             • a data-tab label shown on the tab button (e.g. "iLearn")
+             • a list of units as <optgroup> with a label
+             • each lesson as <option data-file="...">Label</option>
 
-           TO ADD A NEW TAB:  copy one full block from ← TAB START to ← TAB END
-                              and paste it after the last one, then change the names.
+           TO ADD A NEW TAB:  copy one full block ← TAB START to ← TAB END
+           TO ADD A NEW UNIT: copy one <optgroup> block inside that tab's <select>
+           TO ADD A NEW LESSON: copy one <option> line inside the <optgroup>
 
-           TO ADD A NEW UNIT inside a tab: copy one <optgroup> block and paste inside that tab's <select>.
-
-           TO ADD A NEW LESSON inside a unit: copy one <option> line and add it inside the <optgroup>.
-
-           The "file" value must match the actual CSV filename in your database folder.
            Format:  data-file="../database/FOLDER/FILENAME.csv"
            ================================================================ -->
 
-      <!-- Tab buttons (one per group) -->
-      <div id="lesson-tab-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;"></div>
+      <!-- SOURCE DATA — hidden <select> elements, used as data source by JS to build checkboxes -->
+      <div id="lesson-data-source" style="display:none">
 
-      <!-- ← TAB START ─── iLearn ─────────────────────────────── -->
-      <div class="lesson-tab-panel" data-tab="iLearn" style="display:none">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m1-lesson-select" class="form-input">
+        <!-- ← TAB START ─── iLearn ─────────────────────────────── -->
+        <select data-tab="iLearn">
+          <optgroup label="── Unit 1 ──">
+            <option data-file="../database/iLearn/Curriculum/U1 - 1.csv">Unit 1 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U1 - 2.csv">Unit 1 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U1 - 3.csv">Unit 1 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 2 ──">
+            <option data-file="../database/iLearn/Curriculum/U2 - 1.csv">Unit 2 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U2 - 2.csv">Unit 2 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U2 - 3.csv">Unit 2 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 3 ──">
+            <option data-file="../database/iLearn/Curriculum/U3 - 1.csv">Unit 3 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U3 - 2.csv">Unit 3 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U3 - 3.csv">Unit 3 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 4 ──">
+            <option data-file="../database/iLearn/Curriculum/U4 - 1.csv">Unit 4 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U4 - 2.csv">Unit 4 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U4 - 3.csv">Unit 4 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 5 ──">
+            <option data-file="../database/iLearn/Curriculum/U5 - 1.csv">Unit 5 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U5 - 2.csv">Unit 5 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U5 - 3.csv">Unit 5 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 6 ──">
+            <option data-file="../database/iLearn/Curriculum/U6 - 1.csv">Unit 6 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U6 - 2.csv">Unit 6 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U6 - 3.csv">Unit 6 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 7 ──">
+            <option data-file="../database/iLearn/Curriculum/U7 - 1.csv">Unit 7 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U7 - 2.csv">Unit 7 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U7 - 3.csv">Unit 7 · Lesson 3</option>
+          </optgroup>
+          <optgroup label="── Unit 8 ──">
+            <option data-file="../database/iLearn/Curriculum/U8 - 1.csv">Unit 8 · Lesson 1</option>
+            <option data-file="../database/iLearn/Curriculum/U8 - 2.csv">Unit 8 · Lesson 2</option>
+            <option data-file="../database/iLearn/Curriculum/U8 - 3.csv">Unit 8 · Lesson 3</option>
+          </optgroup>
+        </select>
+        <!-- ← TAB END ─── iLearn ─────────────────────────────────── -->
 
-            <optgroup label="── Unit 1 ──">
-              <option data-file="../database/iLearn/Curriculum/U1 - 1.csv">Unit 1 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U1 - 2.csv">Unit 1 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U1 - 3.csv">Unit 1 · Lesson 3</option>
-            </optgroup>
+        <!-- ← TAB START ─── Gobal Success ───────────────────────── -->
+        <select data-tab="Gobal Success">
+          <optgroup label="── Dò từ ──">
+            <option data-file="../database/Gobal Success/Words/page 17 - 18.csv">Page 17, 18</option>
+            <option data-file="../database/Gobal Success/Words/page 19 - 20.csv">Page 19, 20</option>
+            <option data-file="../database/Gobal Success/Words/page 21 - 22.csv">Page 21, 22</option>
+            <option data-file="../database/Gobal Success/Words/page 23 - 24.csv">Page 23, 24</option>
+            <option data-file="../database/Gobal Success/Words/page 25 - 26.csv">Page 25, 26</option>
+            <option data-file="../database/Gobal Success/Words/page 27 - 28.csv">Page 27, 28</option>
+            <option data-file="../database/Gobal Success/Words/page 29 - 30.csv">Page 29, 30</option>
+            <option data-file="../database/Gobal Success/Words/page 31 - 32.csv">Page 31, 32</option>
+            <option data-file="../database/Gobal Success/Words/page 33 - 34.csv">Page 33, 34</option>
+          </optgroup>
+          <optgroup label="── Dò Pharsal verbs ──">
+            <option data-file="../database/Gobal Success/Pharsal Verbs/page 5 - 6.csv">Page 5, 6</option>
+          </optgroup>
+        </select>
+        <!-- ← TAB END ─── Gobal Success ─────────────────────────── -->
 
-            <optgroup label="── Unit 2 ──">
-              <option data-file="../database/iLearn/Curriculum/U2 - 1.csv">Unit 2 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U2 - 2.csv">Unit 2 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U2 - 3.csv">Unit 2 · Lesson 3</option>
-            </optgroup>
+        <!-- ← TAB START ─── Friend Plus ─────────────────────────── -->
+        <select data-tab="Friend Plus">
+          <!-- Add lessons here -->
+        </select>
+        <!-- ← TAB END ─── Friend Plus ───────────────────────────── -->
 
-            <optgroup label="── Unit 3 ──">
-              <option data-file="../database/iLearn/Curriculum/U3 - 1.csv">Unit 3 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U3 - 2.csv">Unit 3 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U3 - 3.csv">Unit 3 · Lesson 3</option>
-            </optgroup>
+        <!-- ← TAB START ─── Others ──────────────────────────────── -->
+        <select data-tab="Others">
+          <optgroup label="── TNTT ──">
+            <option data-file="../database/others/TNTT_PV.csv">TNTT's Phrasal verbs</option>
+          </optgroup>
+        </select>
+        <!-- ← TAB END ─── Others ────────────────────────────────── -->
 
-            <optgroup label="── Unit 4 ──">
-              <option data-file="../database/iLearn/Curriculum/U4 - 1.csv">Unit 4 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U4 - 2.csv">Unit 4 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U4 - 3.csv">Unit 4 · Lesson 3</option>
-            </optgroup>
-
-            <optgroup label="── Unit 5 ──">
-              <option data-file="../database/iLearn/Curriculum/U5 - 1.csv">Unit 5 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U5 - 2.csv">Unit 5 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U5 - 3.csv">Unit 5 · Lesson 3</option>
-            </optgroup>
-
-            <optgroup label="── Unit 6 ──">
-              <option data-file="../database/iLearn/Curriculum/U6 - 1.csv">Unit 6 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U6 - 2.csv">Unit 6 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U6 - 3.csv">Unit 6 · Lesson 3</option>
-            </optgroup>
-
-            <optgroup label="── Unit 7 ──">
-              <option data-file="../database/iLearn/Curriculum/U7 - 1.csv">Unit 7 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U7 - 2.csv">Unit 7 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U7 - 3.csv">Unit 7 · Lesson 3</option>
-            </optgroup>
-
-            <optgroup label="── Unit 8 ──">
-              <option data-file="../database/iLearn/Curriculum/U8 - 1.csv">Unit 8 · Lesson 1</option>
-              <option data-file="../database/iLearn/Curriculum/U8 - 2.csv">Unit 8 · Lesson 2</option>
-              <option data-file="../database/iLearn/Curriculum/U8 - 3.csv">Unit 8 · Lesson 3</option>
-            </optgroup>
-
-          </select>
-        </div>
+        <!-- ← TAB START ─── Example: add your next book here ───── -->
+        <!-- To activate: remove the comment lines around this block
+        <select data-tab="My Book 2">
+          <optgroup label="── Chapter 1 ──">
+            <option data-file="../database/mybook2/Ch1-L1.csv">Chapter 1 · Lesson 1</option>
+            <option data-file="../database/mybook2/Ch1-L2.csv">Chapter 1 · Lesson 2</option>
+          </optgroup>
+          <optgroup label="── Chapter 2 ──">
+            <option data-file="../database/mybook2/Ch2-L1.csv">Chapter 2 · Lesson 1</option>
+          </optgroup>
+        </select>
+        -->
+        <!-- ← TAB END ─── Example ───────────────────────────────── -->
       </div>
-      <!-- ← TAB END ─── iLearn ────────────────────────────────── -->
 
-      <!-- ← TAB START ─── Gobal Success ─────────────────────────────── -->
-      <div class="lesson-tab-panel" data-tab="Gobal Success" style="display:none">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m1-lesson-select" class="form-input">
-
-            <optgroup label="── Dò từ  ──">
-              <option data-file="../database/Gobal Success/Words/page 17 - 18.csv">Page 17, 18</option>
-              <option data-file="../database/Gobal Success/Words/page 19 - 20.csv">Page 19, 20</option>
-              <option data-file="../database/Gobal Success/Words/page 21 - 22.csv">Page 21, 22</option>
-              <option data-file="../database/Gobal Success/Words/page 23 - 24.csv">Page 23, 24</option>
-              <option data-file="../database/Gobal Success/Words/page 25 - 26.csv">Page 25, 26</option>
-              <option data-file="../database/Gobal Success/Words/page 27 - 28.csv">Page 27, 28</option>
-              <option data-file="../database/Gobal Success/Words/page 29 - 30.csv">Page 29, 30</option>
-              <option data-file="../database/Gobal Success/Words/page 31 - 32.csv">Page 31, 32</option>
-              <option data-file="../database/Gobal Success/Words/page 33 - 34.csv">Page 33, 34</option>
-              <option data-file="../database/Gobal Success/Words/page 35 - 36.csv">Page 35, 36</option>
-              
-            </optgroup>
-
-            <optgroup label="── Dò Pharsal verbs  ──">
-              <option data-file="../database/Gobal Success/Pharsal Verbs/page 5 - 6.csv">Page 5, 6</option>
-            </optgroup>
-
-          </select>
-        </div>
+      <!-- RENDERED CHECKBOX UI — built by initLessonPicker() -->
+      <div class="lesson-picker-tabs" id="lesson-tab-btns"></div>
+      <div class="lesson-picker-body" id="lesson-picker-body"></div>
+      <div class="lesson-pick-actions">
+        <button class="btn btn-ghost btn-sm" onclick="lessonPickerSelectAll(true)">Select all</button>
+        <button class="btn btn-ghost btn-sm" onclick="lessonPickerSelectAll(false)">Clear all</button>
+        <span class="lesson-pick-count" id="lesson-pick-count">0 selected</span>
       </div>
-      <!-- ← TAB END ─── Gobal Success ────────────────────────────────── -->
-
-      <!-- ← TAB START ─── Friend Plus ─────────────────────────────── -->
-      <div class="lesson-tab-panel" data-tab="Friend Plus" style="display:none">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m1-lesson-select" class="form-input">
-            
-            <optgroup label="── Dò từ  ──"></optgroup>
-              <option data-file="../database/Friend Plus/Words/page 48 - 49.csv">Page 48, 49</option>
-            </optgroup>  
-            
-          </select>
-        </div>
-      </div>
-      <!-- ← TAB END ─── Friend Plus ────────────────────────────────── -->
-
-<!-- ← TAB START ─── Others ─────────────────────────────── -->
-      <div class="lesson-tab-panel" data-tab="Others" style="display:none">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m1-lesson-select" class="form-input">
-
-            <optgroup label="── TNTT ──">
-              <option data-file="../database/others/TNTT_PV.csv">TNTT's Pharsal verbs</option>
-            </optgroup>
-            
-          </select>
-        </div>
-      </div>
-      <!-- ← TAB END ─── Others ────────────────────────────────── -->
-
-      <!-- ← TAB START ─── Example: add your next book here ───── -->
-      <!-- To activate: remove the two comment lines around this block
-      <div class="lesson-tab-panel" data-tab="My Book 2" style="display:none">
-        <div class="form-group" style="margin-bottom:0">
-          <label>Lesson</label>
-          <select id="m1-lesson-select" class="form-input">
-
-            <optgroup label="── Chapter 1 ──">
-              <option data-file="../database/mybook2/Ch1-L1.csv">Chapter 1 · Lesson 1</option>
-              <option data-file="../database/mybook2/Ch1-L2.csv">Chapter 1 · Lesson 2</option>
-            </optgroup>
-
-            <optgroup label="── Chapter 2 ──">
-              <option data-file="../database/mybook2/Ch2-L1.csv">Chapter 2 · Lesson 1</option>
-            </optgroup>
-
-          </select>
-        </div>
-      </div>
-      -->
-      <!-- ← TAB END ─── Example ───────────────────────────────── -->
-
     </div>
 
     <div id="m1-src-unit" style="display:none">
@@ -783,23 +769,6 @@ function recordMistake(quizWord) {
  * Return all source entries by reading THIS page's own DOM —
  * no fetch needed since we ARE mode1.html.
  */
-function getSourcesFromDOM() {
-  const entries = [];
-  document.querySelectorAll('#m1-src-lesson .lesson-tab-panel').forEach(panel => {
-    const tab = panel.getAttribute('data-tab') || '';
-    panel.querySelectorAll('optgroup').forEach(og => {
-      const group = og.getAttribute('label') || '';
-      og.querySelectorAll('option[data-file]').forEach(opt => {
-        entries.push({
-          file:  opt.getAttribute('data-file'),
-          label: opt.textContent.trim(),
-          tab, group,
-        });
-      });
-    });
-  });
-  return entries;
-}
 
 async function loadCSVFromPath(path) {
   try {
@@ -809,49 +778,10 @@ async function loadCSVFromPath(path) {
   } catch(e) { return []; }
 }
 
-async function loadLessonFromSelect() {
-  // Used by By Lesson tab — reads data-file from the selected <option>
-  const selects = document.querySelectorAll('#m1-src-lesson .lesson-tab-panel:not([style*="none"]) select');
-  const sel = selects[0];
-  if(!sel) return [];
-  const opt = sel.options[sel.selectedIndex];
-  const filePath = opt ? opt.getAttribute('data-file') : null;
-  if(!filePath) return [];
-  return loadCSVFromPath(filePath);
-}
-
 async function loadUnitCSV(unit) {
-  // Finds all sources in the active tab whose label matches "Unit N"
-  const activeTab = document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
-  let paths = [];
-  if (activeTab) {
-    activeTab.querySelectorAll('optgroup').forEach(og => {
-      og.querySelectorAll('option[data-file]').forEach(opt => {
-        const f = opt.getAttribute('data-file');
-        // Match optgroup whose label contains "Unit N" as a whole word
-        const ogLabel = og.getAttribute('label') || '';
-        if (ogLabel && new RegExp(`Unit\\s*${unit}\\b`).test(ogLabel)) {
-          paths.push(f);
-        }
-      });
-    });
-  }
-  // Fallback: collect all files for this unit across all tabs
-  if (!paths.length) {
-    getSourcesFromDOM().forEach(e => {
-      if (new RegExp(`Unit\\s*${unit}\\b`).test(e.group)) paths.push(e.file);
-    });
-  }
-  const results = await Promise.all(paths.map(p => loadCSVFromPath(p)));
-  const merged={};
-  results.flat().forEach(w=>{
-    if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}
-    else{
-      w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});
-      w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});
-    }
-  });
-  return Object.values(merged);
+  const sources = getSourcesFromDOM().filter(e => e.tab === (_pickerActiveTab || '') && e.unitIdx === parseInt(unit));
+  const results = await Promise.all(sources.map(e => loadCSVFromPath(e.file)));
+  return mergeWordArrays(results.flat());
 }
 
 function resolveCustomWords(text) {
@@ -908,53 +838,169 @@ function switchM1Source(src) {
   });
 }
 
-function updateM1LessonSelect(){} // kept for compatibility
+// ── Lesson Picker (checkbox multi-select across tabs) ──────────────────
+// Reads data from hidden #lesson-data-source <select data-tab> elements.
 
-// ── Build lesson tab buttons from the HTML panels ──
-function initLessonTabs() {
-  const panels = document.querySelectorAll('.lesson-tab-panel');
+function getSourcesFromDOM() {
+  const entries = [];
+  document.querySelectorAll('#lesson-data-source select[data-tab]').forEach(sel => {
+    const tab = sel.getAttribute('data-tab') || '';
+    sel.querySelectorAll('optgroup').forEach((og, ui) => {
+      const group = og.getAttribute('label') || '';
+      og.querySelectorAll('option[data-file]').forEach((opt, li) => {
+        entries.push({ file: opt.getAttribute('data-file'), label: opt.textContent.trim(), tab, group, unitIdx: ui + 1, lessonIdx: li + 1 });
+      });
+    });
+  });
+  return entries;
+}
+
+let _pickerActiveTab = null;
+
+function initLessonPicker() {
+  const sources = getSourcesFromDOM();
+  const tabs = [...new Set(sources.map(e => e.tab))];
+  if (!tabs.length) return;
+  _pickerActiveTab = tabs[0];
+
   const btnWrap = document.getElementById('lesson-tab-btns');
-  if(!btnWrap || !panels.length) return;
-  panels.forEach((panel, i) => {
-    const tabName = panel.getAttribute('data-tab');
+  btnWrap.innerHTML = '';
+  tabs.forEach((tab, i) => {
     const btn = document.createElement('button');
-    btn.className = 'nav-btn' + (i===0?' active':'');
-    btn.textContent = tabName;
-    btn.onclick = () => switchLessonTab(tabName);
+    btn.className = 'nav-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = tab;
+    btn.onclick = () => switchPickerTab(tab);
     btnWrap.appendChild(btn);
-    panel.style.display = i===0 ? '' : 'none';
+  });
+
+  renderPickerBody(sources);
+  updatePickerCount();
+}
+
+function renderPickerBody(sources) {
+  sources = sources || getSourcesFromDOM();
+  const body = document.getElementById('lesson-picker-body');
+  body.innerHTML = '';
+  const tabs = [...new Set(sources.map(e => e.tab))];
+  tabs.forEach(tab => {
+    const panel = document.createElement('div');
+    panel.className = 'lesson-picker-tab-panel' + (tab === _pickerActiveTab ? ' active' : '');
+    panel.setAttribute('data-picker-tab', tab);
+    const tabSources = sources.filter(e => e.tab === tab);
+    const groups = [...new Set(tabSources.map(e => e.group))];
+    groups.forEach(group => {
+      if (group) {
+        const gl = document.createElement('div');
+        gl.className = 'lesson-group-label';
+        // Clean up "── Unit 1 ──" style labels
+        gl.textContent = group.replace(/^[─\s]+|[─\s]+$/g, '').trim();
+        // Add "Select group" checkbox
+        const glCheck = document.createElement('input');
+        glCheck.type = 'checkbox';
+        glCheck.style.cssText = 'width:14px;height:14px;accent-color:var(--accent);cursor:pointer;margin-right:6px;vertical-align:middle;flex-shrink:0';
+        glCheck.title = 'Select all in this group';
+        glCheck.addEventListener('change', () => {
+          panel.querySelectorAll(`.lesson-check-item[data-group="${CSS.escape(group)}"] input`).forEach(cb => cb.checked = glCheck.checked);
+          updatePickerCount();
+        });
+        gl.prepend(glCheck);
+        panel.appendChild(gl);
+      }
+      const groupSources = tabSources.filter(e => e.group === group);
+      const list = document.createElement('div');
+      list.className = 'lesson-check-list';
+      groupSources.forEach(entry => {
+        const item = document.createElement('label');
+        item.className = 'lesson-check-item';
+        item.setAttribute('data-group', group);
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = entry.file;
+        cb.addEventListener('change', updatePickerCount);
+        const lbl = document.createElement('span');
+        lbl.textContent = entry.label;
+        item.appendChild(cb);
+        item.appendChild(lbl);
+        list.appendChild(item);
+      });
+      panel.appendChild(list);
+    });
+    body.appendChild(panel);
   });
 }
 
-function switchLessonTab(tabName) {
-  const panels = document.querySelectorAll('.lesson-tab-panel');
-  const btns   = document.querySelectorAll('#lesson-tab-btns .nav-btn');
-  panels.forEach(p => p.style.display = p.getAttribute('data-tab')===tabName ? '' : 'none');
-  btns.forEach(b => b.classList.toggle('active', b.textContent===tabName));
-  // Refresh By Unit select whenever the tab changes
+function switchPickerTab(tab) {
+  _pickerActiveTab = tab;
+  document.querySelectorAll('#lesson-picker-body .lesson-picker-tab-panel').forEach(p => {
+    p.classList.toggle('active', p.getAttribute('data-picker-tab') === tab);
+  });
+  document.querySelectorAll('#lesson-tab-btns .nav-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === tab);
+  });
   populateUnitSelect();
 }
 
+function getCheckedLessonFiles() {
+  return [...document.querySelectorAll('#lesson-picker-body input[type=checkbox]:checked')].map(cb => cb.value).filter(Boolean);
+}
+
+function updatePickerCount() {
+  const n = getCheckedLessonFiles().length;
+  const el = document.getElementById('lesson-pick-count');
+  if (el) el.textContent = n + ' lesson' + (n !== 1 ? 's' : '') + ' selected';
+}
+
+function lessonPickerSelectAll(checked) {
+  // Only affect the currently visible tab
+  const activePanel = document.querySelector('#lesson-picker-body .lesson-picker-tab-panel.active');
+  if (!activePanel) return;
+  activePanel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = checked);
+  updatePickerCount();
+}
+
+function initLessonTabs() { initLessonPicker(); } // alias for compatibility
+
+function switchLessonTab(tabName) { switchPickerTab(tabName); }
+
 /**
- * Build the "By Unit" <select> from the currently-visible lesson tab.
- * Called on tab switch and on page init — never hardcodes unit count.
+ * Build the "By Unit" <select> from the currently-active picker tab.
  */
 function populateUnitSelect() {
   const sel = document.getElementById('m1-unit-only');
   if (!sel) return;
-  const activeTab = document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
+  const sources = getSourcesFromDOM().filter(e => e.tab === (_pickerActiveTab || ''));
   const prevVal = sel.value;
   sel.innerHTML = '';
-  if (!activeTab) return;
-  activeTab.querySelectorAll('optgroup').forEach((og, i) => {
+  const seen = new Set();
+  sources.forEach(e => {
+    if (seen.has(e.unitIdx)) return;
+    seen.add(e.unitIdx);
     const opt = document.createElement('option');
-    opt.value = String(i + 1);
-    // Use label like "── Unit 3 ──" → display "Unit 3"
-    opt.textContent = og.getAttribute('label').replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + (i + 1));
+    opt.value = String(e.unitIdx);
+    opt.textContent = e.group.replace(/^[─\s]+|[─\s]+$/g, '').trim() || ('Unit ' + e.unitIdx);
     sel.appendChild(opt);
   });
-  // Restore previous selection if still valid
   if ([...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
+}
+
+async function loadLessonFromSelect() {
+  // Now loads ALL checked lessons (merged)
+  const files = getCheckedLessonFiles();
+  if (!files.length) return [];
+  const results = await Promise.all(files.map(p => loadCSVFromPath(p)));
+  return mergeWordArrays(results.flat());
+}
+
+function mergeWordArrays(words) {
+  const merged = {};
+  words.forEach(w => {
+    if (!merged[w.root]) { merged[w.root] = { ...w, entries: [...w.entries], meanings: [...w.meanings] }; }
+    else {
+      w.entries.forEach(e => { if (!merged[w.root].entries.some(ex => ex.word === e.word)) merged[w.root].entries.push(e); });
+      w.meanings.forEach(m => { if (!merged[w.root].meanings.includes(m)) merged[w.root].meanings.push(m); });
+    }
+  });
+  return Object.values(merged);
 }
 
 // ══════════════════════════════════════════
@@ -994,8 +1040,10 @@ async function beginMode1() {
   try{
     let words=[];
     if(m1Source==='lesson'){
+      const files=getCheckedLessonFiles();
+      if(!files.length){showToast('⚠️ Please select at least one lesson.');return;}
       words=await loadLessonFromSelect();
-      if(!words.length){showToast('⚠️ No words found for that lesson. Check the CSV file path.');return;}
+      if(!words.length){showToast('⚠️ No words found. Check CSV file paths.');return;}
     }else if(m1Source==='unit'){
       const unit=document.getElementById('m1-unit-only').value;
       words=await loadUnitCSV(unit);
@@ -1003,38 +1051,21 @@ async function beginMode1() {
     }else if(m1Source==='pick'){
       const raw=document.getElementById('m1-pick-lessons').value.trim();
       if(!raw){showToast('⚠️ Please enter at least one lesson.');return;}
-      // Build path list from the active lesson tab's DOM — no hardcoded paths
-      const activeTab=document.querySelector('#m1-src-lesson .lesson-tab-panel:not([style*="none"])');
+      const allSources=getSourcesFromDOM().filter(e=>e.tab===(_pickerActiveTab||''));
       const pickPaths=[],seen=new Set();
-      if(activeTab){
-        const allOpts=[];
-        activeTab.querySelectorAll('optgroup').forEach((og,ui)=>{
-          og.querySelectorAll('option[data-file]').forEach((opt,li)=>{
-            allOpts.push({u:ui+1,l:li+1,file:opt.getAttribute('data-file')});
-          });
-        });
-        raw.split(/\n/).forEach(line=>{
-          const m=line.trim().match(/^(\d+)\s*[-–]\s*(\d+)$/);
-          if(!m) return;
-          const u=parseInt(m[1]),l=parseInt(m[2]);
-          const entry=allOpts.find(o=>o.u===u&&o.l===l);
-          if(!entry) return;
-          if(!seen.has(entry.file)){seen.add(entry.file);pickPaths.push(entry.file);}
-        });
-      }
+      raw.split(/\n/).forEach(line=>{
+        const m=line.trim().match(/^(\d+)\s*[-–]\s*(\d+)$/);
+        if(!m) return;
+        const u=parseInt(m[1]),l=parseInt(m[2]);
+        const entry=allSources.find(o=>o.unitIdx===u&&o.lessonIdx===l);
+        if(!entry) return;
+        if(!seen.has(entry.file)){seen.add(entry.file);pickPaths.push(entry.file);}
+      });
       if(!pickPaths.length){showToast('⚠️ No valid lessons found. Use format: 1 - 1');return;}
       const results=await Promise.all(pickPaths.map(p=>loadCSVFromPath(p)));
-      const merged={};
-      results.flat().forEach(w=>{
-        if(!merged[w.root]){merged[w.root]={...w,entries:[...w.entries],meanings:[...w.meanings]};}
-        else{
-          w.entries.forEach(e=>{if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e);});
-          w.meanings.forEach(m=>{if(!merged[w.root].meanings.includes(m))merged[w.root].meanings.push(m);});
-        }
-      });
-      words=Object.values(merged);
+      words=mergeWordArrays(results.flat());
       if(!words.length){showToast('⚠️ No words found for those lessons.');return;}
-      showToast('✓ Loaded '+pairs.length+' lesson(s)');
+      showToast('✓ Loaded '+pickPaths.length+' lesson(s)');
     }else if(m1Source==='custom'){
       const text=document.getElementById('m1-custom-words').value.trim();
       if(!text){showToast('⚠️ Please enter some words or meanings.');return;}
@@ -1350,22 +1381,90 @@ document.addEventListener('keydown',(e)=>{
 });
 
 // ══════════════════════════════════════════
-// THEME TOGGLE
+// THEME  (dark → light → love💗 secret)
 // ══════════════════════════════════════════
-(function initTheme(){
-  const saved=localStorage.getItem('theme')||'dark';
-  document.documentElement.setAttribute('data-theme',saved);
-  const btn=document.getElementById('theme-toggle');
-  if(btn) btn.textContent=saved==='light'?'☀️':'🌙';
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
 })();
 
-document.getElementById('theme-toggle').addEventListener('click',()=>{
-  const html=document.documentElement;
-  const current=html.getAttribute('data-theme')||'dark';
-  const next=current==='light'?'dark':'light';
-  html.setAttribute('data-theme',next);
-  localStorage.setItem('theme',next);
-  document.getElementById('theme-toggle').textContent=next==='light'?'☀️':'🌙';
+let _petalInterval = null;
+let _sparkleEnabled = false;
+
+function spawnPetal() {
+  const petal = document.createElement('div');
+  petal.className = 'love-petal';
+  const size   = 8 + Math.random() * 14;
+  const colors = ['#f9a8d4','#f472b6','#fbcfe8','#fda4af','#fce7f3','#f9c0d8'];
+  const color  = colors[Math.floor(Math.random() * colors.length)];
+  const dur    = 6 + Math.random() * 8;
+  const delay  = Math.random() * 4;
+  petal.style.cssText = `width:${size}px;height:${size*.7}px;left:${Math.random()*100}vw;background:${color};animation-duration:${dur}s;animation-delay:${delay}s;box-shadow:inset 0 1px 2px rgba(255,255,255,.5);opacity:0;`;
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), (dur + delay + .5) * 1000);
+}
+
+function startPetals() {
+  stopPetals();
+  for (let i = 0; i < 18; i++) setTimeout(spawnPetal, i * 130);
+  _petalInterval = setInterval(() => { if (Math.random() > .35) spawnPetal(); }, 700);
+}
+
+function stopPetals() {
+  if (_petalInterval) { clearInterval(_petalInterval); _petalInterval = null; }
+  document.querySelectorAll('.love-petal').forEach(p => p.remove());
+}
+
+function onSparkleClick(e) {
+  const emojis = ['💗','💕','🌸','✨','💖','🌷','💝','⭐','🩷','🌺'];
+  const count  = 4 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('span');
+    s.className = 'love-sparkle';
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.cssText = `left:${e.clientX-10}px;top:${e.clientY-10}px;position:fixed;pointer-events:none;z-index:9999;font-size:18px;`;
+    const angle = (Math.PI * 2 / count) * i + Math.random() * .5;
+    const dist  = 30 + Math.random() * 45;
+    document.body.appendChild(s);
+    s.animate([
+      { transform: 'translate(0,0) scale(0)',                                                               opacity: 1 },
+      { transform: `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(1.3)`,            opacity: 1, offset: .5 },
+      { transform: `translate(${Math.cos(angle)*dist*1.7}px,${Math.sin(angle)*dist*1.7}px) scale(0)`,      opacity: 0 }
+    ], { duration: 600 + Math.random() * 250, easing: 'ease-out', fill: 'forwards' });
+    setTimeout(() => s.remove(), 900);
+  }
+}
+
+function enableSparkles()  { document.addEventListener('click', onSparkleClick); }
+function disableSparkles() { document.removeEventListener('click', onSparkleClick); }
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const css = document.getElementById('love-theme-css');
+  if (css) css.disabled = (theme !== 'love');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = theme === 'light' ? '☀️' : theme === 'love' ? '💗' : '🌙';
+  localStorage.setItem('theme', theme);
+  if (theme === 'love') { startPetals(); enableSparkles(); }
+  else                  { stopPetals();  disableSparkles(); }
+}
+
+let _themeClickTimes = [];
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const now = Date.now();
+  _themeClickTimes = _themeClickTimes.filter(t => now - t < 1500);
+  _themeClickTimes.push(now);
+  if (_themeClickTimes.length >= 5) {
+    _themeClickTimes = [];
+    if ((document.documentElement.getAttribute('data-theme')||'dark') !== 'love') {
+      applyTheme('love'); showToast('💗 Love theme unlocked!'); return;
+    }
+  }
+  if (_themeClickTimes.length < 5) {
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    if (cur === 'love') return;
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
 });
 
 // ══════════════════════════════════════════
