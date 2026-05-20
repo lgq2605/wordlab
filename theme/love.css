@@ -486,13 +486,13 @@
   font-weight: 800;
 }
 [data-theme="love"] .lesson-check-item {
-  background: rgba(255,248,252,.90) !important;
-  border-bottom-color: var(--border);
+  background: rgba(185, 116, 155, 0.9) !important;
+  border-bottom-color: #f8bdd8 !important;
   color: var(--text) !important;
 }
 [data-theme="love"] .lesson-check-item label,
 [data-theme="love"] .lesson-check-item span {
-  color: var(--text) !important;
+  color: #2d0a1e !important;
 }
 [data-theme="love"] .lesson-check-item:hover {
   background: rgba(232,53,122,.08) !important;
