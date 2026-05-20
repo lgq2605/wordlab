@@ -501,6 +501,53 @@
 }
 
 /* ══════════════════════════════════════════
+   SEARCH INPUT
+══════════════════════════════════════════ */
+[data-theme="love"] .search-input {
+  background: rgba(255,248,252,.96);
+  border-color: var(--border2);
+  color: var(--text);
+}
+[data-theme="love"] .search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,53,122,.18);
+  background: #fff;
+}
+
+/* ══════════════════════════════════════════
+   SELECT DROPDOWNS (db filter, combined-row)
+══════════════════════════════════════════ */
+[data-theme="love"] select.form-input,
+[data-theme="love"] .combined-row select {
+  background: rgba(255,248,252,.96);
+  color: var(--text);
+  border-color: var(--border2);
+  color-scheme: light;
+}
+[data-theme="love"] select option {
+  background: #fff5f9;
+  color: var(--text);
+}
+
+/* ══════════════════════════════════════════
+   LOGIN ERROR BOX — fix hardcoded dark red
+══════════════════════════════════════════ */
+[data-theme="love"] #login-error {
+  background: rgba(232, 53, 122, .10) !important;
+  border-color: rgba(232, 53, 122, .30) !important;
+  color: var(--danger) !important;
+}
+
+/* ══════════════════════════════════════════
+   DB TABLE HEADER — fix dark surface
+══════════════════════════════════════════ */
+[data-theme="love"] .db-table thead th {
+  background: var(--surface2);
+  color: var(--muted2);
+  border-bottom-color: var(--border);
+}
+
+/* ══════════════════════════════════════════
    MODAL / OVERLAY — fix black background bug
 ══════════════════════════════════════════ */
 [data-theme="love"] .overlay {
