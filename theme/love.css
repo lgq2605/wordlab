@@ -471,19 +471,35 @@
    LESSON PICKER
 ══════════════════════════════════════════ */
 [data-theme="love"] .lesson-picker-body {
+  background: rgba(255,245,250,.95);
   border: 1.5px solid var(--border2);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(232,53,122,.07);
 }
 [data-theme="love"] .lesson-group-label {
-  background: linear-gradient(90deg, var(--surface2), var(--surface3));
+  background: linear-gradient(90deg, rgba(232,53,122,.15), rgba(245,100,180,.10));
   border-bottom-color: var(--border);
   color: var(--accent);
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
 }
-[data-theme="love"] .lesson-check-item { border-bottom-color: var(--border); }
-[data-theme="love"] .lesson-check-item:hover { background: rgba(232,53,122,.06); }
+[data-theme="love"] .lesson-check-item {
+  background: rgba(255,248,252,.90);
+  border-bottom-color: var(--border);
+  color: var(--text);
+}
+[data-theme="love"] .lesson-check-item label,
+[data-theme="love"] .lesson-check-item span {
+  color: var(--text) !important;
+}
+[data-theme="love"] .lesson-check-item:hover {
+  background: rgba(232,53,122,.08);
+  color: var(--love-deep);
+}
+[data-theme="love"] .lesson-check-item:hover label,
+[data-theme="love"] .lesson-check-item:hover span {
+  color: var(--love-deep) !important;
+}
 [data-theme="love"] .lesson-check-item input[type=checkbox] { accent-color: var(--accent); }
 
 /* ══════════════════════════════════════════
