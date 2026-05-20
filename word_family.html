@@ -455,6 +455,11 @@
 </div>
 
 <!-- MODAL Add/Edit Word -->
+<!-- Love mode escape button -->
+<button id="love-escape-btn" onclick="applyTheme(localStorage.getItem('theme')==='love'?'dark':'dark');showToast('💫 Back to normal mode');" title="Exit Love Mode">
+  💔 Exit Love Mode
+</button>
+
 <div class="overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" style="max-width:820px;">
     <div class="modal-title" id="modal-title">Add Word</div>
@@ -607,40 +612,82 @@ function buildWordsFromCSVTexts(csvTexts) {
 // SOURCE REGISTRY  —  reads all CSV paths from mode1.html's data-file attributes
 // word_family.html lives at project root, so paths strip the leading "../"
 // ══════════════════════════════════════════
-let _wfSources = null;
-async function getWFSourcePaths() {
-  if (_wfSources !== null) return _wfSources;
-  try {
-    const res = await fetch('wf mode/mode1.html');
-    if (!res.ok) throw new Error('mode1 not found');
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const paths = [];
-    doc.querySelectorAll('.lesson-tab-panel option[data-file]').forEach(opt => {
-      // data-file is relative to "wf mode/" (e.g. ../database/iLearn/Curriculum/U1 - 1.csv)
-      // Strip leading "../" to make it relative to project root
-      const p = opt.getAttribute('data-file').replace(/^\.\.\//, '');
-      if (!paths.includes(p)) paths.push(p);
-    });
-    _wfSources = paths;
-  } catch(e) {
-    console.warn('[word_family] Could not load sources from mode1.html:', e);
-    _wfSources = [];
-  }
-  return _wfSources;
-}
+// SOURCE REGISTRY — hardcoded list of all CSV files (no fetch-chain dependency on mode1.html)
+const WF_SOURCE_PATHS = [
+  // iLearn — Curriculum
+  'database/iLearn/Curriculum/U1 - 1.csv',
+  'database/iLearn/Curriculum/U1 - 2.csv',
+  'database/iLearn/Curriculum/U1 - 3.csv',
+  'database/iLearn/Curriculum/U2 - 1.csv',
+  'database/iLearn/Curriculum/U2 - 2.csv',
+  'database/iLearn/Curriculum/U2 - 3.csv',
+  'database/iLearn/Curriculum/U3 - 1.csv',
+  'database/iLearn/Curriculum/U3 - 2.csv',
+  'database/iLearn/Curriculum/U3 - 3.csv',
+  'database/iLearn/Curriculum/U4 - 1.csv',
+  'database/iLearn/Curriculum/U4 - 2.csv',
+  'database/iLearn/Curriculum/U4 - 3.csv',
+  'database/iLearn/Curriculum/U5 - 1.csv',
+  'database/iLearn/Curriculum/U5 - 2.csv',
+  'database/iLearn/Curriculum/U5 - 3.csv',
+  'database/iLearn/Curriculum/U6 - 1.csv',
+  'database/iLearn/Curriculum/U6 - 2.csv',
+  'database/iLearn/Curriculum/U6 - 3.csv',
+  'database/iLearn/Curriculum/U7 - 1.csv',
+  'database/iLearn/Curriculum/U7 - 2.csv',
+  'database/iLearn/Curriculum/U7 - 3.csv',
+  'database/iLearn/Curriculum/U8 - 1.csv',
+  'database/iLearn/Curriculum/U8 - 2.csv',
+  'database/iLearn/Curriculum/U8 - 3.csv',
+  // Global Success — Words
+  'database/Gobal Success/Words/page 17 - 18.csv',
+  'database/Gobal Success/Words/page 19 - 20.csv',
+  'database/Gobal Success/Words/page 21 - 22.csv',
+  'database/Gobal Success/Words/page 23 - 24.csv',
+  'database/Gobal Success/Words/page 25 - 26.csv',
+  'database/Gobal Success/Words/page 27 - 28.csv',
+  'database/Gobal Success/Words/page 29 - 30.csv',
+  'database/Gobal Success/Words/page 31 - 32.csv',
+  'database/Gobal Success/Words/page 33 - 34.csv',
+  'database/Gobal Success/Words/page 35 - 36.csv',
+  // Global Success — Phrasal Verbs
+  'database/Gobal Success/Pharsal Verbs/page 5 - 6.csv',
+  // Friend Plus
+  'database/Friend Plus/page 48 - 49.csv',
+  // Others
+  'database/others/TNTT_PV.csv',
+];
 
 async function initializeDB() {
   try {
+    // Restore any previously saved DB from localStorage
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) { try { db = JSON.parse(stored); db.sort((a,b)=>a.root.localeCompare(b.root,'en',{sensitivity:'base'})); } catch(e) { db = []; } }
-
-    // Load all CSV paths from mode1.html — no hardcoded paths here
-    const sourcePaths = await getWFSourcePaths();
-    const csvTexts = [];
-    for (const path of sourcePaths) {
-      try { const res = await fetch(path); if (res.ok) csvTexts.push(await res.text()); } catch(e) {}
+    if (stored) {
+      try { db = JSON.parse(stored); db.sort((a,b)=>a.root.localeCompare(b.root,'en',{sensitivity:'base'})); }
+      catch(e) { db = []; }
     }
+
+    // Fetch all CSV files directly — no intermediary fetch of mode1.html
+    const csvTexts = [];
+    const failedPaths = [];
+    for (const path of WF_SOURCE_PATHS) {
+      try {
+        const res = await fetch(encodeURI(path));
+        if (res.ok) {
+          csvTexts.push(await res.text());
+        } else {
+          failedPaths.push(path + ' (' + res.status + ')');
+        }
+      } catch(e) {
+        failedPaths.push(path + ' (network error)');
+      }
+    }
+
+    if (failedPaths.length > 0) {
+      console.warn('[word_family] Failed to load ' + failedPaths.length + ' CSV file(s):', failedPaths);
+    }
+
+    // Hash the combined CSV content to detect changes
     const combined = csvTexts.join('|');
     const hashBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(combined));
     const currentHash = Array.from(new Uint8Array(hashBuf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -652,8 +699,13 @@ async function initializeDB() {
       const merged = {};
       freshCSV.forEach(w => { merged[w.root] = w; });
       userWords.forEach(w => {
-        if (merged[w.root]) { w.entries.forEach(e=>{ if(!merged[w.root].entries.some(ex=>ex.word===e.word))merged[w.root].entries.push(e); }); }
-        else { merged[w.root] = w; }
+        if (merged[w.root]) {
+          w.entries.forEach(e => {
+            if (!merged[w.root].entries.some(ex => ex.word === e.word)) merged[w.root].entries.push(e);
+          });
+        } else {
+          merged[w.root] = w;
+        }
       });
       db = Object.values(merged);
       localStorage.setItem(CSV_HASH_KEY, currentHash);
@@ -703,9 +755,9 @@ async function safeNav(event, el, path) {
   // Strip query string for the existence check — the file is what matters
   const filePath = path.split('?')[0];
   try {
-    const res = await fetch(filePath, { method: 'HEAD' });
+    const res = await fetch(encodeURI(filePath), { method: 'HEAD' });
     if (res.ok) {
-      window.location.href = path;
+      window.location.href = encodeURI(path);
     } else {
       window.location.href = '404.html';
     }
@@ -907,12 +959,12 @@ async function importCSVFiles(event){
 async function importAllSourceFiles() {
   const btn = document.getElementById('import-all-btn');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Importing…'; }
-  // All paths read from mode1.html — no hardcoded paths here
-  const allFiles = await getWFSourcePaths();
+  // Use the same hardcoded source list as initializeDB
+  const allFiles = WF_SOURCE_PATHS.slice();
   let imported = 0, skipped = 0, failed = 0;
   for (const path of allFiles) {
     try {
-      const res = await fetch(path);
+      const res = await fetch(encodeURI(path));
       if (!res.ok) { failed++; continue; }
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(l => l.trim());
@@ -1036,10 +1088,6 @@ document.addEventListener('keydown',(e)=>{
 // ══════════════════════════════════════════
 // THEME  (dark → light → love💗 secret)
 // ══════════════════════════════════════════
-(function initTheme() {
-  const saved = localStorage.getItem('theme') || 'dark';
-  applyTheme(saved);
-})();
 
 let _petalInterval = null;
 
@@ -1114,7 +1162,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
   }
   if (_themeClickTimes.length < 5) {
     const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-    if (cur === 'love') return;
+    if (cur === 'love') { applyTheme('dark'); showToast('💫 Exited love mode'); return; }
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   }
 });
@@ -1132,6 +1180,10 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
+})();
 initializeDB().then(()=>{
   updateAdminUI();
   initNameModal();

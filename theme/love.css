@@ -499,3 +499,101 @@
   border-color: var(--border2);
   color: var(--love-deep);
 }
+
+/* ══════════════════════════════════════════
+   MODAL / OVERLAY — fix black background bug
+══════════════════════════════════════════ */
+[data-theme="love"] .overlay {
+  background: rgba(180, 40, 100, .30);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+[data-theme="love"] .modal {
+  background: #fff8fc;
+  border: 1.5px solid var(--border2);
+  box-shadow:
+    0 24px 80px rgba(232, 53, 122, .22),
+    0 4px 24px rgba(232, 53, 122, .12),
+    inset 0 1px 0 rgba(255,255,255,.9);
+  color: var(--text);
+}
+
+[data-theme="love"] .modal-title {
+  background: linear-gradient(135deg, #e8357a, #b5179e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+/* Input fields inside modals */
+[data-theme="love"] .modal input[type="text"],
+[data-theme="love"] .modal input[type="password"],
+[data-theme="love"] .modal select {
+  background: rgba(255, 248, 252, .96);
+  border: 1.5px solid var(--border2);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+}
+[data-theme="love"] .modal input[type="text"]:focus,
+[data-theme="love"] .modal input[type="password"]:focus,
+[data-theme="love"] .modal select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,53,122,.18);
+  background: #fff;
+  outline: none;
+}
+[data-theme="love"] .modal input::placeholder {
+  color: rgba(176,96,128,.5);
+  font-style: italic;
+}
+
+/* Label / helper text inside modals */
+[data-theme="love"] .modal label,
+[data-theme="love"] .modal .form-label,
+[data-theme="love"] .modal p {
+  color: var(--muted2);
+}
+
+/* Entry rows inside the add/edit word modal */
+[data-theme="love"] .combined-row {
+  background: rgba(255,240,248,.6);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* ══════════════════════════════════════════
+   ESCAPE LOVE MODE BUTTON
+══════════════════════════════════════════ */
+#love-escape-btn {
+  display: none;
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 9999;
+  background: linear-gradient(135deg, #e8357a, #b5179e);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(232,53,122,.45);
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+  opacity: .85;
+}
+#love-escape-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 28px rgba(232,53,122,.60);
+  opacity: 1;
+}
+[data-theme="love"] #love-escape-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}

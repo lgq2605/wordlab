@@ -775,7 +775,7 @@ function recordMistake(quizWord) {
 
 async function loadCSVFromPath(path) {
   try {
-    const res = await fetch(path);
+    const res = await fetch(encodeURI(path));
     if (!res.ok) return [];
     return parseCSVToWords(await res.text());
   } catch(e) { return []; }
@@ -891,19 +891,17 @@ function renderPickerBody(sources) {
     panel.setAttribute('data-picker-tab', tab);
     const tabSources = sources.filter(e => e.tab === tab);
     const groups = [...new Set(tabSources.map(e => e.group))];
-    groups.forEach(group => {
+    groups.forEach((group, gIdx) => {
       if (group) {
         const gl = document.createElement('div');
         gl.className = 'lesson-group-label';
-        // Clean up "── Unit 1 ──" style labels
         gl.textContent = group.replace(/^[─\s]+|[─\s]+$/g, '').trim();
-        // Add "Select group" checkbox
         const glCheck = document.createElement('input');
         glCheck.type = 'checkbox';
         glCheck.style.cssText = 'width:14px;height:14px;accent-color:var(--accent);cursor:pointer;margin-right:6px;vertical-align:middle;flex-shrink:0';
         glCheck.title = 'Select all in this group';
         glCheck.addEventListener('change', () => {
-          panel.querySelectorAll(`.lesson-check-item[data-group="${CSS.escape(group)}"] input`).forEach(cb => cb.checked = glCheck.checked);
+          panel.querySelectorAll(`.lesson-check-item[data-gid="${gIdx}"] input`).forEach(cb => cb.checked = glCheck.checked);
           updatePickerCount();
         });
         gl.prepend(glCheck);
@@ -916,6 +914,7 @@ function renderPickerBody(sources) {
         const item = document.createElement('label');
         item.className = 'lesson-check-item';
         item.setAttribute('data-group', group);
+        item.setAttribute('data-gid', gIdx);
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.value = entry.file;
@@ -1386,13 +1385,8 @@ document.addEventListener('keydown',(e)=>{
 // ══════════════════════════════════════════
 // THEME  (dark → light → love💗 secret)
 // ══════════════════════════════════════════
-(function initTheme() {
-  const saved = localStorage.getItem('theme') || 'dark';
-  applyTheme(saved);
-})();
 
 let _petalInterval = null;
-let _sparkleEnabled = false;
 
 function spawnPetal() {
   const petal = document.createElement('div');
@@ -1473,6 +1467,10 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
+(function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
+})();
 loadDB();
 initLessonTabs();
 populateUnitSelect();
