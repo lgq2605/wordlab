@@ -266,29 +266,31 @@
 }
 
 [data-theme="love"] .btn-secondary {
-  background: var(--surface2);
-  color: var(--love-deep);
-  border: 1.5px solid var(--border2);
+  background: var(--surface2) !important;
+  color: var(--love-deep) !important;
+  border: 1.5px solid var(--border2) !important;
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
+  box-shadow: 0 1px 6px rgba(232,53,122,.10) !important;
 }
 [data-theme="love"] .btn-secondary:hover {
-  border-color: var(--accent);
-  background: rgba(232,53,122,.07);
-  color: var(--accent);
+  border-color: var(--accent) !important;
+  background: rgba(232,53,122,.07) !important;
+  color: var(--accent) !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(232,53,122,.15);
+  box-shadow: 0 4px 14px rgba(232,53,122,.15) !important;
 }
 
 [data-theme="love"] .btn-ghost {
-  color: var(--muted2);
-  border-color: var(--border);
+  color: var(--muted2) !important;
+  border-color: var(--border) !important;
+  background: transparent !important;
   font-family: 'Nunito', sans-serif;
 }
 [data-theme="love"] .btn-ghost:hover {
-  color: var(--accent);
-  border-color: var(--accent2);
-  background: rgba(232,53,122,.06);
+  color: var(--accent) !important;
+  border-color: var(--accent2) !important;
+  background: rgba(232,53,122,.06) !important;
 }
 
 /* ══════════════════════════════════════════
@@ -471,30 +473,30 @@
    LESSON PICKER
 ══════════════════════════════════════════ */
 [data-theme="love"] .lesson-picker-body {
-  background: rgba(255,245,250,.95);
+  background: rgba(255,245,250,.95) !important;
   border: 1.5px solid var(--border2);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(232,53,122,.07);
 }
 [data-theme="love"] .lesson-group-label {
-  background: linear-gradient(90deg, rgba(232,53,122,.15), rgba(245,100,180,.10));
+  background: linear-gradient(90deg, rgba(232,53,122,.15), rgba(245,100,180,.10)) !important;
   border-bottom-color: var(--border);
-  color: var(--accent);
+  color: var(--accent) !important;
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
 }
 [data-theme="love"] .lesson-check-item {
-  background: rgba(255,248,252,.90);
+  background: rgba(255,248,252,.90) !important;
   border-bottom-color: var(--border);
-  color: var(--text);
+  color: var(--text) !important;
 }
 [data-theme="love"] .lesson-check-item label,
 [data-theme="love"] .lesson-check-item span {
   color: var(--text) !important;
 }
 [data-theme="love"] .lesson-check-item:hover {
-  background: rgba(232,53,122,.08);
-  color: var(--love-deep);
+  background: rgba(232,53,122,.08) !important;
+  color: var(--love-deep) !important;
 }
 [data-theme="love"] .lesson-check-item:hover label,
 [data-theme="love"] .lesson-check-item:hover span {
